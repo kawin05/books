@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { TypewriterText } from '@/components/TypewriterText'
 
 export const metadata: Metadata = {
   title: 'Gallery',
@@ -26,15 +25,7 @@ export default function GalleryPage() {
   return (
     <main className="min-h-screen bg-bg text-text-primary">
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({ variant: 'ghost', size: 'sm' }),
-            'px-0 font-display text-[11px] uppercase tracking-[0.28em] text-accent-cream hover:bg-transparent hover:text-accent-cream/70'
-          )}
-        >
-          Kawin Books
-        </Link>
+        <TypewriterText />
         <span className="font-display text-[10px] uppercase tracking-[0.24em] text-text-muted">
           {photos.length} Photos
         </span>

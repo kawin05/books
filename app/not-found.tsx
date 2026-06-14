@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { TypewriterText } from '@/components/TypewriterText'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -7,9 +8,7 @@ export default function NotFound() {
   return (
     <main className="grain relative flex min-h-screen flex-col bg-bg text-text-primary">
       <nav className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
-        <Link href="/" className="font-display text-sm font-medium uppercase tracking-widest text-accent-cream">
-          Kawin
-        </Link>
+        <TypewriterText />
         <div className="flex items-center gap-6">
           <span className="font-display text-xs uppercase tracking-widest text-text-muted">
             404

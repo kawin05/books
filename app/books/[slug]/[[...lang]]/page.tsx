@@ -7,6 +7,7 @@ import { LanguageLink } from '@/components/LanguageLink'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { FullscreenButton } from '@/components/FullscreenButton'
+import { TypewriterText } from '@/components/TypewriterText'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -75,15 +76,7 @@ export default async function BookPage({ params }: BookPageProps) {
   return (
     <main className="grain relative min-h-screen overflow-hidden">
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({ variant: 'ghost', size: 'sm' }),
-            'px-0 font-display text-[11px] uppercase tracking-[0.28em] text-accent-cream hover:bg-transparent hover:text-accent-cream/70'
-          )}
-        >
-          Kawin Books
-        </Link>
+        <TypewriterText />
         <div className="flex items-center gap-6">
           {hasOtherLang && (
             <LanguageLink
