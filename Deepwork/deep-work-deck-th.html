@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work — คู่มือสู่ความสำเร็จ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   VIEWPORT-BASE.CSS — MANDATORY FIXED STAGE
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1A1C20; }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: #1A1C20; }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: #1A1C20; }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: #1A1C20; }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+@media print {
+  html,body { width:1920px;height:auto;overflow:visible;background:#1A1C20; }
+  .deck-viewport { position:static;overflow:visible;background:#1A1C20; }
+  .deck-stage { position:static;width:auto;height:auto;transform:none!important;background:none; }
+  .slide { position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always; }
+  .slide:last-child { break-after:auto;page-break-after:auto; }
+  .deck-controls { display:none!important; }
+}
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:0.01ms!important;transition-duration:0.2s!important; } }
+
+/* ===========================================
+   THEME: FORGE
+   =========================================== */
+:root {
+  --bg-dark: #1A1C20;
+  --bg-surface: #22252A;
+  --bg-card: #26292F;
+  --accent-rust: #C85D4E;
+  --accent-amber: #E8B85C;
+  --accent-teal: #4A9E9E;
+  --text-primary: #F0EBE0;
+  --text-secondary: rgba(240,235,224,0.7);
+  --text-muted: rgba(240,235,224,0.4);
+  --border-subtle: rgba(240,235,224,0.06);
+  --accent-rust-faint: rgba(200,93,78,0.12);
+  --accent-amber-faint: rgba(232,184,92,0.12);
+  --font-display: 'Kanit', sans-serif;
+  --font-body: 'Lexend', sans-serif;
+  --title-size: 112px;
+  --section-size: 50px;
+  --heading-size: 28px;
+  --body-size: 21px;
+  --small-size: 17px;
+  --slide-padding: 120px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.slide { background: linear-gradient(165deg, var(--bg-dark) 0%, #131418 100%); }
+
+.atmo-glow {
+  position: absolute; top: -300px; right: -200px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,93,78,0.05) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+.slide-content {
+  position: absolute; left: var(--slide-padding); top: 0;
+  width: calc(1920px - var(--slide-padding) * 2); height: 1080px;
+  z-index: 1; display: flex; flex-direction: column; justify-content: center;
+}
+
+.slide-content::before {
+  content: ''; position: absolute; left: -40px; top: 50%;
+  transform: translateY(-50%); width: 4px; height: 50%;
+  background: linear-gradient(180deg, var(--accent-rust), var(--accent-amber));
+  border-radius: 2px; opacity: 0.4;
+}
+
+.title-slide::before { display: none; }
+.title-slide .slide-content::before { display: none; }
+.title-slide .slide-content { justify-content: center; padding-top: 0; }
+
+h1 { font-family: var(--font-display); font-weight: 700; font-size: var(--title-size); line-height: 1.05; color: var(--text-primary); }
+h1 .highlight { color: var(--accent-amber); font-style: italic; }
+
+.section-title { font-family: var(--font-display); font-weight: 600; font-size: var(--section-size); line-height: 1.08; color: var(--text-primary); margin-bottom: 8px; }
+.section-title .highlight { color: var(--accent-amber); font-style: italic; }
+.section-number { font-family: var(--font-display); font-size: 14px; font-weight: 500; color: var(--accent-rust); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.body-text { font-family: var(--font-body); font-size: var(--body-size); font-weight: 300; line-height: 1.55; color: var(--text-secondary); }
+.body-text strong { font-weight: 600; color: var(--text-primary); }
+
+.card { background: var(--bg-card); border-radius: 4px; padding: 20px 24px; border-left: 3px solid var(--border-subtle); }
+.card.rust { border-left-color: var(--accent-rust); }
+.card.amber { border-left-color: var(--accent-amber); }
+.card.teal { border-left-color: var(--accent-teal); }
+.card h4 { font-family: var(--font-display); font-weight: 500; font-size: 21px; color: var(--text-primary); margin-bottom: 6px; }
+.card p { font-family: var(--font-body); font-size: 17px; font-weight: 300; line-height: 1.5; color: var(--text-secondary); }
+
+.accent-line { width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent-rust), var(--accent-amber)); margin: 12px 0 20px; border: none; }
+.accent-line-full { width: 100%; height: 1px; background: var(--border-subtle); margin: 16px 0; border: none; }
+
+.num-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px; }
+.num-badge { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-rust-faint); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; font-size: 17px; color: var(--accent-rust); }
+.num-badge.amber { background: var(--accent-amber-faint); color: var(--accent-amber); }
+.num-content h4 { font-family: var(--font-display); font-weight: 500; font-size: 20px; color: var(--text-primary); margin-bottom: 2px; }
+.num-content p { font-family: var(--font-body); font-size: 17px; font-weight: 300; line-height: 1.45; color: var(--text-secondary); }
+
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 10px; }
+
+.table-wrap { margin-top: 10px; width: 100%; }
+.table-wrap table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 17px; }
+.table-wrap th { font-family: var(--font-display); font-weight: 500; font-size: 19px; text-align: left; padding: 9px 14px; color: var(--accent-amber); border-bottom: 2px solid var(--accent-amber-faint); background: var(--accent-rust-faint); }
+.table-wrap td { padding: 8px 14px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); line-height: 1.4; font-weight: 300; }
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap td:first-child { font-weight: 500; color: var(--text-primary); }
+
+.insight-box { background: linear-gradient(135deg, var(--accent-rust-faint), var(--accent-amber-faint)); padding: 16px 22px 16px 55px; border-radius: 4px; margin: 10px 0; position: relative; }
+.insight-box::before { content: '\201C'; position: absolute; left: 16px; top: 10px; font-family: var(--font-display); font-size: 36px; line-height: 1; color: var(--accent-amber); opacity: 0.5; }
+.insight-box p { font-family: var(--font-body); font-size: 18px; font-weight: 300; line-height: 1.5; color: var(--text-primary); font-style: italic; }
+
+.closing-text { text-align: center; }
+.closing-text .large-quote { font-family: var(--font-display); font-size: 50px; font-weight: 600; line-height: 1.2; color: var(--text-primary); max-width: 1400px; margin: 0 auto 24px; }
+.closing-text .large-quote .highlight { color: var(--accent-amber); font-style: italic; }
+
+.page-num { position: absolute; bottom: 36px; right: var(--slide-padding); font-family: var(--font-body); font-size: 14px; color: var(--text-muted); letter-spacing: 1px; z-index: 2; }
+.page-num .num { font-family: var(--font-display); font-weight: 500; font-size: 16px; color: var(--text-secondary); }
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal:nth-child(2) { transition-delay: 0.12s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal:nth-child(4) { transition-delay: 0.28s; }
+.reveal:nth-child(5) { transition-delay: 0.36s; }
+.reveal:nth-child(6) { transition-delay: 0.44s; }
+
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; display: flex; gap: 12px; align-items: center; font-family: var(--font-body); }
+.deck-controls button { background: rgba(240,235,224,0.08); border: 1px solid rgba(240,235,224,0.12); color: var(--text-secondary); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; transition: background 0.2s; display: flex; align-items: center; justify-content: center; }
+.deck-controls button:hover { background: var(--accent-rust-faint); border-color: var(--accent-rust); color: var(--accent-rust); }
+.deck-controls .counter { font-size: 15px; color: var(--text-muted); min-width: 60px; text-align: center; }
+
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle { position: fixed; top: 12px; left: 12px; z-index: 10001; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle:hover { border-color: var(--accent-rust); color: var(--accent-rust); }
+.editor-indicator { position: fixed; top: 12px; right: 12px; z-index: 10001; background: var(--accent-rust); color: #fff; padding: 6px 14px; border-radius: 4px; font-family: var(--font-body); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.editor-indicator.active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide title-slide active">
+      <div class="atmo-glow"></div>
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="reveal" style="font-family:var(--font-display);font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-rust);font-weight:400;margin-bottom:16px;">สรุปหนังสือ</div>
+        <h1 class="reveal">Deep <span class="highlight">Work</span></h1>
+        <div class="reveal" style="width:60px;height:3px;background:linear-gradient(90deg,var(--accent-rust),var(--accent-amber));margin:12px auto 16px;"></div>
+        <p class="reveal" style="font-family:var(--font-body);font-size:28px;font-weight:300;line-height:1.4;color:var(--text-secondary);max-width:800px;margin:0 auto 24px;">กฎแห่งความสำเร็จในโลก<br>ที่เต็มไปด้วยสิ่งรบกวน</p>
+        <p class="reveal" style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--text-muted);">Cal Newport</p>
+      </div>
+      <div class="page-num"><span class="num">1</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 2: WHAT IS DEEP WORK -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">บทนำ</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">คืออะไร?</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div class="card rust">
+            <h4>🧠 งานเชิงลึก (Deep Work)</h4>
+            <p>การทำงานที่ใช้สมาธิอย่างเต็มที่ ไม่มีสิ่งรบกวน และดึงศักยภาพทางความคิดออกมาได้สูงสุด สร้างคุณค่าใหม่ พัฒนาทักษะ และเลียนแบบได้ยาก</p>
+          </div>
+          <div class="card" style="border-left-color:var(--text-muted);">
+            <h4>📨 งานตื้น (Shallow Work)</h4>
+            <p>งานที่ไม่ต้องใช้ความคิด เช่น ตอบอีเมล ประชุม ไถโซเชียล สร้างคุณค่าได้น้อย และให้คนอื่นทำแทนได้ง่าย</p>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p><strong>สมมติฐานหลัก:</strong> ความสามารถในการทำ Deep Work กำลังหายากขึ้น <em>และ</em> มีมูลค่าสูงขึ้น คนที่ฝึกทักษะนี้ได้จะได้เปรียบอย่างมากในระบบเศรษฐกิจปัจจุบัน</p>
+        </div>
+        <div class="reveal" style="background:var(--accent-rust-faint);padding:14px 22px;border-radius:4px;border-left:3px solid var(--accent-rust);margin-top:4px;">
+          <p style="font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--accent-amber);">ผลงานคุณภาพสูง = เวลาที่ใช้ × ความเข้มข้นของสมาธิ</p>
+          <p style="font-family:var(--font-body);font-size:16px;font-weight:300;color:var(--text-secondary);">เพิ่มสมาธิเป็น 2 เท่า คุ้มกว่าการเพิ่มเวลาเป็น 2 เท่า และไม่หมดไฟ</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">2</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 3: DEEP WORK IS VALUABLE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 1 · มุมมองทางเศรษฐกิจ</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">มีคุณค่ามาก</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;">โลกกำลังเข้าสู่ <strong>ยุคเปลี่ยนผ่านครั้งใหญ่</strong> — เทคโนโลยีพัฒนาเร็วกว่าทักษะของคน สามกลุ่มที่จะเติบโต:</p>
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🔧 แรงงานทักษะสูง</h4>
+            <p>ทำงานร่วมกับ AI และเครื่องจักรอัจฉริยะ Nate Silver ใช้ SQL และโมเดลซับซ้อนสร้างคำทำนายเลือกตั้งที่แม่นยำ</p>
+          </div>
+          <div class="card amber">
+            <h4>⭐ ซูเปอร์สตาร์</h4>
+            <p>เทคโนโลยีเปิดตลาดแข่งขันระดับโลก คนเก่งที่สุดได้ผลตอบแทนมหาศาล David Heinemeier Hansson สร้าง Ruby on Rails ด้วยสมาธิล้วนๆ</p>
+          </div>
+          <div class="card teal">
+            <h4>💰 เจ้าของทุน</h4>
+            <p>เมื่อเครื่องจักรทดแทนแรงงานมากขึ้น เงินก็ไหลไปสู่ผู้ที่มีทุนในการลงทุนเทคโนโลยี</p>
+          </div>
+        </div>
+        <div class="reveal" style="margin-top:6px;">
+          <p class="body-text" style="font-size:19px;"><strong>สองความสามารถหลักที่ต้องมี:</strong> (1) เรียนรู้สิ่งยากได้เร็ว (2) สร้างผลงานระดับสูง — ทั้งสองอย่างต้องอาศัย Deep Work</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">3</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 4: MYELINATION & ATTENTION RESIDUE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">วิทยาศาสตร์ของการเรียนรู้เชิงลึก</div>
+        <h2 class="section-title reveal">ไมอีลิน &amp; <span class="highlight">เศษสมาธิที่ค้าง</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>🧬 ไมอีลิน (Myelin)</h4>
+              <p>ชั้นไขมันที่หุ้มเส้นประสาท ทำให้สัญญาณประสาทส่งเร็วขึ้น เมื่อฝึกทักษะด้วยสมาธิสูง วงจรประสาทนั้นจะถูกกระตุ้นซ้ำและสร้างไมอีลินมากขึ้น ทักษะจึง "ฝังแน่น"</p>
+              <p style="margin-top:8px;"><strong>สิ่งรบกวนฆ่าการเรียนรู้:</strong> ถ้าเปิด Facebook ขณะเรียน สมองจะกระตุ้นหลายวงจรพร้อมกัน ไม่สามารถเสริมวงจรที่ต้องการได้</p>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p>"ถ้าต้องการเรียนรู้เรื่องยากให้เร็ว คุณต้องมีสมาธิอย่างเข้มข้นโดยไม่มีสิ่งรบกวน" — Cal Newport</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🔄 เศษสมาธิที่ค้าง (Attention Residue)</h4>
+              <p>เมื่อสลับจากงาน A ไปงาน B ความสนใจส่วนหนึ่งจะยัง "ตกค้าง" กับงาน A ทำให้ประสิทธิภาพของงาน B ลดลง</p>
+              <p style="margin-top:8px;"><strong>แย่ลงเมื่อ:</strong> งาน A ยังไม่จบ หรือถูกขัดจังหวะกลางคัน</p>
+              <div class="insight-box" style="margin-top:8px;background:var(--accent-amber-faint);">
+                <p><strong>Adam Grant รวมงานคิดหนัก</strong> ไว้เป็นช่วงยาวๆ ไม่ถูกรบกวน สอนเทอมเดียว วิจัยเทอมถัดไป และแยกตัวเอง 3-4 วันแบบไร้สิ่งรบกวน</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">4</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 5: DEEP WORK IS RARE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 2 · ทำไม Deep Work หายาก</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">กลายเป็นสิ่งหายาก</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust">
+              <h4>⚫ หลุมดำแห่งการวัดผล</h4>
+              <p>การวัดผลกระทบของสิ่งรบกวนที่มีต่อผลงานทำได้ยากมาก <strong>Tom Cochran:</strong> CTO ของ Atlantic Media วัดต้นทุนอีเมล — $1M+/ปี — แต่ก็ยังบอกไม่ได้ว่าคุ้มค่าหรือไม่</p>
+            </div>
+            <div class="card" style="margin-top:8px;">
+              <h4>📉 หลักการต้านทานน้อยที่สุด</h4>
+              <p>เมื่อไม่มีข้อมูลชัดเจน คนมักเลือกสิ่งที่ง่ายที่สุดในตอนนั้น สามรูปแบบ:</p>
+              <ul style="font-family:var(--font-body);font-size:17px;font-weight:300;color:var(--text-secondary);margin-top:8px;padding-left:18px;">
+                <li><strong>ออนไลน์ตลอดเวลา</strong> — พร้อมตอบทุกนาที</li>
+                <li><strong>ประชุมบ่อยเกิน</strong> — เหมือนมีงานแต่ไม่เดิน</li>
+                <li><strong>ส่งต่องาน "ช่วยดูหน่อย"</strong> — คนส่งสบาย คนรับเสียเวลา</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🏃 ความยุ่งแทนความสำเร็จ</h4>
+              <p>เมื่อไม่มีตัววัดผลชัดเจน คนทำงานความรู้ใช้ "ความดูยุ่ง" เป็นหลักฐานว่ามีคุณค่า — ตอบอีเมลทั้งคืน, ประชุมทั้งวัน, ตอบแชตทันที</p>
+            </div>
+            <div class="card teal" style="margin-top:8px;">
+              <h4>🌐 วัฒนธรรมบูชาเทคโนโลยี</h4>
+              <p>หลายสังคมเชื่อว่าเทคโนโลยีใหม่ดีเสมอ Deep Work สร้างบนคุณค่าแบบดั้งเดิม — ความประณีต ความเชี่ยวชาญ — ซึ่งมักแพ้กระแส "ใหม่กว่า ออนไลน์กว่า"</p>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p><strong>ข่าวดี:</strong> การที่ Deep Work หายากคือข้อได้เปรียบของคุณ ยิ่งคนอื่นทำ Deep Work ไม่เป็น คุณยิ่งมีค่ามากขึ้น</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">5</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 6: DEEP WORK IS MEANINGFUL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 3 · มุมมองด้านมนุษย์</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">ทำให้ชีวิตมีความหมาย</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🧠 ประสาทวิทยา</h4>
+            <p><strong>"คุณคือผลรวมของสิ่งที่คุณใส่ใจ"</strong> — Winifred Gallagher</p>
+            <p>สมองสร้างโลกจากสิ่งที่เราโฟกัส ไม่ใช่จากสถานการณ์ ถ้าทั้งวันจมกับงานตื้น ชีวิตก็เต็มไปด้วยความเครียดและเรื่องจุกจิก</p>
+          </div>
+          <div class="card amber">
+            <h4>🌊 จิตวิทยา (Flow)</h4>
+            <p>Csikszentmihalyi พบว่า คนมีความสุขตอน <strong>ทำงาน</strong> มากกว่าตอนพักผ่อน Deep Work คือเครื่องผลิต Flow ที่เชื่อถือได้ ยิ่งมี Flow มาก ชีวิตก็ยิ่งพึงพอใจ</p>
+          </div>
+          <div class="card teal">
+            <h4>⚒️ ปรัชญา (งานฝีมือ)</h4>
+            <p>"หน้าที่ของช่างฝีมือไม่ใช่สร้างความหมาย แต่ฝึกให้มองเห็นความหมายที่มีอยู่แล้ว" — Dreyfus &amp; Kelly</p>
+            <p>ทักษะที่สูงส่ง ไม่ว่าจะทางกายหรือทางความคิด สร้างความศักดิ์สิทธิ์ในงานได้ ไม่ต้องมีอาชีพพิเศษ แค่มีวิธีทำงานที่พิเศษ</p>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p>มนุษย์เฟื่องฟูเมื่อทำงานลึก และอ่อนระโหยเมื่อทำงานตื้น</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">6</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 7: 4 PHILOSOPHIES -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 1</div>
+        <h2 class="section-title reveal">ทำงานให้ <span class="highlight">ลึกจริง</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">กำลังใจมีจำกัด อย่าพึ่งมัน จงสร้างระบบ เลือกปรัชญาที่เหมาะกับชีวิตคุณ:</p>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>แนวทาง</th><th>เหมาะกับใคร</th><th>วิธีการ</th></tr>
+            <tr>
+              <td>🏔️ Monastic</td>
+              <td>คนที่ควบคุมตารางได้ (นักเขียน นักวิจัย)</td>
+              <td>ตัดทุกอย่างที่ไม่ใช่งานลึก Knuth — ไม่มีอีเมลตั้งแต่ 1990</td>
+            </tr>
+            <tr>
+              <td>🔄 Bimodal</td>
+              <td>คนที่ต้องสลับงานลึกกับงานร่วมมือ</td>
+              <td>วันหรือสัปดาห์สำหรับงานลึกสลับกับงานตื้น อย่าง Jung</td>
+            </tr>
+            <tr>
+              <td>🎵 Rhythmic</td>
+              <td>คนมีงานประจำ มีประชุม (พนักงานทั่วไป)</td>
+              <td>เวลาเดิม สถานที่เดิมทุกวัน Hemingway — เช้าถึงเที่ยง</td>
+            </tr>
+            <tr>
+              <td>📰 Journalistic</td>
+              <td>ตารางไม่แน่นอน (สตาร์ทอัพ ผู้ปกครอง)</td>
+              <td>ใช้ทุกช่วงว่างเข้าสู่โหมดลึก ควรฝึกแนวอื่นก่อน</td>
+            </tr>
+          </table>
+        </div>
+        <div class="reveal" style="display:flex;gap:12px;margin-top:8px;">
+          <div class="card" style="flex:1;padding:12px 18px;">
+            <p style="font-family:var(--font-body);font-size:16px;color:var(--text-secondary);"><strong style="color:var(--accent-amber);">วิธีเลือก:</strong> วันละ ≥4 ชม. ไม่ถูกรบกวน? → <strong>Monastic</strong> · เป็นช่วงวันๆ ได้? → <strong>Bimodal</strong> · เวลาเดิมทุกวันได้? → <strong>Rhythmic</strong> · ไม่มีเลย? → <strong>Journalistic</strong> (แล้วรีบจัดตาราง!)</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">7</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 8: RITUALIZE & 4DX -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 1 (ต่อ)</div>
+        <h2 class="section-title reveal">พิธีกรรม &amp; <span class="highlight">4 หลักปฏิบัติ</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust" style="margin-bottom:10px;">
+              <h4>🎯 สร้างพิธีกรรมก่อนเริ่ม</h4>
+              <p><strong>การลงทุนครั้งใหญ่</strong> ช่วยเปลี่ยนผ่านสู่โหมดลึก J.K. Rowling จองโรงแรมเขียน Harry Potter Bill Gates มี "Think Weeks" ในกระท่อม</p>
+              <p style="margin-top:8px;"><strong>3 เรื่องที่ต้องรู้ก่อนเริ่ม:</strong> ที่ไหน, นานแค่ไหน (~90 นาทีคือดี), และจะทำอะไรให้เสร็จ</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber" style="margin-bottom:10px;">
+              <h4>📊 4 หลักปฏิบัติ (4DX)</h4>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p style="font-size:16px;"><strong>โฟกัสสิ่งที่สำคัญจริงๆ</strong> — เลือกเป้าหมายเดียวที่ท้าทาย</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p style="font-size:16px;"><strong>วัดสิ่งที่ควบคุมได้</strong> — ติดตามชั่วโมง Deep Work ไม่ใช่รอผลลัพธ์</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p style="font-size:16px;"><strong>ทำคะแนนให้เห็น</strong> — ตารางติดผนัง มีสถิติชัดเจน</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">4</div>
+                <div class="num-content"><p style="font-size:16px;"><strong>ทบทวนสม่ำเสมอ</strong> — รีวิวทุกสัปดาห์ ดูคะแนน ปรับแผน</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p>"อย่าพยายามปฏิเสธสิ่งรบกวนเล็กๆ แต่จงตอบรับกับเป้าหมายที่ทำให้คุณหลงใหลอย่างรุนแรง" — David Brooks</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">8</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 9: SHUTDOWN RITUAL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 1 (ต่อ)</div>
+        <h2 class="section-title reveal">พิธี <span class="highlight">ปิดวันทำงาน</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;">"การพักผ่อนสำคัญต่อสมองพอๆ กับวิตามินดีต่อร่างกาย" — Tim Kreider</p>
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust">
+              <h4>⏸️ ทำไมเวลาว่างถึงสำคัญ</h4>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p><strong>สมองใต้สำนึกทำงาน</strong> — จิตใต้สำนึกแก้ปัญหาซับซ้อนได้ดีกว่า</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p><strong>ฟื้นฟูสมาธิ</strong> — เดินเล่น ทำอาหาร คุยเล่น ช่วยคืนพลังสมาธิ</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p><strong>ตอนเย็นทำงานตื้น</strong> — คนเก่งที่สุดทำ Deep Work ได้แค่วันละ ~4 ชม. ชั่วโมงที่เกินมาคุ้มค่าน้อย</p></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🌅 พิธีปิดวัน 5 นาที</h4>
+              <p style="margin-bottom:8px;">เอาชนะ <strong>Zeigarnik Effect</strong> — เสียงหึ่งในสมองจากงานไม่เสร็จ เมื่อมีแผน写在纸上 สมองจะปล่อยวาง</p>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p>ทบทวนงานที่ค้างทั้งหมด</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p>เขียนแผนสำหรับพรุ่งนี้</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p>ประกาศ "Shutdown Complete" — ปิดงานในใจ</p></div>
+              </div>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p>ใช้เวลา ~2 สัปดาห์ถึงเป็นนิสัย หลังจากนั้นการข้ามพิธีนี้จะรู้สึกเหมือนลืมกุญแจบ้าน</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">9</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 10: EMBRACE BOREDOM -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 2</div>
+        <h2 class="section-title reveal">ฝึกให้ <span class="highlight">ทนความเบื่อได้</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">ถ้าคุณทนอยู่เฉยๆ สองสามนาทีโดยไม่หยิบมือถือไม่ได้ สมองจะไม่มีวันชินกับ Deep Work ฝึกกล้ามเนื้อสมาธิแยกจากความสามารถในการทำงาน</p>
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🧘 Productive Meditation</h4>
+            <p><strong>เมื่อไหร่:</strong> เดิน ขับรถ อาบน้ำ — กิจกรรมที่ไม่ต้องใช้สมองมาก</p>
+            <p><strong>วิธี:</strong> โฟกัสที่ปัญหาเดียว คิดอย่างมีระบบ ถ้าจิตลอยให้ดึงกลับนุ่มนวล</p>
+          </div>
+          <div class="card amber">
+            <h4>🏃 Roosevelt Dashes</h4>
+            <p><strong>ใช้เป็นครั้งคราว:</strong> ฝึกความทนทานของสมาธิ</p>
+            <p><strong>วิธี:</strong> เลือกงาน กำหนด deadline ครึ่งเวลาปกติ ทำงานแบบสปรินต์ — ไม่พัก ไม่เปลี่ยนงาน</p>
+          </div>
+          <div class="card teal">
+            <h4>📅 กำหนดเวลาใช้เน็ต</h4>
+            <p>บอกตัวเองว่า "จะไม่เล่น" ไม่เวิร์ก สิ่งที่เวิร์กคือ <strong>กำหนดเวลาที่แน่ชัด</strong> ว่าจะใช้ตอนไหน การมีข้อจำกัดคือตัวช่วยที่ยั่งยืน</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">10</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 11: QUIT SOCIAL MEDIA -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 3</div>
+        <h2 class="section-title reveal">เลิกใช้โซเชียล <span class="highlight">แบบไม่จำเป็น</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust">
+              <h4>⚠️ กับดัก "มีประโยชน์นิดหน่อยก็พอ"</h4>
+              <p>การใช้เครื่องมือเพราะมัน "มีข้อดีบ้าง" คือกับดักที่ทำให้เสียสมาธิ คำถามไม่ใช่ "มันช่วยไหม" แต่ "มันช่วยมากพอที่จะคุ้มกับสมาธิที่เสียไปไหม"</p>
+            </div>
+            <div class="card amber" style="margin-top:10px;">
+              <h4>🔨 แนวทางแบบช่างฝีมือ</h4>
+              <p>1. หา 2-3 กิจกรรมหลักที่ทำให้คุณสำเร็จ</p>
+              <p>2. ใช้เครื่องมือ <strong>ต่อเมื่อ</strong> ผลดีต่อกิจกรรมเหล่านั้นมากกว่าผลเสียต่อสมาธิ</p>
+            </div>
+          </div>
+          <div>
+            <div class="card teal">
+              <h4>📦 ทดลองเลิก 30 วัน</h4>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p>หยุดใช้ทุกแพลตฟอร์ม 30 วัน — ไม่ต้องประกาศ</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p>ครบ 30 วัน ถามว่า "ชีวิตดีขึ้น <em>ชัดเจน</em> ไหมถ้ามีมัน?"</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p>ถ้าไม่ → เลิกถาวร ถ้าใช่ → ใช้แบบจำกัด</p></div>
+              </div>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p><strong>กฎ 80/20:</strong> ผลลัพธ์ส่วนใหญ่มาจากสาเหตุส่วนน้อย โฟกัส Deep Work กับสิ่งสำคัญจริงๆ</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">11</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 12: DRAIN THE SHALLOWS -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 4</div>
+        <h2 class="section-title reveal">ระบาย <span class="highlight">งานตื้น</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust">
+              <h4>📋 Time Blocking</h4>
+              <p>เริ่มต้นวันด้วยการแบ่งเวลาทำงานเป็นช่วงๆ 30 นาที กำหนดหน้าที่แต่ละช่วง:</p>
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                <span style="background:var(--accent-rust-faint);color:var(--accent-rust);padding:3px 10px;border-radius:3px;font-family:var(--font-body);font-size:14px;">🟦 Deep</span>
+                <span style="background:var(--accent-amber-faint);color:var(--accent-amber);padding:3px 10px;border-radius:3px;font-family:var(--font-body);font-size:14px;">🟩 Shallow</span>
+                <span style="background:var(--border-subtle);color:var(--text-muted);padding:3px 10px;border-radius:3px;font-family:var(--font-body);font-size:14px;">🟧 Buffer</span>
+                <span style="background:var(--border-subtle);color:var(--text-muted);padding:3px 10px;border-radius:3px;font-family:var(--font-body);font-size:14px;">⬜ พัก</span>
+              </div>
+              <p style="margin-top:8px;"><strong>เป้าหมายไม่ใช่ความแข็งทื่อ — แต่คือความรอบคอบ</strong> ปรับเปลี่ยนได้ตลอด</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>⏰ กำหนดเวลาเลิกงาน</h4>
+              <p>ตั้งเวลาเลิกให้ชัด (เช่น 17:30 น.) และถือให้จริง ความจำกัดของเวลาจะบังคับให้คุณเลือกเฉพาะสิ่งสำคัญ งานตื้นถูกตัดออกก่อน</p>
+              <p style="margin-top:8px;"><strong>สวนทาง intuition:</strong> การจำกัดชั่วโมงทำงานทำให้มีประสิทธิภาพ <em>มากขึ้น</em> — ข้อจำกัดบังคับให้วางแผนดี</p>
+              <p style="margin-top:8px;">Newport และ Radhika Nagpal (อาจารย์哈佛) ได้ tenure ตรงเวลาด้วยการจำกัดชั่วโมงทำงานที่เคร่งครัด</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">12</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 13: SHALLOW BUDGET & EMAIL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">กฎข้อที่ 4 (ต่อ)</div>
+        <h2 class="section-title reveal">งบงานตื้น &amp; <span class="highlight">กฎการจัดการอีเมล</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:16px;">
+          <div>
+            <div class="card rust">
+              <h4>📊 งบประมาณงานตื้น</h4>
+              <p><strong>กฎตายตัว:</strong> งานตื้นต้อง ≤ <strong>30-50%</strong> ของเวลา</p>
+              <div class="table-wrap">
+                <table>
+                  <tr><th></th><th>% งานตื้น</th></tr>
+                  <tr><td>คนทำงานความรู้ทั่วไป</td><td>~60%</td></tr>
+                  <tr><td>เป้าหมาย (งานใช้ความคิด)</td><td>≤30%</td></tr>
+                  <tr><td>สูงสุด (งานประสานงาน)</td><td>50%</td></tr>
+                </table>
+              </div>
+              <p style="margin-top:8px;"><strong>สัญญาณเกินงบ:</strong> จบวันโดยไม่มี Deep Output · "ยุ่งแต่ไม่ productive" เกิน 3 วัน · ปฏิทินเต็มไปด้วย 30-min slots</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>✉️ กฎจัดการอีเมล</h4>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p><strong>เช็ก 2 รอบ/วัน</strong> (11.00 น. &amp; 16.00 น.) อย่าเริ่มวันด้วยอีเมล</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p><strong>ตอบช้าลง:</strong> 24 ชม. สำหรับภายใน, 48 ชม. สำหรับภายนอก</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p><strong>กับดัก CC:</strong> ถ้าแค่ CC ไม่มี action ให้เก็บหรือข้าม</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">4</div>
+                <div class="num-content"><p><strong>กับดัก "เดี๋ยวตอบ":</strong> ถ้าบอก "เดี๋ยวตอบ" แต่ไม่ลงระบบติดตาม = สร้าง cognitive leak</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">13</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 14: CHEATSHEET -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">สรุปใช้งานจริง</div>
+        <h2 class="section-title reveal">คู่มือปฏิบัติ <span class="highlight">แบบเร่งด่วน</span></h2>
+        <hr class="accent-line reveal">
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th style="width:180px;">อาการ</th><th style="width:180px;">สาเหตุ</th><th>วิธีแก้</th></tr>
+            <tr><td>อ่านแล้วไม่เข้าใจ</td><td>เศษสมาธิค้าง</td><td>พัก 10-15 นาทีระหว่างงาน</td></tr>
+            <tr><td>นั่งโต๊ะนานแต่ได้งานน้อย</td><td>มือถือ/เน็ต</td><td>Deep Block 90 นาที ปิดมือถือ</td></tr>
+            <tr><td>อีเมลไม่จบสักที</td><td>ตอบกระจัดกระจาย</td><td>รวมเวลาตอบเป็นช่วง</td></tr>
+            <tr><td>เปิดค้นข้อมูลเล็กน้อยระหว่างทำงาน</td><td>หลบงานยาก</td><td>Pomodoro 25/5 จนกว่าจะเริ่ม</td></tr>
+          </table>
+        </div>
+        <div class="reveal" style="display:flex;gap:12px;margin-top:8px;">
+          <div class="card" style="flex:1;padding:12px 18px;">
+            <h4 style="font-size:17px;">🛡️ พิธีปิดวัน</h4>
+            <p style="font-size:15px;">ทบทวนงาน → แผนพรุ่งนี้ → ปิดงานในใจ</p>
+          </div>
+          <div class="card" style="flex:1;padding:12px 18px;">
+            <h4 style="font-size:17px;">🔨 คำถามก่อนใช้เครื่องมือ</h4>
+            <p style="font-size:15px;">มันช่วยงานหลักมากพอจะคุ้มกับสมาธิที่เสียไปไหม?</p>
+          </div>
+          <div class="card" style="flex:1;padding:12px 18px;">
+            <h4 style="font-size:17px;">📊 งบ Deep Work</h4>
+            <p style="font-size:15px;">งานตื้น ≤30-50% กันเวลางานตื้นไว้ชัดเจน — ให้มันอยู่ในช่องว่าง ไม่ใช่กลับกัน</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">14</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 15: CLOSING -->
+    <section class="slide">
+      <div class="atmo-glow" style="top:-300px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(200,93,78,0.08) 0%,transparent 60%);"></div>
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="section-number reveal">บทสรุป</div>
+        <div class="closing-text">
+          <p class="reveal large-quote">
+            "Deep Work ไม่ใช่พรสวรรค์<br>แต่มันคือ <span class="highlight">ทักษะที่ฝึกได้</span>"
+          </p>
+          <hr class="accent-line reveal" style="margin:20px auto;">
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 16px;font-size:24px;">
+            รูปแบบการทำงานสมัยใหม่ถูกออกแบบมาให้ทำลายสมาธิ<br>
+            ปฏิทินของคุณคืออาวุธที่สำคัญที่สุด
+          </p>
+          <p class="reveal" style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--accent-amber);margin-top:20px;">
+            จงปกป้องเวลาทำงานเชิงลึก<br>
+            ด้วยความจริงจังแบบเดียวกับที่คุณปกป้องลูกค้าที่จ่ายเงิน
+          </p>
+          <div class="reveal" style="font-family:var(--font-body);font-size:18px;color:var(--text-muted);margin-top:36px;">
+            Cal Newport — <em>Deep Work</em>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">15</span> / 15</div>
+    </section>
+
+  </main>
+</div>
+
+<div class="deck-controls">
+  <button id="prevBtn" aria-label="Previous slide">←</button>
+  <span class="counter" id="slideCounter">1 / 15</span>
+  <button id="nextBtn" aria-label="Next slide">→</button>
+</div>
+
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="\u0e41\u0e01\u0e49\u0e44\u0e02 (E)">\u270f\ufe0f \u0e41\u0e01\u0e49\u0e44\u0e02</button>
+<div class="editor-indicator" id="editorIndicator">\u270f\ufe0f \u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02</div>
+
+<script>
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.currentSlide = 0;
+    this.totalSlides = this.slides.length;
+    this.stage = document.getElementById('deckStage');
+    this.isTransitioning = false;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+  setupStageScale() {
+    const scale = () => {
+      const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * f) / 2;
+      const y = (window.innerHeight - 1080 * f) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+  showSlide(index) {
+    if (this.isTransitioning) return;
+    this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1));
+    this.isTransitioning = true;
+    this.slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'visible');
+      if (i === this.currentSlide) { void slide.offsetWidth; slide.classList.add('active', 'visible'); }
+    });
+    const c = document.getElementById('slideCounter');
+    if (c) c.textContent = `${this.currentSlide + 1} / ${this.totalSlides}`;
+    setTimeout(() => { this.isTransitioning = false; }, 600);
+  }
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.getAttribute('contenteditable')) return;
+      switch(e.key) {
+        case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': e.preventDefault(); this.next(); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp': e.preventDefault(); this.prev(); break;
+        case 'Home': e.preventDefault(); this.showSlide(0); break;
+        case 'End': e.preventDefault(); this.showSlide(this.totalSlides - 1); break;
+      }
+    });
+  }
+  setupTouchNav() {
+    let sx = 0, sy = 0;
+    this.stage.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    this.stage.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (dx < 0) this.next(); else this.prev(); }
+    }, { passive: true });
+  }
+  setupWheelNav() {
+    let wt = false;
+    this.stage.addEventListener('wheel', (e) => {
+      if (wt || this.isTransitioning) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      wt = true;
+      if (e.deltaY > 0) this.next(); else this.prev();
+      setTimeout(() => { wt = false; }, 800);
+    }, { passive: true });
+  }
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+  }
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+}
+
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.editToggle = document.getElementById('editToggle');
+    this.editorIndicator = document.getElementById('editorIndicator');
+    this.setupHotzone();
+    this.setupKeyboardShortcut();
+    this.setupSaveShortcut();
+  }
+  setupHotzone() {
+    const hz = document.getElementById('editHotzone'), et = this.editToggle;
+    let ht = null;
+    hz.addEventListener('mouseenter', () => { clearTimeout(ht); et.classList.add('show'); });
+    hz.addEventListener('mouseleave', () => { ht = setTimeout(() => { if (!this.isActive) et.classList.remove('show'); }, 400); });
+    et.addEventListener('mouseenter', () => { clearTimeout(ht); });
+    et.addEventListener('mouseleave', () => { ht = setTimeout(() => { if (!this.isActive) et.classList.remove('show'); }, 400); });
+    hz.addEventListener('click', () => this.toggleEditMode());
+    et.addEventListener('click', () => this.toggleEditMode());
+  }
+  setupKeyboardShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') this.toggleEditMode();
+    });
+  }
+  setupSaveShortcut() {
+    document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 's' && this.isActive) { e.preventDefault(); this.save(); } });
+  }
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    if (this.isActive) this.enableEditing(); else this.disableEditing();
+  }
+  enableEditing() {
+    this.editToggle.classList.add('active', 'show');
+    this.editorIndicator.classList.add('active');
+    this.editToggle.textContent = '\U0001f512 \u0e25\u0e47\u0e2d\u0e01';
+    document.querySelectorAll('.slide .body-text, .slide h4, .slide p, .slide .section-title, .slide .section-number, .slide .large-quote').forEach(el => {
+      if (el.closest('.num-badge') || el.closest('.deck-controls')) return;
+      el.setAttribute('contenteditable', 'true');
+      el.style.outline = '1px dashed rgba(200,93,78,0.3)';
+      el.style.cursor = 'text';
+      el.style.borderRadius = '2px';
+      el.style.padding = '2px 4px';
+    });
+  }
+  disableEditing() {
+    this.editToggle.classList.remove('active');
+    this.editorIndicator.classList.remove('active');
+    this.editToggle.textContent = '\u270f\ufe0f \u0e41\u0e01\u0e49\u0e44\u0e02';
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = ''; el.style.cursor = ''; el.style.padding = ''; el.style.borderRadius = '';
+    });
+  }
+  save() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'deep-work-deck-th.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.editorIndicator.textContent = '\U0001f4be \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e41\u0e25\u0e49\u0e27!';
+    setTimeout(() => { this.editorIndicator.textContent = '\u270f\ufe0f \u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02'; }, 1500);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.deck = new SlidePresentation();
+  window.editor = new InlineEditor();
+});
+</script>
+</body>
+</html>
