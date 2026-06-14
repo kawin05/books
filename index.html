@@ -4,48 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawin's Books</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&family=Lexend:wght@300&display=swap" rel="stylesheet">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Lexend', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
-      background: #111;
-      color: #eee;
+      background: linear-gradient(165deg, #1A1C20 0%, #131418 100%);
+      color: #F0EBE0;
     }
-    .cards {
+    .atmo-glow {
+      position: fixed;
+      top: -300px; right: -200px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,93,78,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    main {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    h1 {
+      font-family: 'Kanit', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.15em;
+      background: linear-gradient(135deg, #F0EBE0 30%, #C85D4E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-weight: 300;
+      color: rgba(240,235,224,0.5);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+    }
+    .books {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
       justify-content: center;
     }
     a {
-      display: block;
-      padding: 2rem 3rem;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 220px;
+      height: 180px;
+      background: #22252A;
+      border: 1px solid rgba(240,235,224,0.06);
+      border-radius: 10px;
       text-decoration: none;
-      color: #fff;
-      font-size: 1.5rem;
-      transition: border-color 0.2s;
+      transition: border-color 0.3s, transform 0.3s;
     }
-    a:hover { border-color: #666; }
-    .sub { display: block; font-size: 1rem; color: #888; margin-top: 0.3rem; }
+    a:hover {
+      border-color: rgba(200,93,78,0.4);
+      transform: translateY(-3px);
+    }
+    .book-title {
+      font-family: 'Kanit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #F0EBE0;
+      margin-bottom: 0.3rem;
+    }
+    .book-lang {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: rgba(240,235,224,0.4);
+    }
+    .book-icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
   </style>
 </head>
 <body>
-  <div class="cards">
-    <a href="Deepwork/deep-work-deck.html">
-      Deep Work
-      <span class="sub">English version</span>
-    </a>
-    <a href="Deepwork/deep-work-deck-th.html">
-      Deep Work
-      <span class="sub">ภาษาไทย</span>
-    </a>
-  </div>
+  <div class="atmo-glow"></div>
+  <main>
+    <h1>Deep Work</h1>
+    <p class="tagline">Cal Newport</p>
+    <div class="books">
+      <a href="Deepwork/deep-work-deck.html">
+        <span class="book-icon">📖</span>
+        <span class="book-title">English</span>
+        <span class="book-lang">Presentation deck</span>
+      </a>
+      <a href="Deepwork/deep-work-deck-th.html">
+        <span class="book-icon">📖</span>
+        <span class="book-title">ภาษาไทย</span>
+        <span class="book-lang">สไลด์นำเสนอ</span>
+      </a>
+    </div>
+  </main>
 </body>
 </html>
