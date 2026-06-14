@@ -105,7 +105,7 @@ export default async function BookPage({ params }: BookPageProps) {
             </ScrollReveal>
 
             <ScrollReveal delay={0.15} as="h1">
-              <span className="block max-w-5xl font-display text-[clamp(4.2rem,11vw,12rem)] font-light uppercase leading-[0.82] tracking-normal text-text-primary">
+              <span className="block font-display text-[clamp(3.2rem,8vw,9rem)] font-light uppercase leading-[0.85] tracking-normal text-text-primary lg:max-w-[90%]">
                 {frontmatter.title}
               </span>
             </ScrollReveal>
