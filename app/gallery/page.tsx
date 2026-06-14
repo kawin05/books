@@ -17,6 +17,9 @@ const photos = [
   { src: '/library-abbey.jpg', alt: 'Baroque Abbey Library of Saint Gallen with ornate ceiling' },
   { src: '/library-morgan.jpg', alt: 'Morgan Library Museum New York grand hall' },
   { src: '/library-sharjah.jpg', alt: 'Sharjah House of Wisdom modern floating library' },
+  { src: '/library-ireland.jpg', alt: 'Historic long library hall in Ireland with arched ceiling and bookshelves' },
+  { src: '/library-istock1.jpg', alt: 'Grand circular library with towering shelves and skylight' },
+  { src: '/library-istock2.jpg', alt: 'Ornate classical library with wooden galleries and arched windows' },
 ]
 
 export default function GalleryPage() {
