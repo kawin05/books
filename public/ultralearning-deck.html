@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultralearning — A Teaching Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,500;1,600;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   VIEWPORT-BASE.CSS — MANDATORY FIXED STAGE
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #faf9f7; }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: #faf9f7; }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: #faf9f7; }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: #faf9f7; }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+@media print {
+  html,body { width:1920px;height:auto;overflow:visible;background:#faf9f7; }
+  .deck-viewport { position:static;overflow:visible;background:#faf9f7; }
+  .deck-stage { position:static;width:auto;height:auto;transform:none!important;background:none; }
+  .slide { position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always; }
+  .slide:last-child { break-after:auto;page-break-after:auto; }
+  .deck-controls { display:none!important; }
+}
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:0.01ms!important;transition-duration:0.2s!important; } }
+
+/* ===========================================
+   THEME: PAPER & INK
+   =========================================== */
+:root {
+  --bg-cream: #faf9f7;
+  --bg-page: #f5f2ed;
+  --bg-card: #f7f5f0;
+  --bg-card-alt: #f0ede6;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #8a8580;
+  --accent-crimson: #c41e3a;
+  --accent-gold: #d4a017;
+  --accent-teal: #3A7A7A;
+  --accent-faint: rgba(196, 30, 58, 0.07);
+  --accent-gold-faint: rgba(212, 160, 23, 0.12);
+  --rule-color: #d4c9b8;
+  --rule-light: #e2d9cc;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Source Serif 4', serif;
+  --title-size: 104px;
+  --section-size: 56px;
+  --heading-size: 32px;
+  --body-size: 22px;
+  --small-size: 18px;
+  --slide-padding: 100px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================================
+   BASE STYLES
+   =========================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* === PAGE TEXTURE (subtle ruled lines) === */
+.slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(212, 201, 184, 0.08) 28px, rgba(212, 201, 184, 0.08) 29px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === SLIDE CONTENT WRAPPER === */
+.slide-content {
+  position: absolute;
+  left: var(--slide-padding);
+  top: 0;
+  width: calc(1920px - var(--slide-padding) * 2);
+  height: 1080px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* === CRIMSON ACCENT BAR (left edge) === */
+.slide-content::before {
+  content: '';
+  position: absolute;
+  left: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background: linear-gradient(180deg, var(--accent-crimson), var(--accent-gold));
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+/* === TITLE SLIDE (no page texture or accent bar) === */
+.title-slide::before { display: none; }
+.title-slide .slide-content::before { display: none; }
+.title-slide .slide-content { justify-content: flex-start; padding-top: 180px; }
+
+/* === TYPOGRAPHY === */
+h1 { font-family: var(--font-display); font-weight: 700; font-size: var(--title-size); line-height: 1.05; color: var(--text-primary); }
+h1 em { font-style: italic; color: var(--accent-crimson); }
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--section-size);
+  line-height: 1.08;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.section-number {
+  font-family: var(--font-display);
+  font-size: var(--small-size);
+  font-weight: 600;
+  color: var(--accent-crimson);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--heading-size);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.heading-sm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.small-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* === CARDS === */
+.card {
+  background: var(--bg-card);
+  border-radius: 2px;
+  padding: 24px 28px;
+  border-left: 3px solid var(--rule-color);
+}
+.card.accent { border-left-color: var(--accent-crimson); }
+.card.gold { border-left-color: var(--accent-gold); }
+.card.teal { border-left-color: var(--accent-teal); }
+
+.card h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.card p {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* === DECORATIVE ELEMENTS === */
+.rule-short {
+  width: 80px;
+  height: 2px;
+  background: var(--accent-crimson);
+  margin: 16px 0 24px;
+  border: none;
+}
+
+.rule-long {
+  width: 100%;
+  height: 1px;
+  background: var(--rule-light);
+  margin: 20px 0;
+  border: none;
+}
+
+/* === NUMBERED ITEMS === */
+.num-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.num-badge {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--accent-crimson);
+}
+.num-badge.gold { background: var(--accent-gold-faint); color: var(--accent-gold); }
+.num-content h4 { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--text-primary); margin-bottom: 2px; }
+.num-content p { font-family: var(--font-body); font-size: 18px; line-height: 1.45; color: var(--text-secondary); }
+
+/* === GRID LAYOUTS === */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* === TABLES === */
+.table-wrap {
+  margin-top: 16px;
+  width: 100%;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+.table-wrap th {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  text-align: left;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--rule-color);
+  background: var(--accent-faint);
+}
+.table-wrap td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--rule-light);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap td:first-child { font-weight: 600; color: var(--text-primary); }
+
+/* === CHAPTER INDEX TABLE (on overview slide) === */
+.index-table td { font-size: 17px; padding: 8px 14px; }
+.index-table .pr-num { font-family: var(--font-display); font-weight: 700; color: var(--accent-crimson); width: 80px; }
+.index-table .pr-name { font-weight: 600; color: var(--text-primary); width: 180px; }
+.index-table .pr-desc { }
+
+/* === KEY INSIGHT CALLOUT === */
+.insight-box {
+  background: var(--accent-faint);
+  padding: 20px 28px;
+  border-radius: 2px;
+  margin: 12px 0;
+  position: relative;
+  padding-left: 80px;
+}
+.insight-box::before {
+  content: '❝';
+  position: absolute;
+  left: 24px;
+  top: 12px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--accent-crimson);
+  opacity: 0.4;
+}
+.insight-box p {
+  font-family: var(--font-body);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* === CLOSING SLIDE === */
+.closing-text {
+  text-align: center;
+}
+.closing-text .large-quote {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-primary);
+  max-width: 1400px;
+  margin: 0 auto 32px;
+}
+.closing-text .large-quote em { color: var(--accent-crimson); font-style: italic; }
+
+/* === BOTTOM PAGE NUMBER === */
+.page-num {
+  position: absolute;
+  bottom: 40px;
+  right: var(--slide-padding);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+.page-num .num { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--text-secondary); }
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal:nth-child(2) { transition-delay: 0.12s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal:nth-child(4) { transition-delay: 0.28s; }
+.reveal:nth-child(5) { transition-delay: 0.36s; }
+.reveal:nth-child(6) { transition-delay: 0.44s; }
+
+/* ===========================================
+   DECK CONTROLS (CHROME — outside stage)
+   =========================================== */
+.deck-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-family: 'Source Serif 4', serif;
+}
+.deck-controls button {
+  background: rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: #4a4a4a;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.deck-controls button:hover { background: rgba(196,30,58,0.12); border-color: var(--accent-crimson); color: var(--accent-crimson); }
+.deck-controls .counter {
+  font-size: 16px;
+  color: #8a8580;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* ===========================================
+   INLINE EDITING (post-draft affordance)
+   =========================================== */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 80px; height: 80px;
+  z-index: 10000;
+  cursor: pointer;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  background: var(--bg-cream);
+  border: 1px solid var(--rule-color);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle:hover { border-color: var(--accent-crimson); color: var(--accent-crimson); }
+.editor-indicator {
+  position: fixed; top: 12px; right: 12px;
+  z-index: 10001;
+  background: var(--accent-crimson);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.editor-indicator.active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- ===========================================
+    SLIDE 1: TITLE
+    =========================================== -->
+    <section class="slide title-slide active">
+      <div class="slide-content" style="padding-top: 200px;">
+        <div class="reveal" style="font-family:var(--font-body);font-size:18px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-crimson);font-weight:600;margin-bottom:20px;">A Teaching Deck</div>
+        <hr class="rule-short reveal">
+        <h1 class="reveal"><em>Ultra</em>learning</h1>
+        <p class="reveal" style="font-family:var(--font-body);font-size:32px;font-weight:300;line-height:1.4;color:var(--text-secondary);max-width:1000px;margin:12px 0 32px;">
+          Master the Rules of Accelerated Learning<br>
+          &amp; Take Radical Responsibility for Your Education
+        </p>
+        <p class="reveal" style="font-family:var(--font-display);font-size:26px;font-style:italic;color:var(--text-muted);">
+          Based on the work of <strong style="color:var(--text-primary);font-style:normal;">Scott Young</strong>
+        </p>
+      </div>
+      <div class="page-num"><span class="num">1</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 2: WHAT IS ULTRA
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 1–3</div>
+        <h2 class="section-title reveal">What Is <em>Ultralearning</em>?</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:16px;">
+          <strong>Ultralearning</strong> is an intense, self-directed strategy for acquiring skills and knowledge — compressing years of education into months. It's defined by three characteristics:
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>🔥 Aggressive</h4>
+            <p>Push beyond comfort zones. Learn at a pace that feels uncomfortable — that's where the growth happens.</p>
+          </div>
+          <div class="card accent" style="border-left-color:var(--accent-gold);">
+            <h4>🧭 Self-Directed</h4>
+            <p>You design the curriculum. No syllabus, no waiting for a teacher — you own every decision.</p>
+          </div>
+          <div class="card accent" style="border-left-color:var(--accent-teal);">
+            <h4>🎯 Outcome-Focused</h4>
+            <p>Competence over credentials. The goal is demonstrable ability, not a certificate on the wall.</p>
+          </div>
+        </div>
+        <div class="insight-box reveal" style="margin-top:12px;">
+          <p>The MIT Challenge: Scott Young completed MIT's entire 4-year computer science curriculum (33 courses) in 12 months using free open courseware — no classrooms, no tuition.</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">2</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 3: WHY ULTRA
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 2</div>
+        <h2 class="section-title reveal">Why Ultralearning Matters Now</h2>
+        <hr class="rule-short reveal">
+        <div class="grid-2 reveal" style="margin-top:8px;">
+          <div class="card">
+            <h4>📉 Skill Polarization</h4>
+            <p>Tyler Cowen's "Average Is Over" thesis: the middle is hollowing out. You either have rare, valuable skills or compete on price. Ultralearning gives you the rare ones.</p>
+          </div>
+          <div class="card">
+            <h4>📚 Tuition Costs Rising</h4>
+            <p>Formal education gets more expensive while its shelf life shrinks. A 4-year degree in a field that changes every 2–3 years is a bad economic bet.</p>
+          </div>
+          <div class="card">
+            <h4>⚡ Tech Disruption</h4>
+            <p>Industries transform faster than curricula update. By the time a university certifies a skill, the market has already moved on.</p>
+          </div>
+          <div class="card">
+            <h4>🌐 Information Abundance</h4>
+            <p>Nobel lectures, entire textbooks, and expert communities are free. What's scarce isn't <em>information</em> — it's the <em>methodology</em> to use it.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">3</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 4: THE NINE PRINCIPLES OVERVIEW
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">The Framework</div>
+        <h2 class="section-title reveal">The Nine Principles</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="margin-bottom:4px;">A diagnostic toolkit for any learning project. Use them as a real-time checklist, not a pre-flight reading list.</p>
+        <div class="table-wrap reveal">
+          <table class="index-table">
+            <tr>
+              <th style="width:60px;">#</th>
+              <th style="width:170px;">Principle</th>
+              <th>Core Idea</th>
+            </tr>
+            <tr>
+              <td class="pr-num">1</td>
+              <td class="pr-name">Metalearning</td>
+              <td class="pr-desc">First draw a map. Learn about learning before you learn. Why/What/How framework + 10% Rule.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">2</td>
+              <td class="pr-name">Focus</td>
+              <td class="pr-desc">Sharpen your knife. Three problems (starting, sustaining, optimizing) with specific solutions.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">3</td>
+              <td class="pr-name">Directness</td>
+              <td class="pr-desc">Go straight ahead. Learn by doing the thing you want to be good at. Solves the transfer problem.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">4</td>
+              <td class="pr-name">Drill</td>
+              <td class="pr-desc">Attack your weakest point. Find the rate-determining step and isolate it for intensive practice.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">5</td>
+              <td class="pr-name">Retrieval</td>
+              <td class="pr-desc">Test to learn. Active recall beats passive review by ~50% — even when you fail to retrieve.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">6</td>
+              <td class="pr-name">Feedback</td>
+              <td class="pr-desc">Don't dodge the punches. Seek corrective > informational > outcome feedback. 38% backfires.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">7</td>
+              <td class="pr-name">Retention</td>
+              <td class="pr-desc">Don't fill a leaky bucket. Spacing, proceduralization, overlearning, mnemonics.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">8</td>
+              <td class="pr-name">Intuition</td>
+              <td class="pr-desc">Dig deep before building up. Feynman Technique: explain simply, find gaps, repeat.</td>
+            </tr>
+            <tr>
+              <td class="pr-num">9</td>
+              <td class="pr-name">Experimentation</td>
+              <td class="pr-desc">Explore outside your comfort zone. The meta-principle for when everything else plateaus.</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">4</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 5: METALEARNING
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 1 · Chapter 4</div>
+        <h2 class="section-title reveal">Metalearning — First Draw a Map</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:8px;">
+          Before you learn anything, learn <em>about</em> it. Metalearning is the single highest-ROI activity before any project.
+        </p>
+        <div class="grid-2 reveal">
+          <div>
+            <div class="num-item">
+              <div class="num-badge">1</div>
+              <div class="num-content">
+                <h4>Why</h4>
+                <p>Instrumental (career change) or intrinsic (curiosity)? Instrumental projects need extra validation: "Will this actually get me the outcome?"</p>
+              </div>
+            </div>
+            <div class="num-item">
+              <div class="num-badge">2</div>
+              <div class="num-content">
+                <h4>What — The C/F/P Canvas</h4>
+                <p><strong>Concepts</strong> (need understanding), <strong>Facts</strong> (need memorization), <strong>Procedures</strong> (need practice). Underline the hardest in each column.</p>
+              </div>
+            </div>
+            <div class="num-item">
+              <div class="num-badge">3</div>
+              <div class="num-content">
+                <h4>How</h4>
+                <p>Benchmark the default curriculum. Emphasize/Exclude ruthlessly. Select resources. Cold-email an expert for 15 minutes.</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card gold" style="margin-bottom:12px;">
+              <h4>⏱ The 10% Rule</h4>
+              <p>Invest ~10% of expected project time in upfront research. 6-month project at 10 hrs/week → 24 hours of research. Over-researching is procrastination.</p>
+            </div>
+            <div class="insight-box" style="padding-left:60px;">
+              <p>Linguist Dan Everett decoded an unknown language in <strong>30 minutes</strong> on stage — not through genius, but through a rich metalearning map of how languages work.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">5</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 6: FOCUS
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 2 · Chapter 5</div>
+        <h2 class="section-title reveal">Focus — Sharpen Your Knife</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">Three distinct focus problems, three distinct solutions. Climb the crutch progression from easiest to hardest.</p>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>Problem</th><th>Symptom</th><th>Fix</th><th>Example</th></tr>
+            <tr>
+              <td>Starting</td>
+              <td>Procrastination</td>
+              <td>5-Minute Rule → Pomodoro → Calendar Blocking → Somerville-Level Bookmarking</td>
+              <td>Commit to just 5 minutes. Usually that's enough to build momentum.</td>
+            </tr>
+            <tr>
+              <td>Sustaining</td>
+              <td>Distraction</td>
+              <td>Kill environment → Go active (notes, explain, solve) → Note-and-release mindfulness</td>
+              <td>Put phone away. If your mind wanders, write down the thought, then release it.</td>
+            </tr>
+            <tr>
+              <td>Optimizing</td>
+              <td>Wrong intensity</td>
+              <td>Yerkes-Dodson: match arousal to task complexity</td>
+              <td>Simple tasks → cafe noise. Complex tasks → quiet room.</td>
+            </tr>
+          </table>
+        </div>
+        <div class="insight-box reveal">
+          <p>Mary Somerville became a world-class mathematician while raising children in the 19th century. Her secret: learning to <strong>resume instantly</strong> after interruption through mental bookmarking.</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">6</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 7: DIRECTNESS
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 3 · Chapter 6</div>
+        <h2 class="section-title reveal">Directness — Go Straight Ahead</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Learn by doing the thing you want to be good at. Directness solves the <strong>transfer problem</strong>: knowledge from the classroom rarely crosses to the real world.
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Tactic</th><th>When to Use</th></tr>
+                <tr><td>🏗 Project-Based</td><td>Need concrete output — build the actual thing</td></tr>
+                <tr><td>🌊 Immersion</td><td>Surround yourself with the target environment</td></tr>
+                <tr><td>✈ Flight Simulator</td><td>Real practice is dangerous/expensive — simulate the cognitive core</td></tr>
+                <tr><td>💪 Overkill Approach</td><td>Comfortable plateau — seek harder conditions</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>📋 Key Research</h4>
+              <p>Thorndike & Woodworth (1901) demolished "formal discipline theory" — studying Latin doesn't improve general thinking. Haskell: high school psychology gives <em>zero</em> advantage in college psychology. Transfer is brutally hard; directness is the antidote.</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>Case Study: Vatsal Jaiswal</h4>
+              <p>Architecture grad couldn't get a job — his portfolio didn't match real work. He took a print-shop job (immersion), taught himself Revit at night (project-based), designed a three-tower complex (overkill). Both firms he applied to hired him.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">7</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 8: DRILL
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 4 · Chapter 7</div>
+        <h2 class="section-title reveal">Drill — Attack Your Weakest Point</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Find the <strong>rate-determining step</strong> — the sub-skill bottlenecking your overall performance — and attack it in isolation.
+        </p>
+        <div class="reveal" style="display:flex;gap:20px;margin-bottom:6px;">
+          <div class="card" style="flex:1;">
+            <h4>The Direct-Then-Drill Cycle</h4>
+            <p>Practice directly → Isolate bottleneck → Drill → Re-integrate → Repeat. Never drill without first confirming the bottleneck through direct practice.</p>
+          </div>
+        </div>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>Tactic</th><th>Use When…</th><th>Example</th></tr>
+            <tr><td>Time Slicing</td><td>One short segment consistently fails</td><td>A difficult musical passage played 50 times in isolation</td></tr>
+            <tr><td>Cognitive Components</td><td>Parallel processes need separation</td><td>Practicing tone separately from meaning in a new language</td></tr>
+            <tr><td>Copycat</td><td>You lack technique vocabulary</td><td>Franklin reconstructed Spectator essays to learn writing</td></tr>
+            <tr><td>Magnifying Glass</td><td>Pour extra time on one component</td><td>One entire week on nothing but feature engineering</td></tr>
+            <tr><td>Prerequisite Chain</td><td>You hit a wall</td><td>Fail → step back → learn missing foundation → retry</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">8</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 9: RETRIEVAL
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 5 · Chapter 8</div>
+        <h2 class="section-title reveal">Retrieval — Test to Learn</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Active recall beats passive review by <strong>~50%</strong> — even when you fail to retrieve and receive no feedback. The feeling of fluent re-reading is a liar.
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="insight-box" style="padding-left:60px;margin-bottom:10px;">
+              <p>Karpicke & Blunt (2008) in <em>Science</em>: free recall outperformed concept mapping and repeated study by 50%. Students who re-read predicted they'd do best — they were completely wrong.</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Material</th><th>Best Play</th></tr>
+                <tr><td>Vocab / formulas</td><td>SRS Flashcards (recall-side only)</td></tr>
+                <tr><td>Prose / lectures</td><td>Free recall — blank page, close the book</td></tr>
+                <tr><td>Code / math</td><td>Self-generated challenges, book closed</td></tr>
+                <tr><td>Any reading</td><td>Question-book method — write Qs, answer later</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>Forward Testing Effect</h4>
+              <p>Attempting to retrieve answers <em>before</em> you've learned them primes your brain to absorb the correct information when you see it. Try solving a problem before being taught the method — the failed attempt isn't wasted.</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>Ramanujan's Method</h4>
+              <p>With only Carr's book of <em>5,000 theorems without proofs</em>, he derived every proof himself over 7 years. The book withheld answers, forcing sustained retrieval. He became one of history's greatest mathematicians.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">9</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 10: FEEDBACK
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 6 · Chapter 9</div>
+        <h2 class="section-title reveal">Feedback — Don't Dodge the Punches</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Kluger & DeNisi's meta-analysis: feedback backfires in <strong>38% of cases</strong>. The difference is the <em>type</em> of feedback and how you handle it.
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>🔴 Outcome</h4>
+            <p>"You scored 72%." Coarse signal — tells you how you did overall. Useful for motivation and directional awareness, but doesn't help you improve.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>🟡 Informational</h4>
+            <p>"Your thesis is unclear." Tells you <em>what</em> is wrong. More useful than outcome, but still doesn't tell you how to fix it.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>🟢 Corrective</h4>
+            <p>"Add a transition here." Tells you <em>how</em> to fix it — the gold standard. Seek corrective feedback first, always.</p>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;gap:18px;margin-top:8px;">
+          <div class="card" style="flex:1;">
+            <h4>🎭 Noise Cancellation</h4>
+            <p>When feedback is biased, perform anonymously or strip context. Chris Rock tests material at the Comedy Cellar as a nobody before using it in specials.</p>
+          </div>
+          <div class="card" style="flex:1;">
+            <h4>🧠 The Ego Trap</h4>
+            <p>"This output needs work" ≠ "I'm bad at this." Feedback about the <em>task</em> is useful; feedback about the <em>self</em> causes avoidance. Reframe constantly.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">10</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 11: RETENTION
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 7 · Chapter 10</div>
+        <h2 class="section-title reveal">Retention — Don't Fill a Leaky Bucket</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Forgetting is the default. The Ebbinghaus forgetting curve is exponential — steepest in the first hours and days. But it's predictable, so it's manageable.
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>Tool</th><th>Best For</th><th>How</th></tr>
+                <tr><td>📅 Spacing (SRS)</td><td>Facts, concepts</td><td>Review at the forgetting threshold. Intervals: 1d → 3d → 1w → 2w → 1m</td></tr>
+                <tr><td>🔄 Proceduralization</td><td>Skills</td><td>Convert knowing-that into knowing-how through reps. Procedural memory decays much slower.</td></tr>
+                <tr><td>💪 Overlearning</td><td>Core fundamentals</td><td>Continue 3+ reps past first correct performance. Don't stop when you get it right — stop when you can't get it wrong.</td></tr>
+                <tr><td>🧠 Mnemonics</td><td>Foreign vocab, facts</td><td>Sound-alike keyword bridges. A scaffold, not a destination — discard once fluent.</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>🔑 Memory = Residue of Thought</h4>
+              <p>What you <em>think about</em> is what sticks. If you spend your study time passively re-reading, your brain encodes passive recognition — not active recall. Design your practice so your brain is doing the work.</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>Case Study: Nigel Richards</h4>
+              <p>Five-time World Scrabble Champion. He learned French Scrabble without speaking French — memorized the entire French dictionary phonetically using pattern drilling. The lesson: mnemonics + SRS can bridge almost any gap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">11</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 12: INTUITION
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 8 · Chapter 11</div>
+        <h2 class="section-title reveal">Intuition — Dig Deep Before Building Up</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          Deep understanding looks like magic (Feynman) but is built methodically through <strong>principles-first engagement</strong> and a library of mental patterns.
+        </p>
+        <div class="grid-2 reveal" style="gap:24px;">
+          <div>
+            <div class="card accent" style="margin-bottom:12px;">
+              <h4>🧪 The Feynman Technique</h4>
+              <p style="margin-bottom:10px;">The surest way to close the gap between "I've heard of this" and "I understand this."</p>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">1</div>
+                <div class="num-content"><p style="font-size:17px;">Write the concept at the top of a blank page.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">2</div>
+                <div class="num-content"><p style="font-size:17px;">Explain it in plain language as if teaching a child.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">3</div>
+                <div class="num-content"><p style="font-size:17px;">When you get stuck, return to the source.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">4</div>
+                <div class="num-content"><p style="font-size:17px;">Simplify and analogize. Repeat until gaps close.</p></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card gold">
+              <h4>🎯 Expert vs. Novice</h4>
+              <p>Experts categorize problems by <strong>deep principles</strong> ("This is a conservation of energy problem"). Novices use <strong>surface features</strong> ("This has a ramp and a pulley"). Train yourself to ask "What <em>kind</em> of problem is this?" before solving — this is the bridge from competence to mastery.</p>
+            </div>
+            <div class="insight-box" style="margin-top:10px;">
+              <p>Can you draw a bicycle from memory? Most people can't, despite having ridden one for years. That's the <strong>Illusion of Explanatory Depth</strong> — familiarity mistaken for comprehension.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">12</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 13: EXPERIMENTATION
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Principle 9 · Chapter 12</div>
+        <h2 class="section-title reveal">Experimentation — Explore Outside Your Comfort Zone</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          The <strong>meta-principle</strong> that governs all others. As you approach mastery, well-trodden paths run out — you must find your own.
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>📚 Resources</h4>
+            <p>Change <em>how</em> you learn. Textbook → hands-on project → expert coach. Each shift exposes new gaps and new dimensions of the skill.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>🔧 Technique</h4>
+            <p>Change <em>what</em> you learn next. Drill a sub-skill, explore a different application domain, rearrange your practice structure.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>🎨 Style</h4>
+            <p>Change <em>who you are</em> as a practitioner. Your unique approach emerges from sustained experimentation at this level.</p>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;gap:18px;margin-top:8px;">
+          <div class="card" style="flex:1;">
+            <h4>🎨 Case Study: Vincent van Gogh</h4>
+            <p>He aggressively cycled through styles — Dutch realism, Japanese-influenced color, pointillism, the swirling expressionism of <em>Starry Night</em>. Each experiment taught him what the previous style couldn't. He wasn't born a genius; he experimented his way there.</p>
+          </div>
+          <div class="card" style="flex:1;border-left-color:var(--accent-crimson);">
+            <h4>⚠️ When to Experiment</h4>
+            <p>Don't experiment before you have a foundation. Master the fundamentals first, then break the rules. Experimentation is for the plateau, not the starting line.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">13</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 14: THE PROJECT FRAMEWORK
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 13</div>
+        <h2 class="section-title reveal">Your First Ultralearning Project</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:8px;">
+          The bridge between principles and action is a repeatable five-step process. The first project is the hardest — after that, the pattern compounds.
+        </p>
+        <div class="grid-2 reveal" style="gap:14px;">
+          <div class="card accent">
+            <h4>① Research (≤10% of time)</h4>
+            <p>Define scope precisely. Identify resources, benchmarks, direct practice activities, and backup materials. Do expert interviews — one 15-min call can save months.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>② Schedule</h4>
+            <p>Commit to a calendar, not an intention. Block fixed weekly hours. Run a <strong>pilot week</strong> for projects >1 month — the easy-on-paper schedule often collapses in practice.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>③ Execute</h4>
+            <p>The nine principles become a real-time diagnostic. Stuck? Run the checklist: Am I practicing directly? Testing myself? Getting honest feedback?</p>
+          </div>
+          <div class="card">
+            <h4>④ Review + ⑤ Continue</h4>
+            <p>Before the emotional fade: What went right/wrong/different? Then choose: <strong>Maintenance</strong> (decaying schedule), <strong>Relearning</strong> (let it decay, faster to re-acquire), or <strong>Mastery</strong> (deeper follow-up).</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">14</span> / 15</div>
+    </section>
+
+    <!-- ===========================================
+    SLIDE 15: CLOSING
+    =========================================== -->
+    <section class="slide">
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="section-number reveal">Conclusion · Chapter 14</div>
+        <div class="closing-text">
+          <p class="reveal large-quote">
+            "Genius is not born —<br>
+            it is <em>educated</em>."
+          </p>
+          <hr class="rule-short reveal" style="margin:24px auto;">
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 20px;font-size:24px;">
+            The Polgár experiment raised three world-class chess players through intensive, principles-driven education from age 3. It proves what's <em>possible</em> — not what's average.
+          </p>
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 32px;color:var(--text-muted);font-size:22px;">
+            The more you learn, the more you see how much you don't know.<br>
+            That vertigo is not failure — it's the signature of genuine learning.
+          </p>
+          <div class="reveal" style="font-family:var(--font-display);font-size:22px;font-style:italic;color:var(--text-secondary);">
+            — Scott Young, <em>Ultralearning</em>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">15</span> / 15</div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===========================================
+DECK CONTROLS (outside stage)
+=========================================== -->
+<div class="deck-controls">
+  <button id="prevBtn" aria-label="Previous slide">←</button>
+  <span class="counter" id="slideCounter">1 / 15</span>
+  <button id="nextBtn" aria-label="Next slide">→</button>
+</div>
+
+<!-- ===========================================
+EDITING AFFORDANCE
+=========================================== -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️ Edit</button>
+<div class="editor-indicator" id="editorIndicator">✏️ Editing</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.currentSlide = 0;
+    this.totalSlides = this.slides.length;
+    this.stage = document.getElementById('deckStage');
+    this.isTransitioning = false;
+
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+
+  setupStageScale() {
+    const scale = () => {
+      const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * f) / 2;
+      const y = (window.innerHeight - 1080 * f) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+
+  showSlide(index) {
+    if (this.isTransitioning) return;
+    this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1));
+    this.isTransitioning = true;
+
+    this.slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'visible');
+      if (i === this.currentSlide) {
+        // Force reflow then add classes for animation
+        void slide.offsetWidth;
+        slide.classList.add('active', 'visible');
+      }
+    });
+
+    // Update counter
+    const counter = document.getElementById('slideCounter');
+    if (counter) counter.textContent = `${this.currentSlide + 1} / ${this.totalSlides}`;
+
+    setTimeout(() => { this.isTransitioning = false; }, 600);
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      // Skip if typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.getAttribute('contenteditable')) return;
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          this.next();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'PageUp':
+          e.preventDefault();
+          this.prev();
+          break;
+        case 'Home':
+          e.preventDefault();
+          this.showSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          this.showSlide(this.totalSlides - 1);
+          break;
+      }
+    });
+  }
+
+  setupTouchNav() {
+    let startX = 0;
+    let startY = 0;
+    const stage = this.stage;
+
+    stage.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+
+      // Only trigger on horizontal swipes > 50px and more horizontal than vertical
+      if (absDx > 50 && absDx > absDy * 1.5) {
+        if (dx < 0) this.next();
+        else this.prev();
+      }
+    }, { passive: true });
+  }
+
+  setupWheelNav() {
+    let wheelTimeout = false;
+    this.stage.addEventListener('wheel', (e) => {
+      if (wheelTimeout || this.isTransitioning) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // Only vertical scroll
+
+      wheelTimeout = true;
+      if (e.deltaY > 0) this.next();
+      else this.prev();
+      setTimeout(() => { wheelTimeout = false; }, 800);
+    }, { passive: true });
+  }
+
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+  }
+
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+}
+
+/* ===========================================
+   INLINE EDITOR
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.editToggle = document.getElementById('editToggle');
+    this.editorIndicator = document.getElementById('editorIndicator');
+    this.setupHotzone();
+    this.setupKeyboardShortcut();
+    this.setupSaveShortcut();
+  }
+
+  setupHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const editToggle = this.editToggle;
+    let hideTimeout = null;
+
+    hotzone.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      editToggle.classList.add('show');
+    });
+    hotzone.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) editToggle.classList.remove('show');
+      }, 400);
+    });
+    editToggle.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+    });
+    editToggle.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) editToggle.classList.remove('show');
+      }, 400);
+    });
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    editToggle.addEventListener('click', () => this.toggleEditMode());
+  }
+
+  setupKeyboardShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') &&
+          !e.target.getAttribute('contenteditable') &&
+          e.target.tagName !== 'INPUT' &&
+          e.target.tagName !== 'TEXTAREA') {
+        this.toggleEditMode();
+      }
+    });
+  }
+
+  setupSaveShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        if (this.isActive) {
+          e.preventDefault();
+          this.save();
+        }
+      }
+    });
+  }
+
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    if (this.isActive) {
+      this.enableEditing();
+    } else {
+      this.disableEditing();
+    }
+  }
+
+  enableEditing() {
+    this.editToggle.classList.add('active');
+    this.editToggle.classList.add('show');
+    this.editorIndicator.classList.add('active');
+    this.editToggle.textContent = '🔒 Lock';
+
+    document.querySelectorAll('.slide .body-text, .slide h4, .slide p, .slide .section-title, .slide .section-number, .slide .large-quote, .slide .closing-text div[style]').forEach(el => {
+      // Skip elements that shouldn't be editable
+      if (el.closest('.num-badge') || el.closest('.deck-controls')) return;
+      el.setAttribute('contenteditable', 'true');
+      el.style.outline = '1px dashed rgba(196, 30, 58, 0.25)';
+      el.style.cursor = 'text';
+      el.style.borderRadius = '2px';
+      el.style.padding = '2px 4px';
+    });
+  }
+
+  disableEditing() {
+    this.editToggle.classList.remove('active');
+    this.editorIndicator.classList.remove('active');
+    this.editToggle.textContent = '✏️ Edit';
+
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = '';
+      el.style.cursor = '';
+      el.style.padding = '';
+      el.style.borderRadius = '';
+    });
+  }
+
+  save() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ultralearning-deck.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.editorIndicator.textContent = '💾 Saved!';
+    setTimeout(() => { this.editorIndicator.textContent = '✏️ Editing'; }, 1500);
+  }
+}
+
+/* ===========================================
+   INIT
+   =========================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  window.deck = new SlidePresentation();
+  window.editor = new InlineEditor();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultralearning — สไลด์ประกอบการสอน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   VIEWPORT-BASE.CSS — MANDATORY FIXED STAGE
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #faf9f7; font-family: 'Kanit', sans-serif; }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: #faf9f7; }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: #faf9f7; }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: #faf9f7; }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+@media print {
+  html,body { width:1920px;height:auto;overflow:visible;background:#faf9f7; }
+  .deck-viewport { position:static;overflow:visible;background:#faf9f7; }
+  .deck-stage { position:static;width:auto;height:auto;transform:none!important;background:none; }
+  .slide { position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always; }
+  .slide:last-child { break-after:auto;page-break-after:auto; }
+  .deck-controls { display:none!important; }
+}
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:0.01ms!important;transition-duration:0.2s!important; } }
+
+/* ===========================================
+   THEME: PAPER & INK
+   =========================================== */
+:root {
+  --bg-cream: #faf9f7;
+  --bg-page: #f5f2ed;
+  --bg-card: #f7f5f0;
+  --bg-card-alt: #f0ede6;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #8a8580;
+  --accent-crimson: #c41e3a;
+  --accent-gold: #d4a017;
+  --accent-teal: #3A7A7A;
+  --accent-faint: rgba(196, 30, 58, 0.07);
+  --accent-gold-faint: rgba(212, 160, 23, 0.12);
+  --rule-color: #d4c9b8;
+  --rule-light: #e2d9cc;
+  --font-display: 'Kanit', sans-serif;
+  --font-body: 'Kanit', sans-serif;
+  --title-size: 104px;
+  --section-size: 56px;
+  --heading-size: 32px;
+  --body-size: 22px;
+  --small-size: 18px;
+  --slide-padding: 100px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================================
+   BASE STYLES
+   =========================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* === PAGE TEXTURE (subtle ruled lines) === */
+.slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(212, 201, 184, 0.08) 28px, rgba(212, 201, 184, 0.08) 29px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === SLIDE CONTENT WRAPPER === */
+.slide-content {
+  position: absolute;
+  left: var(--slide-padding);
+  top: 0;
+  width: calc(1920px - var(--slide-padding) * 2);
+  height: 1080px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* === CRIMSON ACCENT BAR (left edge) === */
+.slide-content::before {
+  content: '';
+  position: absolute;
+  left: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background: linear-gradient(180deg, var(--accent-crimson), var(--accent-gold));
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+/* === TITLE SLIDE (no page texture or accent bar) === */
+.title-slide::before { display: none; }
+.title-slide .slide-content::before { display: none; }
+.title-slide .slide-content { justify-content: flex-start; padding-top: 180px; }
+
+/* === TYPOGRAPHY === */
+h1 { font-family: var(--font-display); font-weight: 700; font-size: var(--title-size); line-height: 1.05; color: var(--text-primary); }
+h1 em { font-style: italic; color: var(--accent-crimson); }
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--section-size);
+  line-height: 1.08;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.section-number {
+  font-family: var(--font-display);
+  font-size: var(--small-size);
+  font-weight: 600;
+  color: var(--accent-crimson);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--heading-size);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.heading-sm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.small-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* === CARDS === */
+.card {
+  background: var(--bg-card);
+  border-radius: 2px;
+  padding: 24px 28px;
+  border-left: 3px solid var(--rule-color);
+}
+.card.accent { border-left-color: var(--accent-crimson); }
+.card.gold { border-left-color: var(--accent-gold); }
+.card.teal { border-left-color: var(--accent-teal); }
+
+.card h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.card p {
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* === DECORATIVE ELEMENTS === */
+.rule-short {
+  width: 80px;
+  height: 2px;
+  background: var(--accent-crimson);
+  margin: 16px 0 24px;
+  border: none;
+}
+
+.rule-long {
+  width: 100%;
+  height: 1px;
+  background: var(--rule-light);
+  margin: 20px 0;
+  border: none;
+}
+
+/* === NUMBERED ITEMS === */
+.num-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.num-badge {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--accent-crimson);
+}
+.num-badge.gold { background: var(--accent-gold-faint); color: var(--accent-gold); }
+.num-content h4 { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--text-primary); margin-bottom: 2px; }
+.num-content p { font-family: var(--font-body); font-size: 20px; line-height: 1.45; color: var(--text-secondary); }
+
+/* === GRID LAYOUTS === */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 16px;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* === TABLES === */
+.table-wrap {
+  margin-top: 16px;
+  width: 100%;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 20px;
+}
+.table-wrap th {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  text-align: left;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--rule-color);
+  background: var(--accent-faint);
+}
+.table-wrap td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--rule-light);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap td:first-child { font-weight: 600; color: var(--text-primary); }
+
+/* === CHAPTER INDEX TABLE (on overview slide) === */
+.index-table td { font-size: 19px; padding: 8px 14px; }
+.index-table .pr-num { font-family: var(--font-display); font-weight: 700; color: var(--accent-crimson); width: 80px; }
+.index-table .pr-name { font-weight: 600; color: var(--text-primary); width: 180px; }
+.index-table .pr-desc { }
+
+/* === KEY INSIGHT CALLOUT === */
+.insight-box {
+  background: var(--accent-faint);
+  padding: 20px 28px;
+  border-radius: 2px;
+  margin: 12px 0;
+  position: relative;
+  padding-left: 80px;
+}
+.insight-box::before {
+  content: '❝';
+  position: absolute;
+  left: 24px;
+  top: 12px;
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--accent-crimson);
+  opacity: 0.4;
+}
+.insight-box p {
+  font-family: var(--font-body);
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* === CLOSING SLIDE === */
+.closing-text {
+  text-align: center;
+}
+.closing-text .large-quote {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-primary);
+  max-width: 1400px;
+  margin: 0 auto 32px;
+}
+.closing-text .large-quote em { color: var(--accent-crimson); font-style: italic; }
+
+/* === BOTTOM PAGE NUMBER === */
+.page-num {
+  position: absolute;
+  bottom: 40px;
+  right: var(--slide-padding);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+.page-num .num { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--text-secondary); }
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal:nth-child(2) { transition-delay: 0.12s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal:nth-child(4) { transition-delay: 0.28s; }
+.reveal:nth-child(5) { transition-delay: 0.36s; }
+.reveal:nth-child(6) { transition-delay: 0.44s; }
+
+/* ===========================================
+   DECK CONTROLS (CHROME — outside stage)
+   =========================================== */
+.deck-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-family: 'Kanit', sans-serif;
+}
+.deck-controls button {
+  background: rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.12);
+  color: #4a4a4a;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.deck-controls button:hover { background: rgba(196,30,58,0.12); border-color: var(--accent-crimson); color: var(--accent-crimson); }
+.deck-controls .counter {
+  font-size: 16px;
+  color: #8a8580;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* ===========================================
+   INLINE EDITING (post-draft affordance)
+   =========================================== */
+.edit-hotzone {
+  position: fixed; top: 0; left: 0;
+  width: 80px; height: 80px;
+  z-index: 10000;
+  cursor: pointer;
+}
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 10001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  background: var(--bg-cream);
+  border: 1px solid var(--rule-color);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle:hover { border-color: var(--accent-crimson); color: var(--accent-crimson); }
+.editor-indicator {
+  position: fixed; top: 12px; right: 12px;
+  z-index: 10001;
+  background: var(--accent-crimson);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.editor-indicator.active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <section class="slide title-slide active">
+      <div class="slide-content" style="padding-top: 200px;">
+        <div class="reveal" style="font-family:var(--font-body);font-size:18px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-crimson);font-weight:600;margin-bottom:20px;">สไลด์ประกอบการสอน</div>
+        <hr class="rule-short reveal">
+        <h1 class="reveal"><em>Ultra</em>learning</h1>
+        <p class="reveal" style="font-family:var(--font-body);font-size:32px;font-weight:300;line-height:1.4;color:var(--text-secondary);max-width:1000px;margin:12px 0 32px;">
+          เรียนรู้กฎแห่งการเรียนรู้แบบก้าวกระโดด<br>
+          และรับผิดชอบต่อการศึกษาของตัวคุณเองอย่างเต็มที่
+        </p>
+        <p class="reveal" style="font-family:var(--font-display);font-size:26px;font-style:italic;color:var(--text-muted);">
+          สร้างจากผลงานของ <strong style="color:var(--text-primary);font-style:normal;">Scott Young</strong>
+        </p>
+      </div>
+      <div class="page-num"><span class="num">1</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 1–3</div>
+        <h2 class="section-title reveal"><em>Ultralearning</em> คืออะไร?</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:16px;">
+          <strong>Ultralearning</strong> คือกลยุทธ์การเรียนรู้ที่เข้มข้นและนำทางด้วยตนเอง เพื่อฝึกฝนทักษะและรับความรู้ — ย่นย่อเวลาเรียนหลายปีให้เหลือเพียงไม่กี่เดือน โดยมีลักษณะสำคัญ 3 ประการดังนี้:
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>🔥 ดุดัน (Aggressive)</h4>
+            <p>ก้าวข้ามขีดจำกัดความคุ้นเคย เรียนรู้ด้วยความเร็วที่ทำให้รู้สึกไม่สบายใจ — เพราะนั่นคือจุดที่การเติบโตเกิดขึ้น</p>
+          </div>
+          <div class="card accent" style="border-left-color:var(--accent-gold);">
+            <h4>🧭 นำทางด้วยตนเอง (Self-Directed)</h4>
+            <p>คุณเป็นผู้ออกแบบหลักสูตรเอง ไม่มีประมวลรายวิชา ไม่ต้องรอครูผู้สอน — คุณเป็นเจ้าของการตัดสินใจทุกขั้นตอน</p>
+          </div>
+          <div class="card accent" style="border-left-color:var(--accent-teal);">
+            <h4>🎯 มุ่งเน้นผลลัพธ์ (Outcome-Focused)</h4>
+            <p>เน้นความสามารถมากกว่าวุฒิการศึกษา เป้าหมายคือความสามารถที่พิสูจน์ได้จริง ไม่ใช่แค่ใบปริญญาที่แขวนไว้บนผนัง</p>
+          </div>
+        </div>
+        <div class="insight-box reveal" style="margin-top:12px;">
+          <p>ความท้าทาย MIT: Scott Young เรียนจบหลักสูตรวิทยาการคอมพิวเตอร์ 4 ปีของ MIT (33 วิชา) ในเวลา 12 เดือนโดยใช้สื่อการเรียนฟรี — ไม่มีห้องเรียน ไม่เสียค่าเทอม</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">2</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 2</div>
+        <h2 class="section-title reveal">ทำไม Ultralearning ถึงสำคัญในตอนนี้</h2>
+        <hr class="rule-short reveal">
+        <div class="grid-2 reveal" style="margin-top:8px;">
+          <div class="card">
+            <h4>📉 ความเหลื่อมล้ำทางทักษะ</h4>
+            <p>ทฤษฎี "Average Is Over" ของ Tyler Cowen: ชนชั้นกลางกำลังหายไป คุณต้องมีทักษะที่หายากและมีมูลค่า หรือไม่ก็ต้องไปแข่งขันด้วยราคา Ultralearning จะช่วยให้คุณมีทักษะที่หายากเหล่านั้น</p>
+          </div>
+          <div class="card">
+            <h4>📚 ค่าเล่าเรียนสูงขึ้น</h4>
+            <p>การศึกษาในระบบแพงขึ้นเรื่อยๆ ในขณะที่อายุการใช้งานของความรู้กลับสั้นลง การเรียน ป.ตรี 4 ปีในสายงานที่เปลี่ยนทุกๆ 2-3 ปี ถือเป็นการลงทุนที่คุ้มค่าน้อยลง</p>
+          </div>
+          <div class="card">
+            <h4>⚡ การถูกดิสรัปต์จากเทคโนโลยี</h4>
+            <p>อุตสาหกรรมต่างๆ เปลี่ยนแปลงเร็วกว่าการปรับปรุงหลักสูตร กว่ามหาวิทยาลัยจะรับรองทักษะใดทักษะหนึ่ง ตลาดก็เดินหน้าไปไกลแล้ว</p>
+          </div>
+          <div class="card">
+            <h4>🌐 ข้อมูลมีล้นเหลือ</h4>
+            <p>การบรรยายระดับรางวัลโนเบล หนังสือเรียนทั้งเล่ม และชุมชนผู้เชี่ยวชาญ ล้วนเข้าถึงได้ฟรี สิ่งที่ขาดแคลนไม่ใช่ <em>ข้อมูล</em> — แต่เป็น <em>วิธีการ</em> นำไปใช้</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">3</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">กรอบแนวคิด</div>
+        <h2 class="section-title reveal">หลักการ 9 ประการ</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="margin-bottom:4px;">ชุดเครื่องมือวินิจฉัยสำหรับทุกโปรเจกต์การเรียนรู้ ให้ใช้เป็นเช็กลิสต์ระหว่างทาง ไม่ใช่แค่อ่านเตรียมความพร้อมล่วงหน้า</p>
+        <div class="table-wrap reveal">
+          <table class="index-table">
+            <tr>
+              <th style="width:60px;">#</th>
+              <th style="width:170px;">หลักการ</th>
+              <th>แนวคิดหลัก</th>
+            </tr>
+            <tr>
+              <td class="pr-num">1</td>
+              <td class="pr-name">Metalearning</td>
+              <td class="pr-desc">วาดแผนที่ก่อน เรียนรู้วิธีการเรียนก่อนจะเริ่มเรียน โครงสร้าง ทำไม/อะไร/อย่างไร + กฎ 10%</td>
+            </tr>
+            <tr>
+              <td class="pr-num">2</td>
+              <td class="pr-name">โฟกัส</td>
+              <td class="pr-desc">ลับมีดให้คม ปัญหา 3 ประการ (การเริ่มต้น, รักษาความจดจ่อ, ปรับแต่ง) พร้อมวิธีแก้ที่เฉพาะเจาะจง</td>
+            </tr>
+            <tr>
+              <td class="pr-num">3</td>
+              <td class="pr-name">ตรงไปตรงมา</td>
+              <td class="pr-desc">เดินหน้าตรง เรียนรู้ด้วยการลงมือทำสิ่งที่คุณอยากเก่ง แก้ปัญหาการนำความรู้ไปประยุกต์ใช้</td>
+            </tr>
+            <tr>
+              <td class="pr-num">4</td>
+              <td class="pr-name">เจาะลึก</td>
+              <td class="pr-desc">โจมตีจุดอ่อนที่สุด หาขั้นตอนที่เป็นคอขวดและแยกมันออกมาฝึกฝนอย่างเข้มข้น</td>
+            </tr>
+            <tr>
+              <td class="pr-num">5</td>
+              <td class="pr-name">ดึงข้อมูล</td>
+              <td class="pr-desc">ทดสอบเพื่อเรียนรู้ การพยายามนึกเอาชนะการอ่านทบทวนถึง ~50% — แม้ว่าจะนึกไม่ออกก็ตาม</td>
+            </tr>
+            <tr>
+              <td class="pr-num">6</td>
+              <td class="pr-name">ฟีดแบ็ก</td>
+              <td class="pr-desc">อย่าหลบหมัด หาฟีดแบ็กแบบแก้ไข > เชิงข้อมูล > ผลลัพธ์ (มี 38% ที่ฟีดแบ็กให้ผลเสีย)</td>
+            </tr>
+            <tr>
+              <td class="pr-num">7</td>
+              <td class="pr-name">การจดจำ</td>
+              <td class="pr-desc">อย่าเติมน้ำในถังรั่ว การเว้นระยะ, การทำจนเป็นอัตโนมัติ, การเรียนรู้เกินขีดจำกัด, หลักการจำ</td>
+            </tr>
+            <tr>
+              <td class="pr-num">8</td>
+              <td class="pr-name">สัญชาตญาณ</td>
+              <td class="pr-desc">ขุดให้ลึกก่อนสร้างขึ้น เทคนิคไฟน์แมน: อธิบายให้ง่าย หาช่องโหว่ ทำซ้ำ</td>
+            </tr>
+            <tr>
+              <td class="pr-num">9</td>
+              <td class="pr-name">การทดลอง</td>
+              <td class="pr-desc">สำรวจนอกคอมฟอร์ตโซน หลักการขั้นสุดยอดเมื่อสิ่งอื่นๆ เริ่มถึงจุดอิ่มตัว</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">4</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 1 · บทที่ 4</div>
+        <h2 class="section-title reveal">Metalearning — วาดแผนที่ก่อนเป็นอันดับแรก</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:8px;">
+          ก่อนจะเรียนอะไร ให้เรียนรู้ <em>เกี่ยวกับ</em> สิ่งนั้นก่อน Metalearning คือกิจกรรมที่ให้ผลตอบแทน (ROI) คุ้มค่าที่สุดก่อนเริ่มโปรเจกต์ใดๆ
+        </p>
+        <div class="grid-2 reveal">
+          <div>
+            <div class="num-item">
+              <div class="num-badge">1</div>
+              <div class="num-content">
+                <h4>ทำไม (Why)</h4>
+                <p>เพื่อประโยชน์ใช้งาน (เช่น เปลี่ยนสายงาน) หรือเพื่อตัวเอง (อยากรู้)? โปรเจกต์ที่เน้นประโยชน์ใช้งานต้องตรวจสอบเพิ่ม: "สิ่งนี้จะทำให้ได้ผลลัพธ์ที่ต้องการจริงหรือ?"</p>
+              </div>
+            </div>
+            <div class="num-item">
+              <div class="num-badge">2</div>
+              <div class="num-content">
+                <h4>อะไร (What) — แคนวาส C/F/P</h4>
+                <p><strong>Concepts</strong> (แนวคิด-ต้องเข้าใจ), <strong>Facts</strong> (ข้อเท็จจริง-ต้องจำ), <strong>Procedures</strong> (ขั้นตอน-ต้องฝึกฝน) ขีดเส้นใต้สิ่งที่ยากที่สุดในแต่ละกลุ่ม</p>
+              </div>
+            </div>
+            <div class="num-item">
+              <div class="num-badge">3</div>
+              <div class="num-content">
+                <h4>อย่างไร (How)</h4>
+                <p>เทียบกับหลักสูตรมาตรฐาน เน้นย้ำ/ตัดทิ้ง อย่างเด็ดขาด เลือกสื่อการเรียน ลองส่งอีเมลหาผู้เชี่ยวชาญเพื่อขอคุยสัก 15 นาที</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card gold" style="margin-bottom:12px;">
+              <h4>⏱ กฎ 10%</h4>
+              <p>ลงทุนเวลา ~10% ของเวลาโปรเจกต์ทั้งหมดเพื่อค้นคว้าล่วงหน้า โปรเจกต์ 6 เดือน (10 ชม./สัปดาห์) → ค้นคว้า 24 ชั่วโมง การค้นคว้ามากเกินไปคือการผัดวันประกันพรุ่ง</p>
+            </div>
+            <div class="insight-box" style="padding-left:60px;">
+              <p>นักภาษาศาสตร์ Dan Everett ถอดรหัสภาษาที่ไม่รู้จักได้ใน <strong>30 นาที</strong> บนเวที — ไม่ใช่เพราะเป็นอัจฉริยะ แต่เพราะเขามีแผนที่ Metalearning ที่เข้าใจการทำงานของภาษา</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">5</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 2 · บทที่ 5</div>
+        <h2 class="section-title reveal">โฟกัส — ลับมีดให้คม</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">ปัญหาด้านสมาธิ 3 รูปแบบ พร้อม 3 วิธีแก้ที่แตกต่างกัน ค่อยๆ ไต่ระดับการแก้ปัญหาจากง่ายไปยาก</p>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>ปัญหา</th><th>อาการ</th><th>วิธีแก้</th><th>ตัวอย่าง</th></tr>
+            <tr>
+              <td>การเริ่มต้น</td>
+              <td>ผัดวันประกันพรุ่ง</td>
+              <td>กฎ 5 นาที → โพโมโดโร → บล็อกปฏิทิน → คั่นหน้าแบบสมอร์วิลล์</td>
+              <td>สัญญากับตัวเองว่าจะทำแค่ 5 นาที มักจะพอสร้างแรงส่งได้</td>
+            </tr>
+            <tr>
+              <td>รักษาความจดจ่อ</td>
+              <td>ไขว้เขว</td>
+              <td>จัดการสภาพแวดล้อม → ทำแบบตื่นตัว → รู้ทันความคิดแล้วปล่อยวาง</td>
+              <td>เก็บมือถือให้พ้นมือ ถ้ารู้สึกวอกแวก ให้จดความคิดนั้นไว้แล้วปล่อยไป</td>
+            </tr>
+            <tr>
+              <td>ปรับแต่ง</td>
+              <td>ความเข้มข้นผิดระดับ</td>
+              <td>กฎ Yerkes-Dodson: จับคู่ความตื่นตัวให้เหมาะกับความซับซ้อนของงาน</td>
+              <td>งานง่าย → เสียงจอแจในคาเฟ่ งานซับซ้อน → ห้องที่เงียบสงบ</td>
+            </tr>
+          </table>
+        </div>
+        <div class="insight-box reveal">
+          <p>Mary Somerville เป็นนักคณิตศาสตร์ระดับโลกขณะที่ต้องเลี้ยงลูกในศตวรรษที่ 19 เคล็ดลับของเธอคือ: การเรียนรู้ที่จะ <strong>กลับมาโฟกัสทันที</strong> หลังถูกขัดจังหวะด้วยการคั่นหน้าในใจ</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">6</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 3 · บทที่ 6</div>
+        <h2 class="section-title reveal">ตรงไปตรงมา — เดินหน้าตรง</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          เรียนรู้ด้วยการลงมือทำสิ่งที่คุณอยากเก่ง ความตรงไปตรงมาช่วยแก้ <strong>ปัญหาการนำไปใช้ (Transfer problem)</strong>: ความรู้จากห้องเรียนมักใช้ในโลกจริงได้ยาก
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>กลยุทธ์</th><th>ควรใช้เมื่อ...</th></tr>
+                <tr><td>🏗 เน้นโปรเจกต์ (Project-Based)</td><td>ต้องการผลลัพธ์ที่เป็นรูปธรรม — สร้างของจริงขึ้นมาเลย</td></tr>
+                <tr><td>🌊 เอาตัวไปคลุกคลี (Immersion)</td><td>เอาตัวเองไปอยู่ในสภาพแวดล้อมที่เป็นเป้าหมาย</td></tr>
+                <tr><td>✈ เครื่องจำลอง (Flight Simulator)</td><td>การซ้อมจริงอันตรายหรือแพงไป — จำลองเฉพาะแก่นของระบบความคิด</td></tr>
+                <tr><td>💪 วิธีแบบจัดเต็ม (Overkill)</td><td>เมื่อถึงจุดอิ่มตัวที่สบายเกินไป — ให้มองหาสถานการณ์ที่ท้าทายขึ้น</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>📋 งานวิจัยสำคัญ</h4>
+              <p>Thorndike & Woodworth (1901) หักล้าง "ทฤษฎีการฝึกฝนแบบเป็นทางการ" — การเรียนละตินไม่ได้ช่วยให้กระบวนการคิดทั่วไปดีขึ้น Haskell กล่าวว่า: จิตวิทยา ม.ปลาย ไม่ช่วยให้ได้เปรียบในระดับมหาวิทยาลัย การนำไปประยุกต์ใช้นั้นยากมาก ความตรงไปตรงมาคือวิธีแก้</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>กรณีศึกษา: Vatsal Jaiswal</h4>
+              <p>บัณฑิตสถาปัตย์หางานไม่ได้ เพราะพอร์ตไม่ตรงกับงานจริง เขาไปทำงานร้านปรินต์ (คลุกคลี), สอนตัวเองใช้ Revit ตอนกลางคืน (โปรเจกต์), และออกแบบตึก 3 อาคาร (จัดเต็ม) สุดท้ายบริษัททั้งสองแห่งที่สมัครก็รับเขาเข้าทำงาน</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">7</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 4 · บทที่ 7</div>
+        <h2 class="section-title reveal">เจาะลึก — โจมตีจุดอ่อนที่สุดของคุณ</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          ค้นหา <strong>ขั้นตอนที่เป็นคอขวด (Rate-determining step)</strong> — ทักษะย่อยที่ฉุดรั้งประสิทธิภาพโดยรวมของคุณ — แล้วแยกมันออกมาฝึกเจาะจง
+        </p>
+        <div class="reveal" style="display:flex;gap:20px;margin-bottom:6px;">
+          <div class="card" style="flex:1;">
+            <h4>วงจร ทำตรงๆ-แล้วค่อย-เจาะลึก</h4>
+            <p>ฝึกฝนโดยตรง → แยกคอขวดออกมา → ฝึกเจาะลึก → นำกลับไปรวมใหม่ → ทำซ้ำ อย่าฝึกเจาะลึกโดยไม่ยืนยันก่อนว่านั่นคือคอขวด</p>
+          </div>
+        </div>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>กลยุทธ์</th><th>ใช้เมื่อ…</th><th>ตัวอย่าง</th></tr>
+            <tr><td>ซอยเวลา (Time Slicing)</td><td>จุดสั้นๆ จุดหนึ่งทำพลาดตลอด</td><td>ท่อนดนตรีที่เล่นยาก เอามาซ้อมแยก 50 รอบ</td></tr>
+            <tr><td>แยกส่วนความคิด (Cognitive Components)</td><td>มีหลายอย่างทำงานพร้อมกันและต้องแยกออก</td><td>ฝึกการออกเสียงวรรณยุกต์แยกกับความหมายในภาษาใหม่</td></tr>
+            <tr><td>เลียนแบบ (Copycat)</td><td>คุณขาดคำศัพท์/เทคนิคพื้นฐาน</td><td>Franklin สร้างบทความของ Spectator ขึ้นใหม่เพื่อเรียนวิธีเขียน</td></tr>
+            <tr><td>แว่นขยาย (Magnifying Glass)</td><td>ทุ่มเวลาพิเศษให้องค์ประกอบเดียว</td><td>ใช้เวลาทั้งสัปดาห์โฟกัสแค่เรื่อง Feature engineering เท่านั้น</td></tr>
+            <tr><td>ไล่สายความรู้ (Prerequisite Chain)</td><td>เมื่อคุณเจอทางตัน</td><td>ทำพลาด → ถอยออกมา → เรียนรู้พื้นฐานที่ขาดไป → ลองใหม่</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">8</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 5 · บทที่ 8</div>
+        <h2 class="section-title reveal">ดึงข้อมูล — ทดสอบเพื่อเรียนรู้</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          การพยายามนึก (Active recall) ชนะการอ่านทบทวนเฉยๆ ถึง <strong>~50%</strong> — แม้ว่าคุณจะนึกไม่ออกและไม่ได้ดูเฉลยก็ตาม ความรู้สึกที่ว่าอ่านแล้วลื่นไหลนั้นหลอกเราได้
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="insight-box" style="padding-left:60px;margin-bottom:10px;">
+              <p>Karpicke & Blunt (2008) ตีพิมพ์ใน <em>Science</em>: การนึกอย่างอิสระชนะการทำ Concept map และการอ่านซ้ำถึง 50% คนที่อ่านซ้ำคิดว่าตัวเองจะทำได้ดีสุด — แต่พวกเขาคิดผิดมหันต์</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>เนื้อหา</th><th>วิธีที่ดีที่สุด</th></tr>
+                <tr><td>คำศัพท์ / สูตร</td><td>แฟลชการ์ด SRS (พยายามนึกด้วยตัวเอง)</td></tr>
+                <tr><td>ความเรียง / เลกเชอร์</td><td>นึกอย่างอิสระ — ปิดหนังสือ เขียนลงกระดาษเปล่า</td></tr>
+                <tr><td>โค้ด / คณิตศาสตร์</td><td>ตั้งโจทย์ท้าทายตัวเอง โดยปิดหนังสือ</td></tr>
+                <tr><td>การอ่านทั่วไป</td><td>วิธีแบบหนังสือคำถาม — จดคำถามไว้ แล้วค่อยตอบทีหลัง</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>ผลกระทบของการทดสอบล่วงหน้า</h4>
+              <p>การพยายามหาคำตอบ <em>ก่อน</em> ที่จะได้เรียนรู้ จะเตรียมสมองให้พร้อมรับข้อมูลที่ถูกต้อง ลองแก้โจทย์ก่อนที่จะถูกสอนวิธีทำ — ความล้มเหลวครั้งแรกนั้นไม่สูญเปล่า</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>วิธีการของ Ramanujan</h4>
+              <p>ด้วยหนังสือที่มีทฤษฎีบท 5,000 ข้อแต่ไม่มีวิธีพิสูจน์ เขาคิดค้นวิธีพิสูจน์ทั้งหมดด้วยตัวเองตลอด 7 ปี หนังสือซ่อนคำตอบไว้ ทำให้เขาต้องใช้ความคิดอย่างต่อเนื่อง จนกลายเป็นนักคณิตศาสตร์ที่ยิ่งใหญ่ของโลก</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">9</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 6 · บทที่ 9</div>
+        <h2 class="section-title reveal">ฟีดแบ็ก — อย่าหลบหมัด</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          ผลการวิเคราะห์ของ Kluger & DeNisi: ฟีดแบ็กให้ผลเชิงลบใน <strong>38% ของกรณีทั้งหมด</strong> ความแตกต่างอยู่ที่ <em>ประเภท</em> ของฟีดแบ็กและวิธีที่คุณรับมือ
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>🔴 ผลลัพธ์</h4>
+            <p>"คุณได้ 72 คะแนน" สัญญาณแบบกว้างๆ — บอกแค่ภาพรวม มีประโยชน์ในการสร้างแรงจูงใจ แต่ไม่ได้ช่วยให้คุณเก่งขึ้น</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>🟡 เชิงข้อมูล</h4>
+            <p>"วิทยานิพนธ์ของคุณไม่ชัดเจน" บอกว่า <em>อะไร</em> ผิด มีประโยชน์กว่าแบบผลลัพธ์ แต่ก็ยังไม่ได้บอกวิธีแก้ไข</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>🟢 การแก้ไข</h4>
+            <p>"เพิ่มคำเชื่อมตรงนี้นะ" บอก <em>วิธี</em> แก้ไขให้คุณ — นี่คือมาตรฐานทองคำ มองหาฟีดแบ็กแบบแก้ไขเป็นอันดับแรกเสมอ</p>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;gap:18px;margin-top:8px;">
+          <div class="card" style="flex:1;">
+            <h4>🎭 การตัดอคติ (Noise Cancellation)</h4>
+            <p>เมื่อฟีดแบ็กลำเอียง ให้แสดงผลงานแบบไม่ระบุชื่อ Chris Rock ทดสอบมุกตลกที่ Comedy Cellar ในฐานะคนไม่มีชื่อเสียง ก่อนจะนำไปใช้ในรายการพิเศษของเขา</p>
+          </div>
+          <div class="card" style="flex:1;">
+            <h4>🧠 กับดักอีโก้</h4>
+            <p>"งานนี้ต้องแก้" ≠ "ฉันไม่เก่งเรื่องนี้" ฟีดแบ็กเกี่ยวกับ <em>งาน</em> มีประโยชน์; แต่เกี่ยวกับ <em>ตัวบุคคล</em> ทำให้เกิดการหลีกเลี่ยง ต้องปรับมุมมองใหม่เสมอ</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">10</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 7 · บทที่ 10</div>
+        <h2 class="section-title reveal">การจดจำ — อย่าเติมน้ำลงในถังรั่ว</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          การลืมคือเรื่องธรรมชาติ เส้นโค้งการลืมของ Ebbinghaus เป็นแบบเอ็กซ์โพเนนเชียล — ลดลงเร็วสุดในช่วงแรก แต่มันคาดเดาได้ จึงสามารถจัดการได้
+        </p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="table-wrap">
+              <table>
+                <tr><th>เครื่องมือ</th><th>เหมาะสำหรับ</th><th>วิธีการ</th></tr>
+                <tr><td>📅 การเว้นระยะ (SRS)</td><td>ข้อเท็จจริง, แนวคิด</td><td>ทบทวนเมื่อใกล้จะลืม ระยะ: 1วัน → 3วัน → 1สัปดาห์ → 2สัปดาห์ → 1เดือน</td></tr>
+                <tr><td>🔄 ทำจนเป็นอัตโนมัติ</td><td>ทักษะ</td><td>เปลี่ยน "รู้ว่าอะไร" เป็น "รู้ว่าทำอย่างไร" ความจำเชิงกระบวนการจะเสื่อมช้ากว่ามาก</td></tr>
+                <tr><td>💪 เรียนรู้เกินขีดจำกัด</td><td>พื้นฐานสำคัญ</td><td>ทำซ้ำ 3+ รอบหลังจากทำถูกครั้งแรก อย่าหยุดเมื่อทำถูก — แต่หยุดเมื่อไม่สามารถทำผิดได้อีก</td></tr>
+                <tr><td>🧠 หลักการจำ (Mnemonics)</td><td>คำศัพท์ต่างชาติ, ข้อเท็จจริง</td><td>เชื่อมโยงคำพ้องเสียง เป็นแค่โครงชั่วคราว — ทิ้งได้เลยเมื่อใช้งานจนคล่องแล้ว</td></tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card accent">
+              <h4>🔑 ความจำ = สิ่งตกค้างของความคิด</h4>
+              <p>สิ่งที่คุณ <em>คิดถึง</em> คือสิ่งที่จะจำได้ หากใช้เวลาอ่านซ้ำแบบผ่านๆ สมองจะจำแบบรับรู้ — ไม่ใช่การดึงความจำแบบตื่นตัว ออกแบบการฝึกให้สมองได้ออกแรงจริงๆ</p>
+            </div>
+            <div class="card gold" style="margin-top:10px;">
+              <h4>กรณีศึกษา: Nigel Richards</h4>
+              <p>แชมป์โลกสแคร็บเบิล 5 สมัย เขาแข่งสแคร็บเบิลภาษาฝรั่งเศสได้โดยพูดฝรั่งเศสไม่เป็น — เขาจำพจนานุกรมฝรั่งเศสทั้งเล่มด้วยการฝึกหารูปแบบซ้ำๆ บทเรียน: หลักการจำ + SRS อุดช่องโหว่ได้แทบทุกอย่าง</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">11</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 8 · บทที่ 11</div>
+        <h2 class="section-title reveal">สัญชาตญาณ — ขุดให้ลึกก่อนจะสร้างขึ้น</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          ความเข้าใจถ่องแท้มักดูเหมือนเวทมนตร์ (Feynman) แต่มันถูกสร้างขึ้นอย่างเป็นระบบผ่าน <strong>ความเข้าใจหลักการก่อน</strong> และการสะสมคลังความคิดในสมอง
+        </p>
+        <div class="grid-2 reveal" style="gap:24px;">
+          <div>
+            <div class="card accent" style="margin-bottom:12px;">
+              <h4>🧪 เทคนิคไฟน์แมน (Feynman Technique)</h4>
+              <p style="margin-bottom:10px;">วิธีที่แน่นอนที่สุดในการลดช่องว่างระหว่าง "ฉันเคยได้ยินเรื่องนี้" กับ "ฉันเข้าใจเรื่องนี้จริงๆ"</p>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">1</div>
+                <div class="num-content"><p style="font-size:19px;">เขียนแนวคิดนั้นไว้ที่ด้านบนสุดของกระดาษเปล่า</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">2</div>
+                <div class="num-content"><p style="font-size:19px;">อธิบายด้วยภาษาเข้าใจง่าย ราวกับกำลังสอนเด็ก</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">3</div>
+                <div class="num-content"><p style="font-size:19px;">เมื่อไหร่ที่ติดขัด ให้กลับไปดูเนื้อหาต้นฉบับ</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge" style="width:28px;height:28px;font-size:15px;">4</div>
+                <div class="num-content"><p style="font-size:19px;">ทำให้เรียบง่ายและเปรียบเทียบ ทำซ้ำจนอุดช่องโหว่ได้หมด</p></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card gold">
+              <h4>🎯 ผู้เชี่ยวชาญ vs. มือใหม่</h4>
+              <p>ผู้เชี่ยวชาญแยกแยะปัญหาโดยใช้ <strong>หลักการเชิงลึก</strong> ("นี่คือโจทย์อนุรักษ์พลังงาน") มือใหม่มองแค่ <strong>ลักษณะภายนอก</strong> ("โจทย์มีทางลาดกับรอก") ฝึกถามตัวเองว่า "ปัญหาข้อนี้เป็นประเภทไหน?" ก่อนแก้ — นี่คือสะพานสู่ความเชี่ยวชาญ</p>
+            </div>
+            <div class="insight-box" style="margin-top:10px;">
+              <p>คุณวาดรูปจักรยานจากความจำได้ไหม? คนส่วนใหญ่ทำไม่ได้ แม้จะขี่มาหลายปี นั่นคือ <strong>ภาพลวงตาของความเข้าใจ (Illusion of Explanatory Depth)</strong> — เอาความคุ้นเคยมาปะปนกับความเข้าใจ</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">12</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">หลักการที่ 9 · บทที่ 12</div>
+        <h2 class="section-title reveal">การทดลอง — สำรวจนอกพื้นที่ปลอดภัย</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">
+          <strong>หลักการขั้นสุดยอด</strong> ที่ควบคุมหลักการอื่นๆ เมื่อคุณเข้าใกล้ความเชี่ยวชาญ เส้นทางที่มีคนปูไว้จะสิ้นสุดลง — คุณต้องหาทางของตัวเอง
+        </p>
+        <div class="grid-3 reveal">
+          <div class="card accent">
+            <h4>📚 ทรัพยากร</h4>
+            <p>เปลี่ยน <em>วิธี</em> เรียน หนังสือเรียน → ลงมือทำโปรเจกต์จริง → โค้ช การเปลี่ยนแต่ละครั้งจะเผยให้เห็นช่องโหว่และมิติใหม่ของทักษะ</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>🔧 เทคนิค</h4>
+            <p>เปลี่ยน <em>สิ่ง</em> ที่จะเรียนรู้ต่อไป เจาะลึกทักษะย่อย, ลองนำไปประยุกต์ใช้ในสายงานอื่น, ปรับเปลี่ยนโครงสร้างการฝึกฝน</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>🎨 สไตล์</h4>
+            <p>เปลี่ยน <em>ตัวตน</em> ในฐานะผู้ฝึกฝน แนวทางที่เป็นเอกลักษณ์ของคุณจะเกิดจากการทดลองอย่างต่อเนื่องในระดับนี้</p>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;gap:18px;margin-top:8px;">
+          <div class="card" style="flex:1;">
+            <h4>🎨 กรณีศึกษา: Vincent van Gogh</h4>
+            <p>เขาลองเปลี่ยนสไตล์อย่างดุดัน... ดัตช์เรียลลิสม์, สีแบบญี่ปุ่น, จนถึงลัทธิแสดงพลังอารมณ์ในภาพ <em>Starry Night</em> การทดลองแต่ละครั้งสอนให้เขารู้ในสิ่งที่สไตล์ก่อนหน้าให้ไม่ได้ เขาไม่ได้เกิดมาเป็นอัจฉริยะ; แต่เขาทดลองจนไปถึงจุดนั้น</p>
+          </div>
+          <div class="card" style="flex:1;border-left-color:var(--accent-crimson);">
+            <h4>⚠️ เมื่อไหร่ที่ควรทดลอง</h4>
+            <p>อย่าทดลองจนกว่าพื้นฐานจะแน่น ให้เชี่ยวชาญพื้นฐานก่อนแล้วค่อยแหกกฎ การทดลองมีไว้สำหรับช่วงอิ่มตัว ไม่ใช่ตอนเริ่มต้น</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">13</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content">
+        <div class="section-number reveal">บทที่ 13</div>
+        <h2 class="section-title reveal">โปรเจกต์ Ultralearning แรกของคุณ</h2>
+        <hr class="rule-short reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:8px;">
+          สะพานเชื่อมระหว่างหลักการและการลงมือทำ คือกระบวนการ 5 ขั้นตอนที่ทำซ้ำได้ โปรเจกต์แรกจะยากที่สุด — หลังจากนั้นรูปแบบจะทวีคูณขึ้นเอง
+        </p>
+        <div class="grid-2 reveal" style="gap:14px;">
+          <div class="card accent">
+            <h4>① ค้นคว้า (ใช้เวลา ≤10%)</h4>
+            <p>กำหนดขอบเขตให้ชัด ระบุทรัพยากร, เกณฑ์มาตรฐาน, กิจกรรมฝึกโดยตรง, และเนื้อหาสำรอง สัมภาษณ์ผู้เชี่ยวชาญ — คุยแค่ 15 นาทีอาจประหยัดเวลาได้หลายเดือน</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-gold);">
+            <h4>② จัดตารางเวลา</h4>
+            <p>ทำตามปฏิทิน ไม่ใช่แค่ตั้งใจ ล็อกเวลาทุกสัปดาห์ให้ชัด สำหรับโปรเจกต์ >1 เดือน ให้ลองทำ <strong>สัปดาห์นำร่อง (Pilot week)</strong> — ตารางที่ดูดีบนกระดาษมักจะพังเมื่อทำจริง</p>
+          </div>
+          <div class="card" style="border-left-color:var(--accent-teal);">
+            <h4>③ ลงมือทำ</h4>
+            <p>หลักการ 9 ประการจะเป็นเครื่องมือวินิจฉัย เจอทางตันใช่ไหม? เช็กตามลิสต์: ฉันฝึกโดยตรงไหม? ทดสอบตัวเองไหม? ได้รับฟีดแบ็กที่ตรงไปตรงมาหรือไม่?</p>
+          </div>
+          <div class="card">
+            <h4>④ ทบทวน + ⑤ ทำต่อไป</h4>
+            <p>ก่อนที่ไฟจะมอด: อะไรดี/พลาด/ต่างออกไป? จากนั้นเลือก: <strong>รักษาไว้</strong> (ลดตารางเรียนลง), <strong>เรียนใหม่</strong> (ปล่อยลืม เพราะรื้อฟื้นเร็วกว่า), หรือ <strong>ก้าวสู่ความเชี่ยวชาญ</strong> (เรียนเจาะลึก)</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">14</span> / 15</div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="section-number reveal">บทสรุป · บทที่ 14</div>
+        <div class="closing-text">
+          <p class="reveal large-quote">
+            "อัจฉริยะไม่ได้เกิดขึ้นมาเอง —<br>
+            แต่สร้างขึ้นจากการ <em>ศึกษา</em>"
+          </p>
+          <hr class="rule-short reveal" style="margin:24px auto;">
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 20px;font-size:26px;">
+            การทดลองของตระกูล Polgár ปั้นนักหมากรุกระดับโลกได้ถึง 3 คน ผ่านการเรียนรู้ที่เข้มข้นและมีหลักการตั้งแต่อายุ 3 ขวบ มันพิสูจน์ให้เห็นว่าอะไรที่เป็น <em>ไปได้</em> — ไม่ใช่อะไรที่เป็นเรื่องทั่วไป
+          </p>
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 32px;color:var(--text-muted);font-size:24px;">
+            ยิ่งคุณเรียนรู้มากเท่าไหร่ คุณก็จะยิ่งเห็นว่าตัวเองไม่รู้อะไรอีกมากเท่านั้น<br>
+            อาการหน้ามืดวิงเวียนนั้นไม่ใช่ความล้มเหลว — แต่มันคือสัญลักษณ์ของการเรียนรู้ที่แท้จริง
+          </p>
+          <div class="reveal" style="font-family:var(--font-display);font-size:24px;font-style:italic;color:var(--text-secondary);">
+            — Scott Young, <em>Ultralearning</em>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">15</span> / 15</div>
+    </section>
+
+  </main>
+</div>
+
+<div class="deck-controls">
+  <button id="prevBtn" aria-label="Previous slide">←</button>
+  <span class="counter" id="slideCounter">1 / 15</span>
+  <button id="nextBtn" aria-label="Next slide">→</button>
+</div>
+
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="โหมดแก้ไข (E)">✏️ แก้ไข</button>
+<div class="editor-indicator" id="editorIndicator">✏️ กำลังแก้ไข</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.currentSlide = 0;
+    this.totalSlides = this.slides.length;
+    this.stage = document.getElementById('deckStage');
+    this.isTransitioning = false;
+
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+
+  setupStageScale() {
+    const scale = () => {
+      const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * f) / 2;
+      const y = (window.innerHeight - 1080 * f) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+
+  showSlide(index) {
+    if (this.isTransitioning) return;
+    this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1));
+    this.isTransitioning = true;
+
+    this.slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'visible');
+      if (i === this.currentSlide) {
+        void slide.offsetWidth;
+        slide.classList.add('active', 'visible');
+      }
+    });
+
+    const counter = document.getElementById('slideCounter');
+    if (counter) counter.textContent = `${this.currentSlide + 1} / ${this.totalSlides}`;
+
+    setTimeout(() => { this.isTransitioning = false; }, 600);
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.getAttribute('contenteditable')) return;
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ':
+        case 'PageDown':
+          e.preventDefault();
+          this.next();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'PageUp':
+          e.preventDefault();
+          this.prev();
+          break;
+        case 'Home':
+          e.preventDefault();
+          this.showSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          this.showSlide(this.totalSlides - 1);
+          break;
+      }
+    });
+  }
+
+  setupTouchNav() {
+    let startX = 0;
+    let startY = 0;
+    const stage = this.stage;
+
+    stage.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+
+      if (absDx > 50 && absDx > absDy * 1.5) {
+        if (dx < 0) this.next();
+        else this.prev();
+      }
+    }, { passive: true });
+  }
+
+  setupWheelNav() {
+    let wheelTimeout = false;
+    this.stage.addEventListener('wheel', (e) => {
+      if (wheelTimeout || this.isTransitioning) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      wheelTimeout = true;
+      if (e.deltaY > 0) this.next();
+      else this.prev();
+      setTimeout(() => { wheelTimeout = false; }, 800);
+    }, { passive: true });
+  }
+
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+  }
+
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+}
+
+/* ===========================================
+   INLINE EDITOR
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.editToggle = document.getElementById('editToggle');
+    this.editorIndicator = document.getElementById('editorIndicator');
+    this.setupHotzone();
+    this.setupKeyboardShortcut();
+    this.setupSaveShortcut();
+  }
+
+  setupHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const editToggle = this.editToggle;
+    let hideTimeout = null;
+
+    hotzone.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      editToggle.classList.add('show');
+    });
+    hotzone.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) editToggle.classList.remove('show');
+      }, 400);
+    });
+    editToggle.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+    });
+    editToggle.addEventListener('mouseleave', () => {
+      hideTimeout = setTimeout(() => {
+        if (!this.isActive) editToggle.classList.remove('show');
+      }, 400);
+    });
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    editToggle.addEventListener('click', () => this.toggleEditMode());
+  }
+
+  setupKeyboardShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') &&
+          !e.target.getAttribute('contenteditable') &&
+          e.target.tagName !== 'INPUT' &&
+          e.target.tagName !== 'TEXTAREA') {
+        this.toggleEditMode();
+      }
+    });
+  }
+
+  setupSaveShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        if (this.isActive) {
+          e.preventDefault();
+          this.save();
+        }
+      }
+    });
+  }
+
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    if (this.isActive) {
+      this.enableEditing();
+    } else {
+      this.disableEditing();
+    }
+  }
+
+  enableEditing() {
+    this.editToggle.classList.add('active');
+    this.editToggle.classList.add('show');
+    this.editorIndicator.classList.add('active');
+    this.editToggle.textContent = '🔒 ล็อก';
+
+    document.querySelectorAll('.slide .body-text, .slide h4, .slide p, .slide .section-title, .slide .section-number, .slide .large-quote, .slide .closing-text div[style]').forEach(el => {
+      if (el.closest('.num-badge') || el.closest('.deck-controls')) return;
+      el.setAttribute('contenteditable', 'true');
+      el.style.outline = '1px dashed rgba(196, 30, 58, 0.25)';
+      el.style.cursor = 'text';
+      el.style.borderRadius = '2px';
+      el.style.padding = '2px 4px';
+    });
+  }
+
+  disableEditing() {
+    this.editToggle.classList.remove('active');
+    this.editorIndicator.classList.remove('active');
+    this.editToggle.textContent = '✏️ แก้ไข';
+
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = '';
+      el.style.cursor = '';
+      el.style.padding = '';
+      el.style.borderRadius = '';
+    });
+  }
+
+  save() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ultralearning-deck-th.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.editorIndicator.textContent = '💾 บันทึกแล้ว!';
+    setTimeout(() => { this.editorIndicator.textContent = '✏️ กำลังแก้ไข'; }, 1500);
+  }
+}
+
+/* ===========================================
+   INIT
+   =========================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  window.deck = new SlidePresentation();
+  window.editor = new InlineEditor();
+});
+</script>
+</body>
+</html>

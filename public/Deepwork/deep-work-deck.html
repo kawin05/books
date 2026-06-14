@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Work — Rules for Focused Success</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   VIEWPORT-BASE.CSS — MANDATORY FIXED STAGE
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #1A1C20; }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: #1A1C20; }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: #1A1C20; }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: #1A1C20; }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+@media print {
+  html,body { width:1920px;height:auto;overflow:visible;background:#1A1C20; }
+  .deck-viewport { position:static;overflow:visible;background:#1A1C20; }
+  .deck-stage { position:static;width:auto;height:auto;transform:none!important;background:none; }
+  .slide { position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always; }
+  .slide:last-child { break-after:auto;page-break-after:auto; }
+  .deck-controls { display:none!important; }
+}
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:0.01ms!important;transition-duration:0.2s!important; } }
+
+/* ===========================================
+   THEME: FORGE (Custom for Deep Work)
+   =========================================== */
+:root {
+  --bg-dark: #1A1C20;
+  --bg-surface: #22252A;
+  --bg-card: #26292F;
+  --accent-rust: #C85D4E;
+  --accent-amber: #E8B85C;
+  --accent-teal: #4A9E9E;
+  --text-primary: #F0EBE0;
+  --text-secondary: rgba(240,235,224,0.7);
+  --text-muted: rgba(240,235,224,0.4);
+  --border-subtle: rgba(240,235,224,0.06);
+  --accent-rust-faint: rgba(200,93,78,0.12);
+  --accent-amber-faint: rgba(232,184,92,0.12);
+  --font-display: 'Kanit', sans-serif;
+  --font-body: 'Lexend', sans-serif;
+  --title-size: 112px;
+  --section-size: 56px;
+  --heading-size: 30px;
+  --body-size: 22px;
+  --small-size: 18px;
+  --slide-padding: 120px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================================
+   BASE STYLES
+   =========================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.slide {
+  background: linear-gradient(165deg, var(--bg-dark) 0%, #131418 100%);
+}
+
+/* === ATMOSPHERIC GLOW === */
+.atmo-glow {
+  position: absolute;
+  top: -300px;
+  right: -200px;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,93,78,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === SLIDE CONTENT === */
+.slide-content {
+  position: absolute;
+  left: var(--slide-padding);
+  top: 0;
+  width: calc(1920px - var(--slide-padding) * 2);
+  height: 1080px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* === LEFT ACCENT STRIP === */
+.slide-content::before {
+  content: '';
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 50%;
+  background: linear-gradient(180deg, var(--accent-rust), var(--accent-amber));
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+/* === TITLE SLIDE === */
+.title-slide::before { display: none; }
+.title-slide .slide-content::before { display: none; }
+.title-slide .slide-content { justify-content: center; padding-top: 0; }
+
+/* === TYPOGRAPHY === */
+h1 { font-family: var(--font-display); font-weight: 700; font-size: var(--title-size); line-height: 1.05; color: var(--text-primary); }
+h1 .highlight { color: var(--accent-amber); font-style: italic; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--section-size);
+  line-height: 1.08;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.section-title .highlight { color: var(--accent-amber); font-style: italic; }
+
+.section-number {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--accent-rust);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--heading-size);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.body-text strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* === CARDS === */
+.card {
+  background: var(--bg-card);
+  border-radius: 4px;
+  padding: 22px 26px;
+  border-left: 3px solid var(--border-subtle);
+}
+.card.rust { border-left-color: var(--accent-rust); }
+.card.amber { border-left-color: var(--accent-amber); }
+.card.teal { border-left-color: var(--accent-teal); }
+
+.card h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.card p {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* === DECORATIVE === */
+.accent-line {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-rust), var(--accent-amber));
+  margin: 12px 0 20px;
+  border: none;
+}
+
+.accent-line-full {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 16px 0;
+  border: none;
+}
+
+/* === NUMBERED ITEMS === */
+.num-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.num-badge {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-rust-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--accent-rust);
+}
+.num-badge.amber { background: var(--accent-amber-faint); color: var(--accent-amber); }
+.num-content h4 { font-family: var(--font-display); font-weight: 500; font-size: 22px; color: var(--text-primary); margin-bottom: 2px; }
+.num-content p { font-family: var(--font-body); font-size: 18px; font-weight: 300; line-height: 1.45; color: var(--text-secondary); }
+
+/* === GRIDS === */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 12px; }
+
+/* === TABLES === */
+.table-wrap { margin-top: 12px; width: 100%; }
+.table-wrap table { width: 100%; border-collapse: collapse; font-family: var(--font-body); font-size: 18px; }
+.table-wrap th {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 20px;
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--accent-amber);
+  border-bottom: 2px solid var(--accent-amber-faint);
+  background: var(--accent-rust-faint);
+}
+.table-wrap td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-weight: 300;
+}
+.table-wrap tr:last-child td { border-bottom: none; }
+.table-wrap td:first-child { font-weight: 500; color: var(--text-primary); }
+
+/* === INSIGHT BOX === */
+.insight-box {
+  background: linear-gradient(135deg, var(--accent-rust-faint), var(--accent-amber-faint));
+  padding: 18px 24px 18px 60px;
+  border-radius: 4px;
+  margin: 10px 0;
+  position: relative;
+}
+.insight-box::before {
+  content: '\201C';
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--accent-amber);
+  opacity: 0.5;
+}
+.insight-box p {
+  font-family: var(--font-body);
+  font-size: 19px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* === CLOSING === */
+.closing-text { text-align: center; }
+.closing-text .large-quote {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+  max-width: 1400px;
+  margin: 0 auto 24px;
+}
+.closing-text .large-quote .highlight { color: var(--accent-amber); font-style: italic; }
+
+/* === PAGE NUMBER === */
+.page-num {
+  position: absolute;
+  bottom: 36px;
+  right: var(--slide-padding);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+.page-num .num { font-family: var(--font-display); font-weight: 500; font-size: 16px; color: var(--text-secondary); }
+
+/* === ANIMATIONS === */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal:nth-child(2) { transition-delay: 0.12s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+.reveal:nth-child(4) { transition-delay: 0.28s; }
+.reveal:nth-child(5) { transition-delay: 0.36s; }
+.reveal:nth-child(6) { transition-delay: 0.44s; }
+
+/* === DECK CONTROLS === */
+.deck-controls {
+  position: fixed; left: 50%; bottom: 22px;
+  transform: translateX(-50%); z-index: 1000;
+  display: flex; gap: 12px; align-items: center;
+  font-family: var(--font-body);
+}
+.deck-controls button {
+  background: rgba(240,235,224,0.08);
+  border: 1px solid rgba(240,235,224,0.12);
+  color: var(--text-secondary);
+  width: 40px; height: 40px; border-radius: 50%;
+  cursor: pointer; font-size: 18px;
+  transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.deck-controls button:hover { background: var(--accent-rust-faint); border-color: var(--accent-rust); color: var(--accent-rust); }
+.deck-controls .counter { font-size: 15px; color: var(--text-muted); min-width: 60px; text-align: center; }
+
+/* === INLINE EDITING === */
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle {
+  position: fixed; top: 12px; left: 12px; z-index: 10001;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  background: var(--bg-surface); border: 1px solid var(--border-subtle);
+  border-radius: 6px; padding: 8px 14px; cursor: pointer;
+  font-family: var(--font-body); font-size: 14px; color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle:hover { border-color: var(--accent-rust); color: var(--accent-rust); }
+.editor-indicator {
+  position: fixed; top: 12px; right: 12px; z-index: 10001;
+  background: var(--accent-rust); color: #fff;
+  padding: 6px 14px; border-radius: 4px;
+  font-family: var(--font-body); font-size: 13px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.editor-indicator.active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide title-slide active">
+      <div class="atmo-glow"></div>
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="reveal" style="font-family:var(--font-display);font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-rust);font-weight:400;margin-bottom:16px;">Book Summary</div>
+        <h1 class="reveal">Deep <span class="highlight">Work</span></h1>
+        <div class="reveal" style="width:60px;height:3px;background:linear-gradient(90deg,var(--accent-rust),var(--accent-amber));margin:12px auto 16px;"></div>
+        <p class="reveal" style="font-family:var(--font-body);font-size:30px;font-weight:300;line-height:1.4;color:var(--text-secondary);max-width:800px;margin:0 auto 24px;">Rules for Focused Success <br>in a Distracted World</p>
+        <p class="reveal" style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--text-muted);">Cal Newport</p>
+      </div>
+      <div class="page-num"><span class="num">1</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 2: WHAT IS DEEP WORK -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Introduction</div>
+        <h2 class="section-title reveal">What Is <span class="highlight">Deep Work</span>?</h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:20px;">
+          <div class="card rust">
+            <h4>🧠 Deep Work</h4>
+            <p>Professional activities performed in a state of distraction-free concentration that push your cognitive capabilities to their limit. Creates new value, improves skill, hard to replicate.</p>
+          </div>
+          <div class="card" style="border-left-color:var(--text-muted);">
+            <h4>📨 Shallow Work</h4>
+            <p>Non-cognitively demanding, logistical tasks performed while distracted. Easy to replicate, tends not to create much new value. Email, meetings, social media.</p>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p><strong>The Deep Work Hypothesis:</strong> The ability to perform deep work is becoming simultaneously <em>rarer</em> and <em>more valuable</em> in our economy. Those who cultivate this skill will thrive.</p>
+        </div>
+        <div class="reveal" style="background:var(--accent-rust-faint);padding:16px 24px;border-radius:4px;border-left:3px solid var(--accent-rust);margin-top:4px;">
+          <p style="font-family:var(--font-display);font-size:24px;font-weight:400;color:var(--accent-amber);">High-Quality Work = (Time) × (Intensity of Focus)</p>
+          <p style="font-family:var(--font-body);font-size:17px;font-weight:300;color:var(--text-secondary);">Doubling focus beats doubling hours, and it won't burn you out.</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">2</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 3: DEEP WORK IS VALUABLE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 1 · The Economic Argument</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">Is Valuable</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;">The <strong>Great Restructuring</strong> — technologies race ahead while skills lag behind. Three groups will thrive:</p>
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🔧 High-Skilled Workers</h4>
+            <p>Work creatively with intelligent machines. Nate Silver — mastering SQL, Stata, and complex models to produce election forecasts worth millions.</p>
+          </div>
+          <div class="card amber">
+            <h4>⭐ Superstars</h4>
+            <p>Technology makes talent markets global. The best command disproportionate rewards. David Heinemeier Hansson — created Ruby on Rails from deep focus.</p>
+          </div>
+          <div class="card teal">
+            <h4>💰 Owners</h4>
+            <p>Those with capital to invest in new technologies. As machines reduce labor needs, more wealth flows back to capital.</p>
+          </div>
+        </div>
+        <div class="reveal" style="margin-top:6px;">
+          <p class="body-text" style="font-size:20px;"><strong>Two core abilities both depend on deep work:</strong> (1) quickly master hard things, (2) produce at an elite level. Without deep concentration, neither is possible.</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">3</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 4: MYELINATION & ATTENTION RESIDUE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">The Science of Deep Learning</div>
+        <h2 class="section-title reveal">Myelination &amp; <span class="highlight">Attention Residue</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:20px;">
+          <div>
+            <div class="card rust">
+              <h4>🧬 Myelination (Coyle)</h4>
+              <p><strong>Myelin</strong> is fatty tissue that insulates neurons, making them fire faster. Intense focus on one skill forces that neural circuit to fire repeatedly in isolation, wrapping it in myelin — "cementing" the skill.</p>
+              <p style="margin-top:8px;"><strong>Why distraction kills learning:</strong> With Facebook open, you fire too many circuits at once and never isolate the neurons you need to strengthen.</p>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p>"To learn hard things quickly, you must focus intensely without distraction. To learn is an act of deep work." — Cal Newport</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🔄 Attention Residue (Leroy)</h4>
+              <p>When switching from Task A to Task B, a "residue" of attention stays stuck on Task A, degrading performance on Task B.</p>
+              <p style="margin-top:8px;"><strong>Worse when:</strong> Task A was unbounded, or you were interrupted mid-task.</p>
+              <div class="insight-box" style="margin-top:8px;background:var(--accent-amber-faint);">
+                <p><strong>Adam Grant's solution:</strong> Batch hard work into long, uninterrupted stretches — stack teaching in one semester, research in another. Within research periods, isolate 3-4 days with out-of-office auto-replies.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">4</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 5: DEEP WORK IS RARE -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 2 · The Structural Argument</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">Is Rare</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>⚫ The Metric Black Hole</h4>
+              <p>It's nearly impossible to measure the bottom-line impact of depth-destroying behaviors. <strong>Tom Cochran's experiment:</strong> CTO of Atlantic Media spent a week measuring email — $1M+/year in processing costs — and still couldn't determine if it produced net value.</p>
+            </div>
+            <div class="card" style="margin-top:8px;">
+              <h4>📉 Principle of Least Resistance</h4>
+              <p>Without clear feedback, people choose whatever is easiest — usually shallow work. Three manifestations:</p>
+              <ul style="font-family:var(--font-body);font-size:18px;font-weight:300;color:var(--text-secondary);margin-top:8px;padding-left:18px;">
+                <li><strong>Culture of connectivity</strong> — always-on email/IM</li>
+                <li><strong>Standing meetings</strong> — visible progress, no actual work</li>
+                <li><strong>"Thoughts?" forwarding</strong> — clears sender's inbox, eats recipients' time</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🏃 Busyness as Proxy for Productivity</h4>
+              <p>Without clear output metrics, knowledge workers fall back on visible busyness. Unlike professors (h-index) or factory workers (widgets/hour), most have no quantified measure — so they do lots of stuff visibly.</p>
+              <p style="margin-top:8px;"><strong>Signs you're trapped:</strong> Answering email at all hours, constant meetings, instant IM responses.</p>
+            </div>
+            <div class="card teal" style="margin-top:8px;">
+              <h4>🌐 Technopoly (Postman)</h4>
+              <p>A culture where new tech is automatically assumed good. Supporting deep work means rejecting what's new and high-tech — the hard choice. Without hard metrics, Internet-centrism wins by default.</p>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p><strong>Good news:</strong> Your peers' myopia is your competitive advantage. Depth will become increasingly rare and increasingly valuable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">5</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 6: DEEP WORK IS MEANINGFUL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Chapter 3 · The Human Argument</div>
+        <h2 class="section-title reveal">Deep Work <span class="highlight">Is Meaningful</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🧠 Neurological</h4>
+            <p><strong>"You are the sum of what you focus on."</strong> — Winifred Gallagher</p>
+            <p>Your brain constructs your world from what you pay attention to, not from your circumstances. A shallow workday creates a world of stress and triviality. Depth prevents that world from being built.</p>
+          </div>
+          <div class="card amber">
+            <h4>🌊 Psychological (Flow)</h4>
+            <p>Csikszentmihalyi's research: people are <strong>happier at work</strong> and less happy relaxing — opposite of conventional wisdom. Deep work is a reliable flow-generation machine.</p>
+            <p style="margin-top:8px;">More flow = higher life satisfaction. Redesign your work to maximize flow.</p>
+          </div>
+          <div class="card teal">
+            <h4>⚒️ Philosophical (Craftsmanship)</h4>
+            <p>"The task of a craftsman is not to generate meaning, but to cultivate the skill of discerning meanings that are already there." — Dreyfus &amp; Kelly</p>
+            <p>Any pursuit supporting high skill — cognitive or physical — can generate sacredness. You don't need a rarified job; you need a rarified approach.</p>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p>Humans flourish in depth and wallow in shallowness. — <em>Homo Sapiens Deepensis</em></p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">6</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 7: RULE 1 — 4 PHILOSOPHIES -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #1</div>
+        <h2 class="section-title reveal">Work <span class="highlight">Deeply</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">Willpower is finite. Don't rely on it — build a system. Pick the philosophy that fits your life:</p>
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th>Philosophy</th><th>When It Fits</th><th>How It Works</th></tr>
+            <tr>
+              <td>🏔️ Monastic</td>
+              <td>Solo output (writer, theorist, solo dev)</td>
+              <td>Cut everything that isn't deep. Knuth — no email since 1990</td>
+            </tr>
+            <tr>
+              <td>🔄 Bimodal</td>
+              <td>Need deep + collaboration (professor, consultant)</td>
+              <td>Days-long deep blocks alternating with shallow periods. Jung's Bollingen</td>
+            </tr>
+            <tr>
+              <td>🎵 Rhythmic</td>
+              <td>Fixed schedule (most knowledge workers)</td>
+              <td>Same time, same place daily. Hemingway — dawn to noon</td>
+            </tr>
+            <tr>
+              <td>📰 Journalistic</td>
+              <td>Chaotic schedule (founder, parent)</td>
+              <td>Drop into depth at a moment's notice. Master another philosophy first</td>
+            </tr>
+          </table>
+        </div>
+        <div class="reveal" style="display:flex;gap:12px;margin-top:8px;">
+          <div class="card" style="flex:1;padding:14px 20px;">
+            <p style="font-family:var(--font-body);font-size:17px;color:var(--text-secondary);"><strong style="color:var(--accent-amber);">Decision tree:</strong> ≥4h/day uninterrupted? → <strong>Monastic</strong> · Whole days? → <strong>Bimodal</strong> · Fixed hour? → <strong>Rhythmic</strong> · None? → <strong>Journalistic</strong> (and fix your calendar)</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">7</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 8: RITUALIZE & 4DX -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #1 continued</div>
+        <h2 class="section-title reveal">Ritualize &amp; The <span class="highlight">4 Disciplines</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust" style="margin-bottom:10px;">
+              <h4>🎯 Ritualize Your Deep Work</h4>
+              <p>A <strong>grand gesture</strong> accelerates the transition. J.K. Rowling booked a hotel to finish Harry Potter. Bill Gates took "Think Weeks" in a cabin.</p>
+              <p style="margin-top:8px;"><strong>3 things decided before you sit down:</strong> Where you'll work, how long (90 min sweet spot, ~4h daily ceiling), and what you'll do (one measurable outcome).</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber" style="margin-bottom:10px;">
+              <h4>📊 4 Disciplines of Execution</h4>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p style="font-size:17px;"><strong>Wildly Important</strong> — ONE ambitious goal. "Ship the module by June" not "work deeply."</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p style="font-size:17px;"><strong>Lead Measures</strong> — Track <em>hours of deep work</em>, not lagging output. Act on it today.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge" style="background:var(--accent-amber-faint);color:var(--accent-amber);">3</div>
+                <div class="num-content"><p style="font-size:17px;"><strong>Compelling Scoreboard</strong> — Visible tally of deep hours. Card stock next to monitor.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">4</div>
+                <div class="num-content"><p style="font-size:17px;"><strong>Accountability Cadence</strong> — Weekly review. Check scoreboard. Adjust.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="insight-box reveal">
+          <p>"Don't try to say no to trivial distractions. Say yes to a subject that arouses a terrifying longing, and let that longing crowd out everything else." — David Brooks</p>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">8</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 9: SHUTDOWN RITUAL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #1 continued</div>
+        <h2 class="section-title reveal">The <span class="highlight">Shutdown Ritual</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;">"Idleness is as indispensable to the brain as vitamin D is to the body." — Tim Kreider</p>
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>⏸️ Why Downtime Matters</h4>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p><strong>Downtime aids insights</strong> — Your unconscious mind tackles complex decisions better than your conscious one.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p><strong>Recharges attention</strong> — Nature walks, cooking, conversation restore your finite directed attention.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p><strong>Evening work is shallow</strong> — Elite performers max out at ~4h of deliberate practice. The marginal evening hour is low-value.</p></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>🌅 The Shutdown Ritual (5 min)</h4>
+              <p style="margin-bottom:10px;">Defeats the <strong>Zeigarnik effect</strong> — mental buzzing of incomplete tasks. Once a plan exists on paper, your brain lets go.</p>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p>Review every incomplete task</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p>Write a specific plan for tomorrow</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p><strong>Say "Shutdown complete"</strong> — cognitive boundary marker</p></div>
+              </div>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p>Takes ~2 weeks to become automatic. After that, skipping it feels like leaving the house without keys.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">9</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 10: RULE 2 — EMBRACE BOREDOM -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #2</div>
+        <h2 class="section-title reveal"><span class="highlight">Embrace Boredom</span></h2>
+        <hr class="accent-line reveal">
+        <p class="body-text reveal" style="max-width:1400px;margin-bottom:4px;">If you can't tolerate a few minutes of boredom without grabbing your phone, your brain will never adapt to deep work. Train your concentration muscle separately from your ability to do useful work.</p>
+        <div class="grid-3 reveal">
+          <div class="card rust">
+            <h4>🧘 Productive Meditation</h4>
+            <p><strong>When:</strong> Walking, driving, showering — physical activity that doesn't demand attention.</p>
+            <p><strong>How:</strong> Focus on ONE professional problem. Define the variable. Work through next steps. Review the conclusion. If your mind wanders, gently pull it back.</p>
+          </div>
+          <div class="card amber">
+            <h4>🏃 Roosevelt Dashes</h4>
+            <p><strong>When occasionally:</strong> Train deep-muscle stamina.</p>
+            <p><strong>How:</strong> Pick a task. Set a deadline at <em>half</em> the expected time. Work with sprint intensity — no breaks, no phone, no switching. Reward yourself after.</p>
+          </div>
+          <div class="card teal">
+            <h4>📅 Schedule Your Internet</h4>
+            <p>Telling yourself "I won't check social media" doesn't work. What works: <strong>a clear schedule</strong> of when you can and can't use it. The constraint is what makes it sustainable.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">10</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 11: RULE 3 — QUIT SOCIAL MEDIA -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #3</div>
+        <h2 class="section-title reveal">Quit <span class="highlight">Social Media</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>⚠️ The Any-Benefit Mindset Trap</h4>
+              <p>Justifying a tool because it offers <em>some</em> benefit is the trap that enables all distraction. Every platform has <em>some</em> upside. The question isn't "does it help at all?" — it's "does it help more than the attention it steals?"</p>
+            </div>
+            <div class="card amber" style="margin-top:10px;">
+              <h4>🔨 The Craftsman Approach</h4>
+              <p>1. Identify the 2-3 core activities that determine your success and happiness.</p>
+              <p>2. Keep a tool <strong>only if</strong> its positive impact on those activities substantially outweighs its negative impact on your attention.</p>
+            </div>
+          </div>
+          <div>
+            <div class="card teal">
+              <h4>📦 30-Day Detox (Packing Party)</h4>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p>Quit every platform cold for 30 days — don't announce it</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p>After 30 days, ask: "Would my life have been <em>noticeably better</em> with this tool?"</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:6px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p>If no → quit permanently. If yes → reinstate selectively.</p></div>
+              </div>
+            </div>
+            <div class="insight-box" style="margin-top:8px;">
+              <p><strong>Pareto Principle:</strong> ~80% of effects come from ~20% of causes. Focus deep work on the vital few. The other 80% are noise.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">11</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 12: RULE 4 — DRAIN THE SHALLOWS -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #4</div>
+        <h2 class="section-title reveal">Drain the <span class="highlight">Shallows</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>📋 Time-Blocking</h4>
+              <p>At the start of each day, divide every minute into 30-minute blocks. Assign each a specific activity:</p>
+              <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+                <span style="background:var(--accent-rust-faint);color:var(--accent-rust);padding:4px 12px;border-radius:3px;font-family:var(--font-body);font-size:15px;">🟦 Deep</span>
+                <span style="background:var(--accent-amber-faint);color:var(--accent-amber);padding:4px 12px;border-radius:3px;font-family:var(--font-body);font-size:15px;">🟩 Shallow</span>
+                <span style="background:var(--border-subtle);color:var(--text-muted);padding:4px 12px;border-radius:3px;font-family:var(--font-body);font-size:15px;">🟧 Overflow</span>
+                <span style="background:var(--border-subtle);color:var(--text-muted);padding:4px 12px;border-radius:3px;font-family:var(--font-body);font-size:15px;">⬜ Recharge</span>
+              </div>
+              <p style="margin-top:10px;"><strong>The goal is not rigidity; it's thoughtfulness.</strong> Revise continuously — sometimes half a dozen rewrites a day.</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>⏰ Fixed-Schedule Productivity</h4>
+              <p>Set a hard cutoff (e.g., 5:30 PM) and refuse to violate it. The scarcity forces ruthless prioritization: shallow work gets culled first.</p>
+              <p style="margin-top:8px;"><strong>Counterintuitive:</strong> Limiting hours makes you <em>more</em> productive — the constraint forces better planning, not worse output.</p>
+              <p style="margin-top:8px;">Newport and Radhika Nagpal (Harvard CS prof) both earned tenure on schedule with strict hour limits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">12</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 13: SHALLOW BUDGET & EMAIL -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Rule #4 continued</div>
+        <h2 class="section-title reveal">Shallow Budget &amp; <span class="highlight">Email Rules</span></h2>
+        <hr class="accent-line reveal">
+        <div class="grid-2 reveal" style="gap:18px;">
+          <div>
+            <div class="card rust">
+              <h4>📊 The Shallow Work Budget</h4>
+              <p><strong>Hard rule:</strong> Shallow work ≤ <strong>30-50%</strong> of your time.</p>
+              <div class="table-wrap">
+                <table>
+                  <tr><th></th><th>% Shallow</th></tr>
+                  <tr><td>Knowledge worker average</td><td>~60%</td></tr>
+                  <tr><td>Target (deep-intensive roles)</td><td>≤30%</td></tr>
+                  <tr><td>Cap (collaborative roles)</td><td>50%</td></tr>
+                </table>
+              </div>
+              <p style="margin-top:8px;"><strong>Signs you're over budget:</strong> End of day with zero deep output but inbox zero · "Busy, not productive" for >3 days · Calendar is a wall of 30-min slots.</p>
+            </div>
+          </div>
+          <div>
+            <div class="card amber">
+              <h4>✉️ Email Processing Heuristics</h4>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">1</div>
+                <div class="num-content"><p><strong>Batch windows:</strong> 2×/day (11am &amp; 4pm). Never first thing in the morning.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">2</div>
+                <div class="num-content"><p><strong>Response time:</strong> 24h internal, 48h external. Anything faster rewards email-as-default.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge">3</div>
+                <div class="num-content"><p><strong>CC trap:</strong> If you're CC'd, archive unless action is requested.</p></div>
+              </div>
+              <div class="num-item" style="margin-bottom:4px;">
+                <div class="num-badge amber">4</div>
+                <div class="num-content"><p><strong>Reply-later trap:</strong> If you say "let me get back to you" and don't schedule the follow-up, you just created a cognitive leak.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">13</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 14: CHEATSHEET -->
+    <section class="slide">
+      <div class="atmo-glow"></div>
+      <div class="slide-content">
+        <div class="section-number reveal">Quick Reference</div>
+        <h2 class="section-title reveal">Practitioner's <span class="highlight">Cheatsheet</span></h2>
+        <hr class="accent-line reveal">
+        <div class="table-wrap reveal">
+          <table>
+            <tr><th style="width:200px;">Symptom</th><th style="width:200px;">Likely Cause</th><th>Fix</th></tr>
+            <tr>
+              <td>Reading but absorbing nothing</td><td>Attention residue</td><td>15-min buffer between tasks</td>
+            </tr>
+            <tr>
+              <td>3h "at desk" with 45 min of work</td><td>Internet-use disorder</td><td>90-min phone-free deep block</td>
+            </tr>
+            <tr>
+              <td>Endless email threads</td><td>Answering from phone in gaps</td><td>Batch + defer</td>
+            </tr>
+            <tr>
+              <td>Multiple "quick lookups" mid-block</td><td>Resistance</td><td>Pomodoro 25/5 until engaged</td>
+            </tr>
+          </table>
+        </div>
+        <div class="reveal" style="display:flex;gap:14px;margin-top:10px;">
+          <div class="card" style="flex:1;padding:14px 20px;">
+            <h4 style="font-size:18px;">🛡️ Shutdown Ritual</h4>
+            <p style="font-size:16px;">1. Review tasks → 2. Plan tomorrow → 3. Say "Shutdown complete"</p>
+          </div>
+          <div class="card" style="flex:1;padding:14px 20px;">
+            <h4 style="font-size:18px;">🔨 Craftsman Test</h4>
+            <p style="font-size:16px;">Does this tool's benefit to core work outweigh the attention it fragments?</p>
+          </div>
+          <div class="card" style="flex:1;padding:14px 20px;">
+            <h4 style="font-size:18px;">📊 Deep Budget</h4>
+            <p style="font-size:16px;">Shallow ≤30-50%. Block shallow time explicitly — it fits in gaps.</p>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">14</span> / 15</div>
+    </section>
+
+    <!-- SLIDE 15: CLOSING -->
+    <section class="slide">
+      <div class="atmo-glow" style="top:-300px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(200,93,78,0.08) 0%,transparent 60%);"></div>
+      <div class="slide-content" style="justify-content:center;text-align:center;">
+        <div class="section-number reveal">In Closing</div>
+        <div class="closing-text">
+          <p class="reveal large-quote">
+            "Depth is a <span class="highlight">skill</span>,<br>not a personality trait."
+          </p>
+          <hr class="accent-line reveal" style="margin:20px auto;">
+          <p class="reveal body-text" style="max-width:1200px;margin:0 auto 16px;font-size:26px;">
+            The default workflow of the modern office is designed to destroy depth.<br>
+            Your calendar is the only weapon that matters.
+          </p>
+          <p class="reveal" style="font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--accent-amber);margin-top:20px;">
+            Protect deep time with the same ferocity<br>
+            you'd protect a paying client.
+          </p>
+          <div class="reveal" style="font-family:var(--font-body);font-size:18px;color:var(--text-muted);margin-top:36px;">
+            Cal Newport — <em>Deep Work</em>
+          </div>
+        </div>
+      </div>
+      <div class="page-num"><span class="num">15</span> / 15</div>
+    </section>
+
+  </main>
+</div>
+
+<!-- === DECK CONTROLS === -->
+<div class="deck-controls">
+  <button id="prevBtn" aria-label="Previous slide">←</button>
+  <span class="counter" id="slideCounter">1 / 15</span>
+  <button id="nextBtn" aria-label="Next slide">→</button>
+</div>
+
+<!-- === EDITING AFFORDANCE === -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️ Edit</button>
+<div class="editor-indicator" id="editorIndicator">✏️ Editing</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.currentSlide = 0;
+    this.totalSlides = this.slides.length;
+    this.stage = document.getElementById('deckStage');
+    this.isTransitioning = false;
+    this.setupStageScale();
+    this.setupKeyboardNav();
+    this.setupTouchNav();
+    this.setupWheelNav();
+    this.setupControls();
+    this.showSlide(0);
+  }
+
+  setupStageScale() {
+    const scale = () => {
+      const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const x = (window.innerWidth - 1920 * f) / 2;
+      const y = (window.innerHeight - 1080 * f) / 2;
+      this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    };
+    scale();
+    window.addEventListener('resize', scale);
+  }
+
+  showSlide(index) {
+    if (this.isTransitioning) return;
+    this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1));
+    this.isTransitioning = true;
+    this.slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'visible');
+      if (i === this.currentSlide) {
+        void slide.offsetWidth;
+        slide.classList.add('active', 'visible');
+      }
+    });
+    const counter = document.getElementById('slideCounter');
+    if (counter) counter.textContent = `${this.currentSlide + 1} / ${this.totalSlides}`;
+    setTimeout(() => { this.isTransitioning = false; }, 600);
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.getAttribute('contenteditable')) return;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': e.preventDefault(); this.next(); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp': e.preventDefault(); this.prev(); break;
+        case 'Home': e.preventDefault(); this.showSlide(0); break;
+        case 'End': e.preventDefault(); this.showSlide(this.totalSlides - 1); break;
+      }
+    });
+  }
+
+  setupTouchNav() {
+    let startX = 0, startY = 0;
+    this.stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
+    this.stage.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) this.next(); else this.prev();
+      }
+    }, { passive: true });
+  }
+
+  setupWheelNav() {
+    let wheelTimeout = false;
+    this.stage.addEventListener('wheel', (e) => {
+      if (wheelTimeout || this.isTransitioning) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      wheelTimeout = true;
+      if (e.deltaY > 0) this.next(); else this.prev();
+      setTimeout(() => { wheelTimeout = false; }, 800);
+    }, { passive: true });
+  }
+
+  setupControls() {
+    document.getElementById('prevBtn').addEventListener('click', () => this.prev());
+    document.getElementById('nextBtn').addEventListener('click', () => this.next());
+  }
+  next() { this.showSlide(this.currentSlide + 1); }
+  prev() { this.showSlide(this.currentSlide - 1); }
+}
+
+/* ===========================================
+   INLINE EDITOR
+   =========================================== */
+class InlineEditor {
+  constructor() {
+    this.isActive = false;
+    this.editToggle = document.getElementById('editToggle');
+    this.editorIndicator = document.getElementById('editorIndicator');
+    this.setupHotzone();
+    this.setupKeyboardShortcut();
+    this.setupSaveShortcut();
+  }
+
+  setupHotzone() {
+    const hotzone = document.getElementById('editHotzone');
+    const editToggle = this.editToggle;
+    let hideTimeout = null;
+    hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); editToggle.classList.add('show'); });
+    hotzone.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) editToggle.classList.remove('show'); }, 400); });
+    editToggle.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); });
+    editToggle.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) editToggle.classList.remove('show'); }, 400); });
+    hotzone.addEventListener('click', () => this.toggleEditMode());
+    editToggle.addEventListener('click', () => this.toggleEditMode());
+  }
+
+  setupKeyboardShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        this.toggleEditMode();
+      }
+    });
+  }
+
+  setupSaveShortcut() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's' && this.isActive) {
+        e.preventDefault();
+        this.save();
+      }
+    });
+  }
+
+  toggleEditMode() {
+    this.isActive = !this.isActive;
+    if (this.isActive) this.enableEditing();
+    else this.disableEditing();
+  }
+
+  enableEditing() {
+    this.editToggle.classList.add('active', 'show');
+    this.editorIndicator.classList.add('active');
+    this.editToggle.textContent = '🔒 Lock';
+    document.querySelectorAll('.slide .body-text, .slide h4, .slide p, .slide .section-title, .slide .section-number, .slide .large-quote, .slide .closing-text div[style]').forEach(el => {
+      if (el.closest('.num-badge') || el.closest('.deck-controls')) return;
+      el.setAttribute('contenteditable', 'true');
+      el.style.outline = '1px dashed rgba(200,93,78,0.3)';
+      el.style.cursor = 'text';
+      el.style.borderRadius = '2px';
+      el.style.padding = '2px 4px';
+    });
+  }
+
+  disableEditing() {
+    this.editToggle.classList.remove('active');
+    this.editorIndicator.classList.remove('active');
+    this.editToggle.textContent = '✏️ Edit';
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = '';
+      el.style.cursor = '';
+      el.style.padding = '';
+      el.style.borderRadius = '';
+    });
+  }
+
+  save() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'deep-work-deck.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.editorIndicator.textContent = '💾 Saved!';
+    setTimeout(() => { this.editorIndicator.textContent = '✏️ Editing'; }, 1500);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.deck = new SlidePresentation();
+  window.editor = new InlineEditor();
+});
+</script>
+</body>
+</html>
