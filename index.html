@@ -2,11 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=Deepwork/deep-work-deck.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kawin's Books</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #111;
+      color: #eee;
+    }
+    .cards {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    a {
+      display: block;
+      padding: 2rem 3rem;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    a:hover { border-color: #666; }
+    .sub { display: block; font-size: 1rem; color: #888; margin-top: 0.3rem; }
+  </style>
 </head>
 <body>
-  <p><a href="Deepwork/deep-work-deck.html">Deep Work — English</a></p>
-  <p><a href="Deepwork/deep-work-deck-th.html">Deep Work — ภาษาไทย</a></p>
+  <div class="cards">
+    <a href="Deepwork/deep-work-deck.html">
+      Deep Work
+      <span class="sub">English version</span>
+    </a>
+    <a href="Deepwork/deep-work-deck-th.html">
+      Deep Work
+      <span class="sub">ภาษาไทย</span>
+    </a>
+  </div>
 </body>
 </html>
