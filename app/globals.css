@@ -83,8 +83,8 @@
   }
 
   html[data-theme='light'] .bg-gradient-to-t {
-    --tw-gradient-from: rgba(209, 194, 168, 0.9) var(--tw-gradient-from-position);
-    --tw-gradient-to: rgba(209, 194, 168, 0) var(--tw-gradient-to-position);
+    --tw-gradient-from: var(--background) var(--tw-gradient-from-position);
+    --tw-gradient-to: transparent var(--tw-gradient-to-position);
   }
 
   html {
