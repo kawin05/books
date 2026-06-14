@@ -1,7 +1,10 @@
 .vercel
+.vercel/
+node_modules/
+.next/
+out/
 build/
-web/node_modules/
-web/dist/
-web/tsconfig.tsbuildinfo
+web/
 *.log
 .DS_Store
+*.tsbuildinfo
