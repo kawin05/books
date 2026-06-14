@@ -6,106 +6,97 @@
   <title>Kawin's Books</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&family=Lexend:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&family=Lexend:wght@300&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --font-display: 'Kanit', sans-serif;
+      --font-body: 'Lexend', sans-serif;
+      --bg-dark: #1A1C20;
+      --accent-rust: #C85D4E;
+      --accent-amber: #E8B85C;
+      --text-primary: #F0EBE0;
+      --text-secondary: rgba(240,235,224,0.7);
+      --text-muted: rgba(240,235,224,0.4);
+      --border-subtle: rgba(240,235,224,0.06);
+      --title-size: 112px;
+    }
     body {
-      font-family: 'Lexend', sans-serif;
+      background: linear-gradient(165deg, var(--bg-dark) 0%, #131418 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(165deg, #1A1C20 0%, #131418 100%);
-      color: #F0EBE0;
-    }
-    .atmo-glow {
-      position: fixed;
-      top: -300px; right: -200px;
-      width: 700px; height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,93,78,0.06) 0%, transparent 60%);
-      pointer-events: none;
     }
     main {
       text-align: center;
-      position: relative;
-      z-index: 1;
+    }
+    .label {
+      font-family: var(--font-display);
+      font-size: 16px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-rust);
+      font-weight: 400;
+      margin-bottom: 16px;
     }
     h1 {
-      font-family: 'Kanit', sans-serif;
-      font-size: clamp(3rem, 8vw, 7rem);
+      font-family: var(--font-display);
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.15em;
-      background: linear-gradient(135deg, #F0EBE0 30%, #C85D4E 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: var(--title-size);
+      line-height: 1.05;
+      color: var(--text-primary);
+      margin-bottom: 16px;
     }
-    .tagline {
-      font-weight: 300;
-      color: rgba(240,235,224,0.5);
-      font-size: 1.1rem;
-      margin-bottom: 3rem;
+    h1 .highlight {
+      color: var(--accent-amber);
+      font-style: italic;
     }
-    .books {
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-rust), var(--accent-amber));
+      margin: 12px auto 24px;
+    }
+    .langs {
       display: flex;
-      gap: 1.5rem;
+      gap: 2rem;
+      justify-content: center;
       flex-wrap: wrap;
-      justify-content: center;
     }
-    a {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 220px;
-      height: 180px;
-      background: #22252A;
-      border: 1px solid rgba(240,235,224,0.06);
-      border-radius: 10px;
+    .langs a {
+      display: inline-block;
+      padding: 14px 40px;
+      background: rgba(240,235,224,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: border-color 0.3s, transform 0.3s;
+      transition: border-color 0.25s, color 0.25s, background 0.25s;
     }
-    a:hover {
-      border-color: rgba(200,93,78,0.4);
-      transform: translateY(-3px);
+    .langs a:hover {
+      border-color: rgba(200,93,78,0.3);
+      color: var(--text-primary);
+      background: rgba(200,93,78,0.06);
     }
-    .book-title {
-      font-family: 'Kanit', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #F0EBE0;
-      margin-bottom: 0.3rem;
-    }
-    .book-lang {
-      font-family: 'Lexend', sans-serif;
-      font-weight: 300;
-      font-size: 0.85rem;
-      color: rgba(240,235,224,0.4);
-    }
-    .book-icon {
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
+    @media (max-width: 768px) {
+      :root { --title-size: 64px; }
+      .langs { gap: 1rem; }
+      .langs a { padding: 12px 32px; font-size: 18px; }
     }
   </style>
 </head>
 <body>
-  <div class="atmo-glow"></div>
   <main>
-    <h1>Deep Work</h1>
-    <p class="tagline">Cal Newport</p>
-    <div class="books">
-      <a href="Deepwork/deep-work-deck.html">
-        <span class="book-icon">📖</span>
-        <span class="book-title">English</span>
-        <span class="book-lang">Presentation deck</span>
-      </a>
-      <a href="Deepwork/deep-work-deck-th.html">
-        <span class="book-icon">📖</span>
-        <span class="book-title">ภาษาไทย</span>
-        <span class="book-lang">สไลด์นำเสนอ</span>
-      </a>
+    <div class="label">Book Summary</div>
+    <h1>Deep <span class="highlight">Work</span></h1>
+    <div class="divider"></div>
+    <div class="langs">
+      <a href="Deepwork/deep-work-deck.html">English</a>
+      <a href="Deepwork/deep-work-deck-th.html">ภาษาไทย</a>
     </div>
   </main>
 </body>
