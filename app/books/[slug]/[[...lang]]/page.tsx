@@ -6,6 +6,7 @@ import { getBook, getAllBookSlugs } from '@/lib/books'
 import { LanguageLink } from '@/components/LanguageLink'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { FullscreenButton } from '@/components/FullscreenButton'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -177,13 +178,18 @@ export default async function BookPage({ params }: BookPageProps) {
 
       {frontmatter.deckUrl ? (
         <section className="relative mx-auto w-full max-w-7xl px-0 pb-24 sm:px-6">
-          <iframe
-            src={frontmatter.deckUrl}
-            title={frontmatter.title}
-            className="w-full rounded-lg border border-border-subtle bg-bg"
-            style={{ height: 'calc(100vh - 120px)', minHeight: '600px' }}
-            allowFullScreen
-          />
+          <div className="mb-3 flex items-center justify-end gap-4">
+            <FullscreenButton targetId="deck-frame" />
+          </div>
+          <div id="deck-frame" className="overflow-hidden rounded-lg border border-border-subtle bg-bg">
+            <iframe
+              src={frontmatter.deckUrl}
+              title={frontmatter.title}
+              className="w-full"
+              style={{ height: 'calc(100vh - 120px)', minHeight: '600px' }}
+              allowFullScreen
+            />
+          </div>
         </section>
       ) : (
         <article className="px-6 pb-32 pt-24 sm:px-12">
