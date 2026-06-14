@@ -16,27 +16,32 @@ const libraryImages = [
   {
     src: '/library-trinity.jpg',
     alt: 'Historic long library with arched wooden ceiling',
-    className: 'col-span-7 row-span-5',
+    className: 'left-[5%] top-[5%] w-36 sm:w-56 md:w-72',
+    delay: 0,
   },
   {
     src: '/library-temple.jpg',
     alt: 'Warm multi-level wooden library with spiral staircase',
-    className: 'col-span-5 row-span-3',
+    className: 'right-[5%] top-[15%] w-32 sm:w-48 md:w-64',
+    delay: 0.3,
   },
   {
     src: '/library-vasconcelos.jpg',
     alt: 'Modern geometric library stacks with suspended walkways',
-    className: 'col-span-5 row-span-2',
+    className: 'left-[12%] top-[50%] w-40 sm:w-56 md:w-72',
+    delay: 0.6,
   },
   {
     src: '/library-warm-shelves.jpg',
     alt: 'Close view of old books and warm shelves',
-    className: 'col-span-4 row-span-2',
+    className: 'right-[8%] top-[55%] w-28 sm:w-44 md:w-56',
+    delay: 0.9,
   },
   {
     src: '/library-white.jpg',
     alt: 'Bright white contemporary library interior',
-    className: 'col-span-3 row-span-2',
+    className: 'left-[30%] top-[75%] w-32 sm:w-48 md:w-60',
+    delay: 1.2,
   },
 ]
 
@@ -98,31 +103,41 @@ export function HomeClient({ books }: HomeClientProps) {
 
           {featured && (
             <ScrollReveal delay={0.28}>
-              <Link
-                href={`/books/${featured.slug}`}
-                className="group relative mb-10 block aspect-[4/5] w-full overflow-hidden bg-bg-raised lg:mb-20"
-              >
-                <div className="grid h-full grid-cols-12 grid-rows-7 gap-1.5 p-1.5">
-                  {libraryImages.map((image, index) => (
-                    <div
-                      key={image.src}
-                      className={`${image.className} overflow-hidden bg-bg-deep`}
-                    >
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        width={index === 0 ? 900 : 520}
-                        height={index === 0 ? 650 : 420}
-                        decoding="async"
-                        fetchPriority={index === 0 ? 'high' : 'auto'}
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-deep via-transparent to-transparent opacity-80" />
+              <div className="relative mb-10 aspect-[4/5] w-full overflow-hidden bg-bg-raised lg:mb-20">
+                {libraryImages.map((image, index) => (
+                  <motion.img
+                    key={image.src}
+                    src={image.src}
+                    alt={image.alt}
+                    className={`absolute rounded-md object-cover shadow-2xl ${image.className}`}
+                    initial={{ opacity: 0, y: 30, rotate: -2 }}
+                    animate={{
+                      opacity: 1,
+                      y: [0, -14, 0],
+                      rotate: [-1.5, 1.5, -1.5],
+                    }}
+                    transition={{
+                      opacity: { duration: 0.7, delay: image.delay },
+                      y: {
+                        duration: 5 + index,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: image.delay,
+                      },
+                      rotate: {
+                        duration: 6 + index,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: image.delay,
+                      },
+                    }}
+                  />
+                ))}
                 <div className="absolute inset-0 border border-border-subtle" />
-                <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-5">
+                <Link
+                  href={`/books/${featured.slug}`}
+                  className="absolute bottom-0 left-0 right-0 flex items-end justify-between bg-bg-deep/80 p-5 backdrop-blur transition-colors hover:bg-bg-deep/90"
+                >
                   <div>
                     <p className="font-display text-[10px] uppercase tracking-[0.28em] text-text-muted">
                       Featured archive
@@ -132,8 +147,8 @@ export function HomeClient({ books }: HomeClientProps) {
                     </p>
                   </div>
                   <span className="font-display text-xl text-accent-cream">→</span>
-                </div>
-              </Link>
+                </Link>
+              </div>
             </ScrollReveal>
           )}
         </div>
