@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -9,9 +10,12 @@ export default function NotFound() {
         <Link href="/" className="font-display text-sm font-medium uppercase tracking-widest text-accent-cream">
           Kawin
         </Link>
-        <span className="font-display text-xs uppercase tracking-widest text-text-muted">
-          404
-        </span>
+        <div className="flex items-center gap-6">
+          <span className="font-display text-xs uppercase tracking-widest text-text-muted">
+            404
+          </span>
+          <ThemeToggle />
+        </div>
       </nav>
 
       <section className="flex flex-1 items-center px-6 py-32 sm:px-12">

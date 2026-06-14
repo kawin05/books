@@ -55,7 +55,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${serif.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${display.variable} ${body.variable} ${serif.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var storedTheme = window.localStorage.getItem('theme');
+                var systemLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                document.documentElement.dataset.theme = storedTheme || (systemLight ? 'light' : 'dark');
+              } catch (_) {
+                document.documentElement.dataset.theme = 'dark';
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen antialiased">
         {children}
       </body>
