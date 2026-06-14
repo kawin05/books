@@ -86,8 +86,8 @@ export function HomeClient({ books }: HomeClientProps) {
         </div>
       </nav>
 
-      <section className="relative min-h-screen px-6 pt-28 sm:px-12">
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-[1600px] grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.72fr)] lg:items-end">
+      <section className="relative px-6 pt-28 pb-16 sm:px-12">
+        <div className="mx-auto w-full max-w-[1600px]">
           <div className="pb-14 lg:pb-20">
             <ScrollReveal>
               <p className="mb-8 font-display text-[11px] uppercase tracking-[0.36em] text-text-muted">
@@ -118,16 +118,19 @@ export function HomeClient({ books }: HomeClientProps) {
               </div>
             </ScrollReveal>
           </div>
+        </div>
+      </section>
 
-          {featured && (
-            <ScrollReveal delay={0.28}>
-              <div className="relative mb-10 w-full lg:mb-20" style={{ minHeight: 'clamp(320px, 50vw, 640px)' }}>
-                {libraryImages.map((image, index) => (
-                  <motion.img
-                    key={image.src}
-                    src={image.src}
-                    alt={image.alt}
-                    className={`absolute rounded-md object-cover shadow-2xl ${image.className}`}
+      {featured && (
+        <section className="relative w-full overflow-hidden px-4 pb-20 sm:px-8 lg:px-12" style={{ minHeight: 'clamp(400px, 60vw, 800px)' }}>
+          <ScrollReveal delay={0.28}>
+            <div className="relative mx-auto w-full max-w-[1600px]" style={{ minHeight: 'clamp(380px, 58vw, 780px)' }}>
+              {libraryImages.map((image, index) => (
+                <motion.img
+                  key={image.src}
+                  src={image.src}
+                  alt={image.alt}
+                  className={`absolute rounded-md object-cover shadow-2xl ${image.className}`}
                     initial={{ opacity: 0, y: 30, rotate: -2 }}
                     animate={{
                       opacity: 1,
@@ -165,9 +168,8 @@ export function HomeClient({ books }: HomeClientProps) {
                 </Link>
               </div>
             </ScrollReveal>
-          )}
-        </div>
-      </section>
+        </section>
+      )}
 
       <section id="library" className="px-6 pb-36 pt-8 sm:px-12">
         <div className="mx-auto w-full max-w-[1600px]">
