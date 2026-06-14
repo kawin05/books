@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 interface LanguageLinkProps {
   href: string
@@ -10,14 +10,20 @@ interface LanguageLinkProps {
 }
 
 export function LanguageLink({ href, children, compact = false }: LanguageLinkProps) {
+  const [pressed, setPressed] = useState(false)
+
   return (
     <Link
       href={href}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
       className={[
-        'group relative inline-flex items-center font-display uppercase tracking-[0.2em] text-text-muted transition-colors duration-300 hover:text-text-primary',
+        'group relative inline-flex items-center font-display uppercase tracking-[0.2em] text-text-muted transition-all duration-200 hover:text-text-primary',
         compact
           ? 'text-[11px]'
           : 'text-[11px] sm:text-xs',
+        pressed ? 'scale-90' : 'scale-100',
       ].join(' ')}
     >
       {children}
