@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import type { BookSummary } from '@/lib/books'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface BookCardProps {
   book: BookSummary
@@ -71,7 +73,7 @@ export function BookCard({ book, index }: BookCardProps) {
           {book.languages.includes('en') && (
             <Link
               href={`/books/${book.slug}`}
-              className="font-display text-text-secondary transition-colors hover:text-accent-rust"
+              className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'font-display text-text-secondary hover:bg-transparent hover:text-accent-rust')}
             >
               English →
             </Link>
@@ -79,7 +81,7 @@ export function BookCard({ book, index }: BookCardProps) {
           {book.languages.includes('th') && (
             <Link
               href={`/books/${book.slug}/th`}
-              className="font-display text-text-secondary transition-colors hover:text-accent-rust"
+              className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'font-display text-text-secondary hover:bg-transparent hover:text-accent-rust')}
             >
               ภาษาไทย →
             </Link>

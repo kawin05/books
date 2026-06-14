@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getBook, getAllBookSlugs } from '@/lib/books'
 import { ScrollReveal } from '@/components/ScrollReveal'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
   // Pre-render every (slug, language) combo at build time
@@ -37,14 +39,20 @@ export default async function BookPage({ params }: BookPageProps) {
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
         <Link
           href="/"
-          className="font-display text-sm font-medium uppercase tracking-widest text-accent-cream transition-opacity hover:opacity-70"
+          className={cn(
+            buttonVariants({ variant: 'ghost', size: 'sm' }),
+            'font-display text-xs uppercase tracking-widest text-accent-cream hover:bg-transparent hover:text-accent-cream/70'
+          )}
         >
           ← Kawin
         </Link>
         {hasOtherLang && (
           <Link
             href={language === 'en' ? `/books/${slug}/th` : `/books/${slug}`}
-            className="font-display text-xs uppercase tracking-widest text-text-secondary transition-colors hover:text-accent-rust"
+            className={cn(
+              buttonVariants({ variant: 'ghost', size: 'sm' }),
+              'font-display text-xs uppercase tracking-widest text-text-secondary hover:bg-transparent hover:text-accent-rust'
+            )}
           >
             {otherLangLabel}
           </Link>
@@ -87,7 +95,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
       <footer className="border-t border-border-subtle px-6 py-12 sm:px-12">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between font-body text-xs text-text-muted">
-          <Link href="/" className="hover:text-accent-rust">
+          <Link href="/" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'font-display text-xs text-text-muted hover:bg-transparent hover:text-accent-rust')}>
             ← Back to library
           </Link>
           <span>© {new Date().getFullYear()} Kawin</span>
