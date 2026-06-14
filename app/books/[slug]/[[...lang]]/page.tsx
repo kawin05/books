@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getBook, getAllBookSlugs } from '@/lib/books'
 import { ScrollReveal } from '@/components/ScrollReveal'
@@ -7,7 +8,6 @@ import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export function generateStaticParams() {
-  // Pre-render every (slug, language) combo at build time
   const slugs = getAllBookSlugs()
   const params: { slug: string; lang?: string[] }[] = []
   for (const slug of slugs) {
@@ -15,6 +15,42 @@ export function generateStaticParams() {
     params.push({ slug, lang: ['th'] })
   }
   return params
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; lang?: string[] }>
+}): Promise<Metadata> {
+  const { slug, lang } = await params
+  const language = lang?.includes('th') ? 'th' : 'en'
+  const book = getBook(slug, language)
+
+  if (!book) {
+    return {
+      title: 'Book not found',
+    }
+  }
+
+  const { frontmatter } = book
+
+  return {
+    title: frontmatter.title,
+    description: frontmatter.summary,
+    openGraph: {
+      title: `${frontmatter.title} — Kawin's Books`,
+      description: frontmatter.summary,
+      type: 'article',
+      images: [
+        {
+          url: '/opengraph-image',
+          width: 1200,
+          height: 630,
+          alt: `${frontmatter.title} — Kawin's Books`,
+        },
+      ],
+    },
+  }
 }
 
 interface BookPageProps {
@@ -61,24 +97,35 @@ export default async function BookPage({ params }: BookPageProps) {
 
       {/* Hero */}
       <section className="px-6 pt-40 pb-16 sm:px-12">
-        <div className="mx-auto w-full max-w-3xl">
-          <ScrollReveal>
-            <p className="mb-6 font-display text-sm uppercase tracking-[0.3em] text-accent-rust">
-              {frontmatter.year ?? ''} {frontmatter.author && `· ${frontmatter.author}`}
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.15} as="h1">
-            <span className="block font-display text-display-lg font-bold text-text-primary">
-              {frontmatter.title}
-            </span>
-          </ScrollReveal>
-
-          {frontmatter.summary && (
-            <ScrollReveal delay={0.3}>
-              <p className="mt-8 font-serif text-xl italic leading-relaxed text-text-secondary">
-                {frontmatter.summary}
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 sm:flex-row sm:items-start sm:gap-12">
+          <div className="flex-1">
+            <ScrollReveal>
+              <p className="mb-6 font-display text-sm uppercase tracking-[0.3em] text-accent-rust">
+                {frontmatter.year ?? ''} {frontmatter.author && `· ${frontmatter.author}`}
               </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15} as="h1">
+              <span className="block font-display text-display-lg font-bold text-text-primary">
+                {frontmatter.title}
+              </span>
+            </ScrollReveal>
+
+            {frontmatter.summary && (
+              <ScrollReveal delay={0.3}>
+                <p className="mt-8 font-serif text-xl italic leading-relaxed text-text-secondary">
+                  {frontmatter.summary}
+                </p>
+              </ScrollReveal>
+            )}
+          </div>
+          {frontmatter.coverImage && (
+            <ScrollReveal delay={0.2}>
+              <img
+                src={frontmatter.coverImage}
+                alt={frontmatter.title}
+                className="w-40 shrink-0 rounded-md object-cover shadow-2xl sm:w-48"
+              />
             </ScrollReveal>
           )}
         </div>

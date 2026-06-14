@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import type { BookSummary } from '@/lib/books'
 import { buttonVariants } from '@/components/ui/button'
@@ -31,6 +32,7 @@ const stagger = {
  */
 export function BookCard({ book, index }: BookCardProps) {
   const yearLabel = book.year ? String(book.year).padStart(2, '0') : String(index + 1).padStart(2, '0')
+  const [imgError, setImgError] = useState(false)
 
   return (
     <motion.article
@@ -46,12 +48,23 @@ export function BookCard({ book, index }: BookCardProps) {
       {/* Cover + title block */}
       <div className="col-span-10 sm:col-span-7">
         <Link href={`/books/${book.slug}`} className="block">
-          <div className="flex items-baseline gap-4">
-            {book.cover && (
-              <span className="text-3xl sm:text-4xl" aria-hidden>
+          <div className="flex items-center gap-5">
+            {book.coverImage && !imgError ? (
+              <motion.img
+                src={book.coverImage}
+                alt={book.title}
+                onError={() => setImgError(true)}
+                className="h-20 w-14 shrink-0 rounded-sm object-cover shadow-lg"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+                whileHover={{ scale: 1.05 }}
+              />
+            ) : book.cover ? (
+              <span className="text-3xl sm:text-4xl shrink-0" aria-hidden>
                 {book.cover}
               </span>
-            )}
+            ) : null}
             <h2 className="font-display text-3xl font-light text-text-primary sm:text-5xl">
               {book.title}
             </h2>

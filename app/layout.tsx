@@ -25,12 +25,27 @@ const serif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: "Kawin's Books",
+  metadataBase: new URL('https://kawinsbooks.vercel.app'),
+  title: {
+    default: "Kawin's Books",
+    template: "%s — Kawin's Books",
+  },
   description: 'Book summaries I have written — practical ideas from the books that shaped how I work.',
+  icons: {
+    icon: '/icon.svg',
+  },
   openGraph: {
     title: "Kawin's Books",
     description: 'Book summaries I have written.',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: "Kawin's Books",
+      },
+    ],
   },
 }
 

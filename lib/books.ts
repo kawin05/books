@@ -15,7 +15,8 @@ export type BookFrontmatter = {
   title: string
   author?: string
   year?: number
-  cover?: string // emoji or short label
+  cover?: string // emoji or short label (fallback)
+  coverImage?: string // path to book cover image
   summary: string
   language?: 'en' | 'th'
   order?: number
@@ -33,6 +34,7 @@ export type BookSummary = {
   author?: string
   year?: number
   cover?: string
+  coverImage?: string
   summary: string
   languages: ('en' | 'th')[]
   order: number
@@ -79,6 +81,7 @@ export function getBookSummaries(): BookSummary[] {
       author: fm.author,
       year: fm.year,
       cover: fm.cover,
+      coverImage: fm.coverImage,
       summary: fm.summary,
       languages: [en ? 'en' : null, th ? 'th' : null].filter(Boolean) as ('en' | 'th')[],
       order: fm.order ?? 999,
