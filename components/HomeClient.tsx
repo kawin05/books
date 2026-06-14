@@ -117,7 +117,7 @@ export function HomeClient({ books }: HomeClientProps) {
         </div>
       </section>
 
-      <section className="relative w-full overflow-hidden" style={{ height: 'clamp(420px, 70vw, 900px)' }}>
+      <section className="relative w-full overflow-hidden" style={{ height: 'clamp(360px, 70vw, 900px)' }}>
         {/* Slides */}
         <AnimatePresence mode="wait">
           <motion.div
@@ -135,8 +135,8 @@ export function HomeClient({ books }: HomeClientProps) {
               initial={{ scale: 1, y: 0, rotate: 0 }}
               animate={{
                 scale: 1.06,
-                y: [0, -12, 0],
-                rotate: [-0.6, 0.6, -0.6],
+                y: [0, -8, 0],
+                rotate: [-0.4, 0.4, -0.4],
               }}
               transition={{
                 scale: { duration: interval / 1000, ease: 'linear' },
@@ -148,40 +148,39 @@ export function HomeClient({ books }: HomeClientProps) {
         </AnimatePresence>
 
         {/* Dark overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
 
-        {/* Overlay text */}
-        {featured && (
-          <Link
-            href={`/books/${featured.slug}`}
-            className="absolute bottom-6 left-6 right-6 flex items-end justify-between sm:bottom-10 sm:left-12 sm:right-12"
-          >
-            <div>
-              <p className="font-display text-[10px] uppercase tracking-[0.28em] text-text-muted">
+        {/* Overlay text + dots stacked on mobile */}
+        <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 px-4 pb-16 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-10">
+          {featured && (
+            <Link
+              href="/gallery"
+              className="group"
+            >
+              <p className="font-display text-[9px] uppercase tracking-[0.28em] text-text-muted">
                 Featured archive
               </p>
-              <p className="mt-2 max-w-md font-display text-2xl font-light text-text-primary sm:text-4xl">
+              <p className="mt-1.5 max-w-xs font-display text-xl font-light leading-tight text-text-primary transition-colors group-hover:text-accent-cream sm:text-3xl">
                 Library as architecture
               </p>
-            </div>
-            <span className="shrink-0 font-display text-2xl text-accent-cream sm:text-3xl">→</span>
-          </Link>
-        )}
+            </Link>
+          )}
 
-        {/* Slide indicators */}
-        <div className="absolute bottom-6 right-6 flex gap-2 sm:bottom-10 sm:right-12">
-          {libraryImages.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === currentIndex
-                  ? 'w-8 bg-accent-cream'
-                  : 'w-2 bg-text-muted/40 hover:bg-text-muted/60'
-              }`}
-              aria-label={`Slide ${i + 1}`}
-            />
-          ))}
+          {/* Slide indicators */}
+          <div className="flex gap-1.5 sm:gap-2">
+            {libraryImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  i === currentIndex
+                    ? 'w-6 bg-accent-cream sm:w-8'
+                    : 'w-1.5 bg-text-muted/40 hover:bg-text-muted/60 sm:w-2'
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
