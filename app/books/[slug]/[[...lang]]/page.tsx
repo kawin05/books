@@ -97,7 +97,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
       <section className="px-6 pt-28 sm:px-12">
         <div className="mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-[1600px] grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end">
-          <div className="pb-8 lg:col-span-7 lg:pb-20">
+          <div className="overflow-hidden pb-8 lg:col-span-7 lg:pb-20">
             <ScrollReveal>
               <p className="mb-8 font-display text-[11px] uppercase tracking-[0.34em] text-text-muted">
                 Book study / {language === 'th' ? 'Thai edition' : 'English edition'}
