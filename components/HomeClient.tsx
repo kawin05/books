@@ -43,6 +43,24 @@ const libraryImages = [
     className: 'left-[25%] top-[72%] w-40 sm:w-60 md:w-80',
     delay: 1.2,
   },
+  {
+    src: '/library-abbey.jpg',
+    alt: 'Baroque Abbey Library of Saint Gallen with ornate ceiling',
+    className: 'left-[40%] top-[18%] w-36 sm:w-52 md:w-68',
+    delay: 0.15,
+  },
+  {
+    src: '/library-morgan.jpg',
+    alt: 'Morgan Library Museum New York grand hall',
+    className: 'right-[15%] top-[38%] w-38 sm:w-56 md:w-72',
+    delay: 0.75,
+  },
+  {
+    src: '/library-sharjah.jpg',
+    alt: 'Sharjah House of Wisdom modern floating library',
+    className: 'left-[5%] top-[55%] w-44 sm:w-64 md:w-84',
+    delay: 1.5,
+  },
 ]
 
 export function HomeClient({ books }: HomeClientProps) {
