@@ -28,9 +28,10 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === 'dark' ? 'paper' : 'dark'} mode`}
-      className="font-display text-[11px] uppercase tracking-[0.24em] text-text-secondary transition-colors hover:text-accent-cream"
+      className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-text-secondary transition-colors hover:border-text-muted/50 hover:text-text-primary"
     >
-      {theme === 'dark' ? 'Paper' : 'Dark'}
+      <span className={`h-1.5 w-1.5 rounded-full ${theme === 'dark' ? 'bg-text-muted' : 'bg-accent-amber'}`} />
+      {theme === 'dark' ? 'Dark' : 'Paper'}
     </button>
   )
 }
