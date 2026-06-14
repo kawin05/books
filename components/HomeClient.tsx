@@ -132,9 +132,17 @@ export function HomeClient({ books }: HomeClientProps) {
               src={libraryImages[currentIndex].src}
               alt={libraryImages[currentIndex].alt}
               className="h-full w-full object-cover"
-              initial={{ scale: 1 }}
-              animate={{ scale: 1.06 }}
-              transition={{ duration: interval / 1000, ease: 'linear' }}
+              initial={{ scale: 1, y: 0, rotate: 0 }}
+              animate={{
+                scale: 1.06,
+                y: [0, -12, 0],
+                rotate: [-0.6, 0.6, -0.6],
+              }}
+              transition={{
+                scale: { duration: interval / 1000, ease: 'linear' },
+                y: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+                rotate: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
+              }}
             />
           </motion.div>
         </AnimatePresence>
