@@ -135,17 +135,15 @@ export function HomeClient({ books }: HomeClientProps) {
                 ))}
                 <Link
                   href={`/books/${featured.slug}`}
-                  className="absolute bottom-0 left-0 right-0 flex items-end justify-between bg-bg-deep/80 p-5 backdrop-blur transition-colors hover:bg-bg-deep/90"
+                  className="absolute bottom-3 right-3 flex items-center gap-3 bg-bg-deep/70 px-3 py-2 backdrop-blur transition-colors hover:bg-bg-deep/90"
                 >
-                  <div>
-                    <p className="font-display text-[10px] uppercase tracking-[0.28em] text-text-muted">
-                      Featured archive
-                    </p>
-                    <p className="mt-2 font-display text-2xl font-light text-text-primary">
-                      Library as architecture
-                    </p>
-                  </div>
-                  <span className="font-display text-xl text-accent-cream">→</span>
+                  <span className="font-display text-[9px] uppercase tracking-[0.22em] text-text-muted">
+                    Featured archive
+                  </span>
+                  <span className="font-display text-sm text-text-secondary">
+                    Library as architecture
+                  </span>
+                  <span className="font-display text-sm text-accent-cream">→</span>
                 </Link>
               </div>
             </ScrollReveal>
