@@ -16,31 +16,31 @@ const libraryImages = [
   {
     src: '/library-trinity.jpg',
     alt: 'Historic long library with arched wooden ceiling',
-    className: 'left-[5%] top-[5%] w-36 sm:w-56 md:w-72',
+    className: 'left-[2%] top-[3%] w-44 sm:w-72 md:w-96',
     delay: 0,
   },
   {
     src: '/library-temple.jpg',
     alt: 'Warm multi-level wooden library with spiral staircase',
-    className: 'right-[5%] top-[15%] w-32 sm:w-48 md:w-64',
+    className: 'right-[2%] top-[12%] w-40 sm:w-64 md:w-80',
     delay: 0.3,
   },
   {
     src: '/library-vasconcelos.jpg',
     alt: 'Modern geometric library stacks with suspended walkways',
-    className: 'left-[12%] top-[50%] w-40 sm:w-56 md:w-72',
+    className: 'left-[8%] top-[45%] w-48 sm:w-72 md:w-96',
     delay: 0.6,
   },
   {
     src: '/library-warm-shelves.jpg',
     alt: 'Close view of old books and warm shelves',
-    className: 'right-[8%] top-[55%] w-28 sm:w-44 md:w-56',
+    className: 'right-[4%] top-[52%] w-36 sm:w-56 md:w-72',
     delay: 0.9,
   },
   {
     src: '/library-white.jpg',
     alt: 'Bright white contemporary library interior',
-    className: 'left-[30%] top-[75%] w-32 sm:w-48 md:w-60',
+    className: 'left-[25%] top-[72%] w-40 sm:w-60 md:w-80',
     delay: 1.2,
   },
 ]
@@ -103,7 +103,7 @@ export function HomeClient({ books }: HomeClientProps) {
 
           {featured && (
             <ScrollReveal delay={0.28}>
-              <div className="relative mb-10 aspect-[4/5] w-full overflow-hidden bg-bg-raised lg:mb-20">
+              <div className="relative mb-10 w-full lg:mb-20" style={{ minHeight: 'clamp(320px, 50vw, 640px)' }}>
                 {libraryImages.map((image, index) => (
                   <motion.img
                     key={image.src}
@@ -133,7 +133,6 @@ export function HomeClient({ books }: HomeClientProps) {
                     }}
                   />
                 ))}
-                <div className="absolute inset-0 border border-border-subtle" />
                 <Link
                   href={`/books/${featured.slug}`}
                   className="absolute bottom-0 left-0 right-0 flex items-end justify-between bg-bg-deep/80 p-5 backdrop-blur transition-colors hover:bg-bg-deep/90"
