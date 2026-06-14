@@ -138,7 +138,7 @@ export default async function BookPage({ params }: BookPageProps) {
           {frontmatter.coverImage && (
             <div className="pb-10 lg:col-span-5 lg:pb-20">
               <ScrollReveal delay={0.2}>
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-bg-raised">
+                <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden bg-bg-raised sm:max-w-none">
                   <img
                     src={frontmatter.coverImage}
                     alt={frontmatter.title}
@@ -146,7 +146,7 @@ export default async function BookPage({ params }: BookPageProps) {
                     height={800}
                     decoding="async"
                     fetchPriority="high"
-                    className="h-full w-full object-cover opacity-90 grayscale"
+                    className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 border border-border-subtle" />
                   <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-bg-deep/80 px-5 py-4 backdrop-blur">

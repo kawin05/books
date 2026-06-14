@@ -115,7 +115,7 @@ export function HomeClient({ books }: HomeClientProps) {
                         height={index === 0 ? 650 : 420}
                         decoding="async"
                         fetchPriority={index === 0 ? 'high' : 'auto'}
-                        className="h-full w-full object-cover opacity-80 grayscale transition duration-700 group-hover:scale-[1.04] group-hover:opacity-95 group-hover:grayscale-0"
+                        className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                       />
                     </div>
                   ))}
