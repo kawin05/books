@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'motion/react'
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { BookCard, stagger } from '@/components/BookCard'
 import { Cursor } from '@/components/Cursor'
 import { ScrollReveal } from '@/components/ScrollReveal'
@@ -16,55 +17,50 @@ const libraryImages = [
   {
     src: '/library-trinity.jpg',
     alt: 'Historic long library with arched wooden ceiling',
-    className: 'left-[2%] top-[3%] w-44 sm:w-72 md:w-96',
-    delay: 0,
   },
   {
     src: '/library-temple.jpg',
     alt: 'Warm multi-level wooden library with spiral staircase',
-    className: 'right-[2%] top-[12%] w-40 sm:w-64 md:w-80',
-    delay: 0.3,
   },
   {
     src: '/library-vasconcelos.jpg',
     alt: 'Modern geometric library stacks with suspended walkways',
-    className: 'left-[8%] top-[45%] w-48 sm:w-72 md:w-96',
-    delay: 0.6,
   },
   {
     src: '/library-warm-shelves.jpg',
     alt: 'Close view of old books and warm shelves',
-    className: 'right-[4%] top-[52%] w-36 sm:w-56 md:w-72',
-    delay: 0.9,
   },
   {
     src: '/library-white.jpg',
     alt: 'Bright white contemporary library interior',
-    className: 'left-[25%] top-[72%] w-40 sm:w-60 md:w-80',
-    delay: 1.2,
   },
   {
     src: '/library-abbey.jpg',
     alt: 'Baroque Abbey Library of Saint Gallen with ornate ceiling',
-    className: 'left-[40%] top-[18%] w-36 sm:w-52 md:w-68',
-    delay: 0.15,
   },
   {
     src: '/library-morgan.jpg',
     alt: 'Morgan Library Museum New York grand hall',
-    className: 'right-[15%] top-[38%] w-38 sm:w-56 md:w-72',
-    delay: 0.75,
   },
   {
     src: '/library-sharjah.jpg',
     alt: 'Sharjah House of Wisdom modern floating library',
-    className: 'left-[5%] top-[55%] w-44 sm:w-64 md:w-84',
-    delay: 1.5,
   },
 ]
 
 export function HomeClient({ books }: HomeClientProps) {
   const featured = books[0]
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const interval = 4000
+
+  const next = useCallback(() => {
+    setCurrentIndex((i) => (i + 1) % libraryImages.length)
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(next, interval)
+    return () => clearInterval(timer)
+  }, [next])
 
   return (
     <main className="grain relative min-h-screen overflow-hidden">
@@ -121,55 +117,65 @@ export function HomeClient({ books }: HomeClientProps) {
         </div>
       </section>
 
-      {featured && (
-        <section className="relative w-full overflow-hidden px-4 pb-20 sm:px-8 lg:px-12" style={{ minHeight: 'clamp(400px, 60vw, 800px)' }}>
-          <ScrollReveal delay={0.28}>
-            <div className="relative mx-auto w-full max-w-[1600px]" style={{ minHeight: 'clamp(380px, 58vw, 780px)' }}>
-              {libraryImages.map((image, index) => (
-                <motion.img
-                  key={image.src}
-                  src={image.src}
-                  alt={image.alt}
-                  className={`absolute rounded-md object-cover shadow-2xl ${image.className}`}
-                    initial={{ opacity: 0, y: 30, rotate: -2 }}
-                    animate={{
-                      opacity: 1,
-                      y: [0, -14, 0],
-                      rotate: [-1.5, 1.5, -1.5],
-                    }}
-                    transition={{
-                      opacity: { duration: 0.7, delay: image.delay },
-                      y: {
-                        duration: 5 + index,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                        delay: image.delay,
-                      },
-                      rotate: {
-                        duration: 6 + index,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                        delay: image.delay,
-                      },
-                    }}
-                  />
-                ))}
-                <Link
-                  href={`/books/${featured.slug}`}
-                  className="absolute bottom-3 right-3 flex items-center gap-3 bg-bg-deep/70 px-3 py-2 backdrop-blur transition-colors hover:bg-bg-deep/90"
-                >
-                  <span className="font-display text-[9px] uppercase tracking-[0.22em] text-text-muted">
-                    Featured archive
-                  </span>
-                  <span className="font-display text-sm text-text-secondary">
-                    Library as architecture
-                  </span>
-                  <span className="font-display text-sm text-accent-cream">→</span>
-                </Link>
-              </div>
-            </ScrollReveal>
-        </section>
-      )}
+      <section className="relative w-full overflow-hidden" style={{ height: 'clamp(420px, 70vw, 900px)' }}>
+        {/* Slides */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+          >
+            <motion.img
+              src={libraryImages[currentIndex].src}
+              alt={libraryImages[currentIndex].alt}
+              className="h-full w-full object-cover"
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.06 }}
+              transition={{ duration: interval / 1000, ease: 'linear' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dark overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+
+        {/* Overlay text */}
+        {featured && (
+          <Link
+            href={`/books/${featured.slug}`}
+            className="absolute bottom-6 left-6 right-6 flex items-end justify-between sm:bottom-10 sm:left-12 sm:right-12"
+          >
+            <div>
+              <p className="font-display text-[10px] uppercase tracking-[0.28em] text-text-muted">
+                Featured archive
+              </p>
+              <p className="mt-2 max-w-md font-display text-2xl font-light text-text-primary sm:text-4xl">
+                Library as architecture
+              </p>
+            </div>
+            <span className="shrink-0 font-display text-2xl text-accent-cream sm:text-3xl">→</span>
+          </Link>
+        )}
+
+        {/* Slide indicators */}
+        <div className="absolute bottom-6 right-6 flex gap-2 sm:bottom-10 sm:right-12">
+          {libraryImages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                i === currentIndex
+                  ? 'w-8 bg-accent-cream'
+                  : 'w-2 bg-text-muted/40 hover:bg-text-muted/60'
+              }`}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </section>
 
       <section id="library" className="px-6 pb-36 pt-8 sm:px-12">
         <div className="mx-auto w-full max-w-[1600px]">
