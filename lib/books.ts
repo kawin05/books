@@ -17,6 +17,7 @@ export type BookFrontmatter = {
   year?: number
   cover?: string // emoji or short label (fallback)
   coverImage?: string // path to book cover image
+  deckUrl?: string // path to HTML slide deck (replaces MDX content)
   summary: string
   language?: 'en' | 'th'
   order?: number

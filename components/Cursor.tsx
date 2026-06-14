@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring } from 'motion/react'
+import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
 
 /**
  * Custom cursor that follows the mouse and grows over interactive elements.
@@ -12,6 +12,7 @@ export function Cursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const shouldReduceMotion = useReducedMotion()
 
   const mouseX = useMotionValue(-100)
   const mouseY = useMotionValue(-100)
@@ -48,7 +49,7 @@ export function Cursor() {
     }
   }, [mouseX, mouseY, isVisible])
 
-  if (isTouchDevice) return null
+  if (isTouchDevice || shouldReduceMotion) return null
 
   return (
     <motion.div

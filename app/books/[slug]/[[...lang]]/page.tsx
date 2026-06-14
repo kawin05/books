@@ -124,6 +124,10 @@ export default async function BookPage({ params }: BookPageProps) {
               <img
                 src={frontmatter.coverImage}
                 alt={frontmatter.title}
+                width={192}
+                height={288}
+                decoding="async"
+                fetchPriority="high"
                 className="w-40 shrink-0 rounded-md object-cover shadow-2xl sm:w-48"
               />
             </ScrollReveal>
@@ -131,14 +135,26 @@ export default async function BookPage({ params }: BookPageProps) {
         </div>
       </section>
 
-      {/* MDX content */}
-      <article className="px-6 pb-32 sm:px-12">
-        <div className="mx-auto w-full max-w-3xl">
-          <div className="prose-book">
-            <MDXRemote source={book.content} />
+      {/* Deck or MDX content */}
+      {frontmatter.deckUrl ? (
+        <section className="relative mx-auto w-full max-w-7xl px-0 pb-24 sm:px-6">
+          <iframe
+            src={frontmatter.deckUrl}
+            title={frontmatter.title}
+            className="w-full rounded-lg border border-border-subtle bg-bg"
+            style={{ height: 'calc(100vh - 120px)', minHeight: '600px' }}
+            allowFullScreen
+          />
+        </section>
+      ) : (
+        <article className="px-6 pb-32 sm:px-12">
+          <div className="mx-auto w-full max-w-3xl">
+            <div className="prose-book">
+              <MDXRemote source={book.content} />
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      )}
 
       <footer className="border-t border-border-subtle px-6 py-12 sm:px-12">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between font-body text-xs text-text-muted">
