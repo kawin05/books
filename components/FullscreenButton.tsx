@@ -32,7 +32,7 @@ export function FullscreenButton({ targetId, className = '' }: FullscreenButtonP
   return (
     <ShinyButton
       onClick={toggle}
-      className={`rounded-full font-display text-xs uppercase tracking-[0.2em] ${className}`}
+      className={`rounded-full font-display text-xs uppercase tracking-[0.2em] text-text-secondary hover:text-text-primary ${className}`}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
     >
       {isFullscreen ? (
