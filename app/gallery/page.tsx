@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Footer } from '@/components/Footer'
+import { GalleryGrid } from '@/components/GalleryGrid'
 import { libraryImages } from '@/lib/images'
 
 export const metadata: Metadata = {
@@ -30,20 +31,7 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      <section className="px-2 pb-24 sm:px-6">
-        <div className="mx-auto w-full max-w-[1600px] columns-1 gap-2 sm:columns-2 sm:gap-3 lg:columns-3 lg:gap-4">
-          {libraryImages.map((photo) => (
-            <div key={photo.src} className="mb-2 break-inside-avoid overflow-hidden rounded-sm bg-bg-raised sm:mb-3 lg:mb-4">
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      <GalleryGrid />
 
       <Footer backLink />
     </main>
