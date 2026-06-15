@@ -74,8 +74,8 @@ export default function RootLayout({
       </head>
       <body className="relative min-h-screen antialiased">
         <AnimatedGridPattern
-          numSquares={30}
-          maxOpacity={0.1}
+          numSquares={40}
+          maxOpacity={0.25}
           duration={3}
           repeatDelay={1}
           className="[mask-image:radial-gradient(ellipse_90%_70%_at_center,white,transparent)] inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
