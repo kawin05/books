@@ -126,7 +126,7 @@ export function AnimatedGridPattern({
       ref={containerRef}
       aria-hidden="true"
       className={cn(
-        'pointer-events-none absolute inset-0 h-full w-full fill-text-muted/25 stroke-text-muted/25',
+        'pointer-events-none absolute inset-0 h-full w-full text-text-muted/25 fill-text-muted/25 stroke-text-muted/25',
         className,
       )}
       {...props}
@@ -143,6 +143,7 @@ export function AnimatedGridPattern({
           <path
             d={`M.5 ${height}V.5H${width}`}
             fill="none"
+            stroke="currentColor"
             strokeDasharray={strokeDasharray}
           />
         </pattern>
