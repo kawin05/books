@@ -1,6 +1,7 @@
 'use client'
 
 import { ScrollReveal } from '@/components/ScrollReveal'
+import { TypewriterText } from '@/components/TypewriterText'
 
 export function HeroSection() {
   return (
@@ -13,15 +14,8 @@ export function HeroSection() {
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.12} as="h1">
-            <span className="block max-w-5xl font-display text-[clamp(4.7rem,15vw,15rem)] font-light uppercase leading-[0.78] tracking-normal text-text-primary">
-              Kawin
-            </span>
-          </ScrollReveal>
-          <ScrollReveal delay={0.22} as="h1">
-            <span className="block max-w-5xl font-display text-[clamp(4.7rem,15vw,15rem)] font-light uppercase leading-[0.78] tracking-normal text-text-primary">
-              Books
-            </span>
+          <ScrollReveal delay={0.12}>
+            <TypewriterText className="text-[clamp(2.5rem,10vw,10rem)] font-light uppercase leading-[0.85] tracking-normal text-text-primary" />
           </ScrollReveal>
 
           <ScrollReveal delay={0.36}>

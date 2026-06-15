@@ -7,7 +7,11 @@ const PHRASES = [
   'มาอ่านด้วยกัน',
 ]
 
-export function TypewriterText() {
+interface TypewriterTextProps {
+  className?: string
+}
+
+export function TypewriterText({ className = 'text-sm font-medium tracking-[0.12em] text-accent-cream' }: TypewriterTextProps) {
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [deleting, setDeleting] = useState(false)
@@ -41,9 +45,9 @@ export function TypewriterText() {
   const phrase = PHRASES[phraseIndex]
 
   return (
-    <span className="font-display text-sm font-medium tracking-[0.12em] text-accent-cream" aria-label={phrase}>
+    <span className={`font-display ${className}`} aria-label={phrase}>
       <span>{phrase.slice(0, charIndex)}</span>
-      <span className="inline-block w-[1px] h-[1em] -mb-[0.1em] bg-accent-cream animate-pulse" aria-hidden />
+      <span className="inline-block w-[1px] h-[1em] -mb-[0.1em] bg-current animate-pulse" aria-hidden />
     </span>
   )
 }
