@@ -38,7 +38,7 @@ export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>
       <motion.button
         ref={ref}
         className={cn(
-          'relative cursor-pointer rounded-lg border border-transparent px-6 py-2 font-medium backdrop-blur-xl transition-all duration-300 ease-in-out hover:border-border-subtle/50 hover:shadow dark:hover:shadow-[0_0_12px_var(--primary)/4%]',
+          'relative cursor-pointer rounded-lg border border-border-subtle/25 px-6 py-2 font-medium backdrop-blur-xl transition-all duration-300 ease-in-out hover:border-border-subtle/60 hover:shadow dark:hover:shadow-[0_0_12px_var(--primary)/4%]',
           className,
         )}
         {...animationProps}
