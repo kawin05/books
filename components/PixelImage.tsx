@@ -27,6 +27,7 @@ interface PixelImageProps {
   pixelFadeInDuration?: number
   maxAnimationDelay?: number
   colorRevealDelay?: number
+  colorTransitionDuration?: number
   className?: string
 }
 
@@ -54,6 +55,7 @@ export function PixelImage({
   pixelFadeInDuration = 1000,
   maxAnimationDelay = 1200,
   colorRevealDelay = 1300,
+  colorTransitionDuration,
   customGrid,
   className,
 }: PixelImageProps) {
@@ -115,7 +117,7 @@ export function PixelImage({
             )}
             style={{
               transition: grayscaleAnimation
-                ? `filter ${pixelFadeInDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
+                ? `filter ${colorTransitionDuration ?? pixelFadeInDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
                 : 'none',
             }}
             draggable={false}

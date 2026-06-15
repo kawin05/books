@@ -17,6 +17,10 @@ export function GalleryGrid() {
               alt={photo.alt}
               className="aspect-[4/3] w-full"
               grid="4x6"
+              pixelFadeInDuration={1200}
+              maxAnimationDelay={1600}
+              colorRevealDelay={3200}
+              colorTransitionDuration={2500}
             />
           </div>
         ))}
