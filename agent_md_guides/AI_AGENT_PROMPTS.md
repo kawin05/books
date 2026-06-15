@@ -1,13 +1,14 @@
-# Useful Prompts for Code Cleanup Agents
+# Useful Prompts for AI Agents — Kawin's Books
 
-Use these prompts when asking an AI agent to clean, refactor, or review the project.
+Use these prompts when asking an AI agent to clean, refactor, or extend this book-summary project.
 
 ---
 
 ## Full Code Review Prompt
 
 ```txt
-Review this Next.js project for code quality, maintainability, performance, responsive design, accessibility, and future scalability.
+Review this Next.js book-summary site for code quality, maintainability, performance,
+responsive design, accessibility, and future scalability.
 
 Do not rewrite code yet.
 
@@ -16,7 +17,7 @@ Return:
 2. Quick wins
 3. Files that should be refactored
 4. Unused or duplicated code
-5. Suggested folder structure
+5. Suggested improvements
 6. Risks before deployment
 ```
 
@@ -36,7 +37,29 @@ Rules:
 - Remove duplicated code
 - Add TypeScript types where useful
 - Do not add new packages unless necessary
+- Respect dark/paper theme system
+- Never run `npx shadcn@latest` (targets TW4, breaks TW3 setup)
 - Explain every major change
+```
+
+---
+
+## Add a Book Prompt
+
+```txt
+Add a new book to this site.
+
+Book details:
+- Title: [title]
+- Author: [author]
+- Year: [year]
+- Summary: [one-paragraph hook]
+- Cover image: [path in public/]
+- HTML deck URL: [path in public/] (optional — omit for MDX prose)
+- Order: [sort number]
+
+Create the MDX file(s) and any language variants needed.
+The site auto-discovers new books from content/books/ — no config changes required.
 ```
 
 ---
@@ -63,27 +86,29 @@ Rules:
 Clean up the Tailwind classes in this project.
 
 Goals:
+- Use theme tokens: text-primary, text-secondary, text-muted, bg, bg-deep, bg-raised,
+  border, border-subtle, accent-cream, accent-rust, accent-amber
 - Make spacing consistent
 - Remove duplicated class patterns
 - Improve responsive behavior
 - Keep the same visual design
-- Create reusable layout components if useful
 - Do not introduce a new styling system
 ```
 
 ---
 
-## TypeScript Cleanup Prompt
+## Theme / Dark Mode Prompt
 
 ```txt
-Improve the TypeScript quality of this project.
+The project has a dark/paper theme system controlled by CSS variables and a ThemeToggle.
+Dark mode is default. Paper mode is light beige.
 
-Goals:
-- Add proper types for project data
-- Remove unnecessary any types
-- Create shared types where useful
-- Keep components easy to read
-- Do not over-engineer the types
+When adding components:
+- Use theme tokens, not hardcoded colors
+- Test in both modes
+- The initial script in layout.tsx prevents FOUC
+- Theme is stored in localStorage.theme
+- The <html> element uses data-theme="dark" or data-theme="light"
 ```
 
 ---
@@ -94,10 +119,10 @@ Goals:
 Review this website for performance problems.
 
 Focus on:
-- image optimization
+- image optimization (library photos are 50KB–1MB)
 - large JavaScript bundles
 - unnecessary packages
-- animation performance
+- animation performance (Motion 12, PixelImage, AnimatedGridPattern)
 - layout shift
 - slow loading pages
 
@@ -112,39 +137,15 @@ Give specific fixes and explain which are most important.
 Review this website for accessibility issues.
 
 Check:
-- headings
-- image alt text
+- headings (home has no visible h1 — verify screen reader experience)
+- image alt text (library photos, book covers, gallery)
 - buttons and links
 - keyboard navigation
 - focus states
-- color contrast
-- form labels
+- color contrast (dark theme: cream #F0EBE0 on #0E0F12)
 - mobile menu behavior
-
-Suggest fixes without changing the design direction.
-```
-
----
-
-## Architecture Portfolio Prompt
-
-```txt
-Improve this architecture portfolio website.
-
-Target style:
-- minimal
-- premium
-- image-focused
-- editorial
-- responsive
-- subtle animation
-
-Rules:
-- Do not make it colorful or playful
-- Keep typography clean
-- Improve spacing and layout
-- Make project pages easy to update
-- Make mobile experience excellent
+- PixelImage alt text per grid piece
+- AnimatedGridPattern has aria-hidden="true"
 ```
 
 ---
@@ -155,14 +156,13 @@ Rules:
 Create or improve the README for this project.
 
 Include:
-- project overview
-- tech stack
-- how to install
-- how to run locally
+- project overview (Kawin's Books — personal book-summary archive)
+- tech stack (Next.js 15, React 19, TypeScript, Tailwind 3.4, Motion 12, MDX)
+- how to install and run locally (npm install, npm run dev -- --port 3001)
 - folder structure
-- how to add a new project
-- how to update images
-- how to deploy
-- environment variables
+- how to add a new book
+- how to add a Thai translation
+- theme system (dark/paper)
+- how to deploy (git push origin main → Vercel auto-deploy)
 - common commands
 ```

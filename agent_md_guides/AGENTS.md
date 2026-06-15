@@ -2,14 +2,14 @@
 
 ## Purpose
 
-This project may be generated or modified by AI agents. The goal is not only to make the website work, but to keep it clean, maintainable, fast, and easy to update in the future.
+This project (Kawin's Books — kawinsbooks.vercel.app) is a personal book-summary archive. AI agents modify it. The goal: keep it clean, maintainable, fast, and easy to add books to.
 
 Agents must prioritize:
 
 1. Correct behavior
 2. Clean structure
 3. Reusable components
-4. Consistent styling
+4. Consistent styling (dark/paper theme)
 5. Type safety
 6. Mobile and desktop responsiveness
 7. Performance
@@ -30,10 +30,9 @@ If a change affects visuals, explain it clearly.
 
 ### 2. Prefer small focused changes
 
-Avoid rewriting the entire project unless the user specifically asks for a full rebuild.
+Avoid rewriting the entire project unless the user asks for a full rebuild.
 
 Good changes:
-
 - split a large component into smaller components
 - rename unclear variables
 - remove duplicated code
@@ -42,7 +41,6 @@ Good changes:
 - improve file organization
 
 Bad changes:
-
 - replacing the whole stack
 - changing the design direction
 - removing features silently
@@ -53,131 +51,55 @@ Bad changes:
 
 Avoid files over 300 lines when possible.
 
-If a file becomes too large, split it into:
-
-- layout components
-- section components
-- UI components
-- data files
-- utility files
-- type files
-
 ### 4. Use clear names
 
-Bad names:
-
-```ts
-Box
-Thing
-Section1
-DataItem
-ComponentA
-```
-
-Good names:
-
-```ts
-HeroSection
-ProjectGrid
-ProjectCard
-ProjectGallery
-TeamMemberCard
-ContactForm
-MobileMenu
-```
+Bad: `Box`, `Thing`, `Section1`, `ComponentA`
+Good: `HeroSection`, `BookCard`, `LibrarySlideshow`, `GalleryGrid`, `ThemeToggle`
 
 ### 5. Reuse components
 
-If UI appears more than once, consider making it a reusable component.
+Components shared across pages: `Footer`, `ThemeToggle`, `Cursor`, `ScrollReveal`, `AnimatedGridPattern`.
 
-Examples:
+### 6. Move content out of UI
 
-```tsx
-<ProjectCard project={project} />
-<SectionTitle>Projects</SectionTitle>
-<PageContainer>...</PageContainer>
-```
-
-### 6. Move content out of UI when possible
-
-Do not hardcode large amounts of project data inside React components.
-
-Prefer:
-
-```txt
-src/data/
-src/content/
-CMS
-```
-
-or typed data files.
+Book data lives in `content/books/<slug>/index.mdx` with frontmatter. Image arrays live in `lib/images.ts`. Never hardcode content in components.
 
 ### 7. Keep styling consistent
 
-Use Tailwind classes consistently.
-
-Avoid random one-off spacing, colors, and font sizes unless necessary.
-
-Prefer shared patterns for:
-
-- section spacing
-- page width
-- typography
-- buttons
-- cards
-- image layouts
-- hover effects
-- animations
+Use Tailwind classes consistently. The project has a custom theme with CSS variables:
+- `text-primary`, `text-secondary`, `text-muted`
+- `bg`, `bg-deep`, `bg-raised`
+- `border`, `border-subtle`
+- `accent-cream`, `accent-rust`, `accent-amber`
 
 ### 8. Avoid unnecessary dependencies
 
-Before adding a package, ask:
-
-- Is this really needed?
-- Can this be done with existing tools?
-- Will it make maintenance harder?
-- Is it actively maintained?
+Before adding a package, ask: is this really needed? Removed 3 unused Radix packages during refactor. Keep it lean.
 
 ### 9. Always check mobile and desktop
 
-Every layout must work on:
-
-- mobile
-- tablet
-- laptop
-- large desktop
-
-Use responsive Tailwind utilities intentionally.
+Every layout must work on mobile, tablet, laptop, and large desktop.
 
 ### 10. Run checks before finishing
 
-Before saying the task is complete, agents should run or recommend:
-
 ```bash
-npm run lint
 npm run build
 ```
 
-If tests exist:
-
-```bash
-npm test
-```
+(ESLint not configured yet — `next lint` prompts interactively.)
 
 ---
 
 ## Preferred Stack
 
-For this project, prefer:
-
-```txt
-Next.js
-React
-TypeScript
-Tailwind CSS
-shadcn/ui
-Motion
-Sanity or another CMS if content editing is needed
+```
+Next.js 15.5 (App Router)
+React 19
+TypeScript 5.7
+Tailwind CSS 3.4
+shadcn/ui (manual, TW3-compatible — do NOT use CLI)
+Motion 12
+MDX v6 (next-mdx-remote)
 Vercel for deployment
 ```
 
@@ -185,64 +107,90 @@ Do not switch the stack without permission.
 
 ---
 
-## Target Project Structure
+## Project Structure (actual)
 
-Use a clear structure like this:
-
-```txt
-src/
-  app/
-    page.tsx
-    projects/
-      page.tsx
-      [slug]/
-        page.tsx
-
-  components/
-    layout/
-      Navbar.tsx
-      Footer.tsx
-      MobileMenu.tsx
-
-    sections/
-      HeroSection.tsx
-      FeaturedProjects.tsx
-      AboutSection.tsx
-      ContactSection.tsx
-
-    projects/
-      ProjectCard.tsx
-      ProjectGrid.tsx
-      ProjectGallery.tsx
-      ProjectMeta.tsx
-
-    ui/
-      Button.tsx
-      Container.tsx
-      Section.tsx
-      SectionTitle.tsx
-
-  data/
-    projects.ts
-
-  lib/
-    utils.ts
-    animations.ts
-
-  types/
-    project.ts
-
-  styles/
-    globals.css
+```
+books/
+├── app/
+│   ├── books/[slug]/[[...lang]]/page.tsx   # Book detail — hero + iframe deck (or MDX fallback)
+│   ├── gallery/page.tsx                     # Masonry photo gallery with PixelImage
+│   ├── globals.css                          # Tailwind + CSS vars + dark/paper themes
+│   ├── layout.tsx                           # Root layout — fonts, metadata, theme init, AnimatedGridPattern
+│   ├── not-found.tsx                        # Custom 404
+│   ├── opengraph-image.tsx                  # OG image route
+│   └── page.tsx                             # Home → passes books[] to HomeClient
+│
+├── components/
+│   ├── AnimatedGridPattern.tsx              # SVG grid background (skewed, masked, animated squares)
+│   ├── BookCard.tsx                         # Library index row — title, year, summary, lang links, hover cover
+│   ├── Cursor.tsx                           # Custom spring-follow cursor (hidden on touch)
+│   ├── Footer.tsx                           # Shared footer — home variant or backLink variant
+│   ├── FullscreenButton.tsx                 # ShinyButton-based fullscreen toggle
+│   ├── GalleryGrid.tsx                      # Client masonry grid using PixelImage
+│   ├── HeroSection.tsx                      # Home hero — typewriter "Let's read together."
+│   ├── HomeClient.tsx                       # Home orchestrator — nav + hero + slideshow + library index
+│   ├── LanguageLink.tsx                     # EN/TH language switcher
+│   ├── LibrarySlideshow.tsx                 # Image slideshow with Ken Burns + crossfade + dots
+│   ├── PixelImage.tsx                       # Pixel-reveal image (clip-path grid, grayscale→color)
+│   ├── ScrollReveal.tsx                     # Viewport-triggered fade-up wrapper
+│   ├── ThemeToggle.tsx                      # Dark/Paper toggle
+│   ├── TypewriterText.tsx                   # Typing animation (reusable, accepts className)
+│   └── ui/
+│       ├── button.tsx                       # shadcn button (only one kept after cleanup)
+│       └── shiny-button.tsx                 # Glossy animated button (spring shine effect)
+│
+├── content/books/
+│   ├── deep-work/{index.mdx, index.th.mdx}
+│   └── ultralearning/{index.mdx, index.th.mdx}
+│
+├── lib/
+│   ├── books.ts                             # MDX loader + BookFrontmatter/Book/BookSummary types
+│   ├── images.ts                            # Shared libraryImages array (11 photos)
+│   └── utils.ts                             # cn() helper
+│
+├── public/
+│   ├── Deepwork/deep-work-deck*.html        # Legacy HTML slide decks (iframe source)
+│   ├── ultralearning-deck*.html
+│   ├── *-cover.jpg                          # Book covers
+│   └── library-*.jpg                        # 11 library architecture photos
+│
+├── HANDOFF.md                               # Living project state document
+├── tailwind.config.ts                       # Custom colors + shadcn tokens + font families
+├── vercel.json                              # { "framework": "nextjs" }
+└── package.json
 ```
 
-Adjust if the project already has a better structure.
+---
+
+## Book Frontmatter Schema
+
+```yaml
+---
+title: "Deep Work"
+author: "Cal Newport"
+year: 2016
+cover: "📚"                              # Emoji fallback (currently unused)
+coverImage: /deep-work-cover.jpg        # Detail page hero + BookCard hover
+deckUrl: /Deepwork/deep-work-deck.html  # Iframe embed (omit for MDX prose)
+summary: "One-paragraph hook..."
+order: 1                                # Sort order
+language: en
+---
+```
+
+---
+
+## Theme System
+
+- `:root` — dark theme (`#0E0F12` background, cream/rust/amber accents)
+- `:root[data-theme="light"]` — beige paper theme
+- Tailwind tokens map to CSS variables: `background`, `foreground`, `card`, `primary`, `secondary`, `muted`, `accent`, `border`, `ring`
+- Toggle in `ThemeToggle.tsx` stores to `localStorage.theme`
+- Initial script in `layout.tsx` prevents FOUC by reading `data-theme` before paint
 
 ---
 
 ## Refactoring Checklist
-
-When asked to clean or refactor code, follow this order:
 
 1. Confirm the current behavior
 2. Identify large files
@@ -253,7 +201,7 @@ When asked to clean or refactor code, follow this order:
 7. Add or improve TypeScript types
 8. Standardize styling
 9. Remove unused imports/files/packages
-10. Run lint/build checks
+10. Run build check
 11. Summarize what changed
 
 ---
@@ -261,7 +209,6 @@ When asked to clean or refactor code, follow this order:
 ## What Not To Do
 
 Do not:
-
 - silently delete features
 - rewrite working code without reason
 - add complex architecture for a small website
@@ -272,24 +219,5 @@ Do not:
 - hardcode secrets or API keys
 - make accessibility worse
 - break mobile layout
-
----
-
-## Final Response Format for Agents
-
-When completing a cleanup task, summarize:
-
-```txt
-Changed:
-- ...
-
-Kept the same:
-- ...
-
-Checks:
-- lint: passed/failed/not run
-- build: passed/failed/not run
-
-Notes:
-- ...
-```
+- run `npx shadcn@latest` (targets Tailwind v4, breaks TW3 setup)
+- modify `globals.css` color variables without understanding the theme cascade

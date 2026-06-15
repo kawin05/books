@@ -1,262 +1,159 @@
-# Testing and Deployment Checklist for AI Agents
+# Testing and Deployment — Kawin's Books
 
-## Purpose
-
-This file tells agents what to check before considering the website ready.
-
-A website is not finished just because the code compiles. It must work across devices, browsers, and real content conditions.
-
----
-
-## Basic Commands
-
-Run these before final delivery:
+## Build
 
 ```bash
-npm run lint
 npm run build
 ```
 
-If tests exist:
+Must pass with zero errors. All 7 static pages must generate successfully.
+
+(ESLint not configured — `npm run lint` prompts interactively and cannot run non-interactively.)
+
+---
+
+## Routes
+
+| Route | Type | What |
+|---|---|---|
+| `/` | Static | Home — hero + slideshow + library index |
+| `/books/deep-work` | SSG | Deep Work EN |
+| `/books/deep-work/th` | SSG | Deep Work TH |
+| `/books/ultralearning` | SSG | Ultralearning EN |
+| `/books/ultralearning/th` | SSG | Ultralearning TH |
+| `/gallery` | Static | 11 library photos in masonry grid |
+| `/icon.svg` | Static | Favicon |
+| `/opengraph-image` | Static | OG image route |
+
+---
+
+## Local Development
 
 ```bash
-npm test
-```
-
-If formatting is configured:
-
-```bash
-npm run format
-```
-
----
-
-## Manual Browser Testing
-
-Check the website in a browser.
-
-Test:
-
-```txt
-Homepage
-Projects page
-Individual project pages
-About page
-Contact section
-Mobile menu
-Footer links
-External links
-Download links
-Contact form
-Language switcher, if any
-```
-
----
-
-## Responsive Testing
-
-Check these widths:
-
-```txt
-375px mobile
-430px large mobile
-768px tablet
-1024px laptop
-1440px desktop
-1920px large desktop
-```
-
-Look for:
-
-```txt
-Horizontal overflow
-Text too large
-Text too small
-Broken grids
-Images cropped badly
-Menu not working
-Buttons too small
-Content too cramped
-```
-
----
-
-## Content Stress Tests
-
-Test with imperfect content.
-
-Examples:
-
-```txt
-Very long project title
-Missing project image
-Many project images
-Only one project image
-Long description
-Empty category
-Different year formats
-Long location name
-```
-
-The website should not break.
-
----
-
-## Performance Checks
-
-For image-heavy portfolio sites, check:
-
-```txt
-Image file size
-Use of Next.js Image
-Lazy loading
-Unused JavaScript
-Unused packages
-Font loading
-Animation performance
-```
-
-Recommendations:
-
-```txt
-Use WebP or AVIF
-Compress images
-Avoid giant images over 5MB
-Avoid too many heavy animation libraries
-Use next/image where possible
-```
-
----
-
-## Accessibility Checks
-
-Check:
-
-```txt
-[ ] Page has one main h1
-[ ] Headings are in logical order
-[ ] Images have alt text
-[ ] Buttons have readable labels
-[ ] Links describe where they go
-[ ] Keyboard navigation works
-[ ] Focus states are visible
-[ ] Text contrast is readable
-[ ] Mobile menu can be closed
-[ ] Forms have labels
-```
-
----
-
-## SEO Checks
-
-For a portfolio website, check:
-
-```txt
-Page title
-Meta description
-Open Graph image
-Project page metadata
-Clean URLs
-Sitemap if needed
-Robots file if needed
-Alt text on images
-```
-
-Project URLs should be readable:
-
-```txt
-/projects/casa-miquel
-/projects/interior-studio
-```
-
-Avoid random URLs like:
-
-```txt
-/projects/item-123
+npm run dev -- --port 3001
 ```
 
 ---
 
 ## Deployment
 
-Recommended deployment:
+**Platform:** Vercel (team: `kawin-s-projects1`)
 
-```txt
-Vercel
+**Auto-deploy:** Push to `main` triggers Vercel deploy.
+
+**Domain alias:** After each deploy, update the alias:
+```bash
+npx vercel list --scope kawin-s-projects1                          # find latest deploy URL
+npx vercel alias set <deploy-url> kawinsbooks.vercel.app --scope kawin-s-projects1
 ```
 
-Before deploying:
+**Live:** https://kawinsbooks.vercel.app
 
-```txt
-[ ] Environment variables are set
-[ ] Build passes locally
-[ ] No secrets are committed
-[ ] Images are optimized
-[ ] Production URL works
-[ ] Contact form works
-[ ] CMS webhook works, if using CMS
+---
+
+## Manual Browser Testing
+
+Check these pages:
+- Homepage — hero typewriter, slideshow, library index, footer
+- `/books/deep-work` — hero + iframe deck + fullscreen button
+- `/books/deep-work/th` — Thai version
+- `/books/ultralearning` — hero + iframe deck
+- `/gallery` — PixelImage reveals on all 11 photos
+
+---
+
+## Responsive Testing
+
+Check these widths:
+```
+375px  mobile
+768px  tablet
+1440px desktop
+```
+
+Look for:
+- Horizontal overflow
+- Text too large/small
+- Broken grids (library index 12-col, gallery masonry)
+- Slideshow dots positioning
+- BookCard hover cover visibility (xl+ only)
+
+---
+
+## Theme Testing
+
+Toggle Dark ↔ Paper on every page. Check:
+- Text contrast readable in both modes
+- Border visibility
+- Background colors
+- Accent colors (cream/rust/amber)
+- AnimatedGridPattern visibility
+- PixelImage grayscale→color transition
+- No FOUC on page load
+
+---
+
+## Performance Checks
+
+- Library photos: some are 500KB–1MB. Consider compression.
+- Gallery: 11 PixelImage components each rendering 24 grid pieces = 264 DOM elements.
+- AnimatedGridPattern: 40 animated squares + SVG pattern.
+- Motion 12 is tree-shakeable — only imported features are bundled.
+- Book pages are SSG (static), no runtime data fetching.
+
+---
+
+## Accessibility Checks
+
+```
+[ ] Images have alt text (gallery, slideshow, book covers)
+[ ] Slide dots have aria-label
+[ ] Fullscreen button has aria-label
+[ ] Theme toggle has aria-label
+[ ] Keyboard navigation works
+[ ] Focus states visible in both themes
+[ ] Text contrast meets WCAG AA
+[ ] AnimatedGridPattern is aria-hidden
 ```
 
 ---
 
 ## Environment Variables
 
-Never hardcode secrets in code.
+None required. The project uses no external APIs or secrets.
 
-Use:
+---
 
-```txt
-.env.local
-Vercel environment variables
-```
+## Quick Commands
 
-Never commit:
+```bash
+npm run dev -- --port 3001    # Local dev
+npm run build                 # Production build check
+git push origin main          # Deploy (Vercel auto-deploys)
 
-```txt
-API keys
-CMS tokens
-Private URLs
-Email service secrets
-Database credentials
+# After deploy, update alias:
+npx vercel list --scope kawin-s-projects1
+npx vercel alias set <deploy-url>.vercel.app kawinsbooks.vercel.app --scope kawin-s-projects1
 ```
 
 ---
 
 ## Final Delivery Checklist
 
-Before saying the task is complete:
-
-```txt
-[ ] npm run lint passes
+```
 [ ] npm run build passes
 [ ] No TypeScript errors
-[ ] No obvious console errors
+[ ] No console errors
+[ ] Dark mode tested
+[ ] Paper mode tested
 [ ] Mobile tested
 [ ] Desktop tested
-[ ] Navigation tested
-[ ] Images optimized
-[ ] Accessibility checked
-[ ] SEO basics checked
-[ ] README updated
-[ ] Changes summarized
-```
-
----
-
-## Final Agent Response Template
-
-Use this format:
-
-```txt
-Completed:
-- ...
-
-Tested:
-- npm run lint: passed / failed / not run
-- npm run build: passed / failed / not run
-- Mobile check: passed / not run
-- Desktop check: passed / not run
-
-Notes:
-- ...
+[ ] All routes accessible
+[ ] Images load correctly
+[ ] PixelImage reveals work
+[ ] Animated grid visible
+[ ] Fullscreen button works
+[ ] Theme toggle works
+[ ] HANDOFF.md updated
+[ ] Changes committed and pushed
 ```
