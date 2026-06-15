@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Kanit, Lexend, Instrument_Serif } from 'next/font/google'
+import { AnimatedGridPattern } from '@/components/AnimatedGridPattern'
 import './globals.css'
 
 const display = Kanit({
@@ -72,6 +73,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
+        <AnimatedGridPattern />
         {children}
       </body>
     </html>
