@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { TypewriterText } from '@/components/TypewriterText'
 import { Footer } from '@/components/Footer'
 import { libraryImages } from '@/lib/images'
 
@@ -11,8 +10,7 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   return (
     <main className="min-h-screen bg-bg text-text-primary">
-      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
-        <TypewriterText />
+      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-end px-6 py-6 mix-blend-difference sm:px-12">
         <span className="font-display text-[10px] uppercase tracking-[0.24em] text-text-muted">
           {libraryImages.length} Photos
         </span>

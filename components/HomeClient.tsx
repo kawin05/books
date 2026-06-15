@@ -9,7 +9,6 @@ import { HeroSection } from '@/components/HeroSection'
 import { LibrarySlideshow } from '@/components/LibrarySlideshow'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { TypewriterText } from '@/components/TypewriterText'
 import type { BookSummary } from '@/lib/books'
 import { libraryImages } from '@/lib/images'
 
@@ -34,8 +33,7 @@ export function HomeClient({ books }: HomeClientProps) {
     <main className="grain relative min-h-screen overflow-hidden">
       <Cursor />
 
-      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference sm:px-12">
-        <TypewriterText />
+      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-end px-6 py-6 mix-blend-difference sm:px-12">
         <div className="hidden items-center gap-8 font-display text-[11px] uppercase tracking-[0.24em] text-text-secondary sm:flex">
           <a href="#library" className="transition-colors hover:text-accent-cream">
             Library

@@ -15,7 +15,7 @@ export function HeroSection() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.12}>
-            <TypewriterText className="text-[clamp(2.5rem,10vw,10rem)] font-light uppercase leading-[0.85] tracking-normal text-text-primary" />
+            <TypewriterText className="text-[clamp(1.8rem,6vw,5rem)] font-light uppercase leading-[0.85] tracking-normal text-text-primary" />
           </ScrollReveal>
 
           <ScrollReveal delay={0.36}>
