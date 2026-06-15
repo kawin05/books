@@ -31,13 +31,13 @@ export function FullscreenButton({ targetId, className = '' }: FullscreenButtonP
   return (
     <button
       onClick={toggle}
-      className={`inline-flex items-center gap-1.5 font-display text-[10px] uppercase tracking-[0.24em] text-text-muted transition-colors hover:text-accent-cream ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-display text-xs uppercase tracking-[0.2em] text-text-secondary transition-all hover:border-text-muted/50 hover:text-text-primary ${className}`}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
     >
       {isFullscreen ? (
-        <Minimize2 className="size-3" />
+        <Minimize2 className="size-4" />
       ) : (
-        <Maximize2 className="size-3" />
+        <Maximize2 className="size-4" />
       )}
       {isFullscreen ? 'Exit' : 'Fullscreen'}
     </button>
