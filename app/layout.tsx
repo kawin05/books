@@ -72,7 +72,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen antialiased">
+      <body className="relative min-h-screen antialiased">
         <AnimatedGridPattern />
         {children}
       </body>
