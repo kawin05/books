@@ -170,7 +170,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
       {frontmatter.deckUrl ? (
         <section className="relative mx-auto w-full max-w-7xl px-0 pb-24 sm:px-6">
-          <div className="mb-3 flex items-center justify-center gap-4">
+          <div className="mb-6 mt-4 flex items-center justify-center gap-4">
             <FullscreenButton targetId="deck-frame" />
           </div>
           <div id="deck-frame" className="overflow-hidden rounded-lg border border-border-subtle bg-bg">

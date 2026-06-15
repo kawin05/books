@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Maximize2, Minimize2 } from 'lucide-react'
+import { ShinyButton } from '@/components/ui/shiny-button'
 
 interface FullscreenButtonProps {
   targetId: string
@@ -29,9 +30,9 @@ export function FullscreenButton({ targetId, className = '' }: FullscreenButtonP
   }, [targetId])
 
   return (
-    <button
+    <ShinyButton
       onClick={toggle}
-      className={`inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-display text-xs uppercase tracking-[0.2em] text-text-secondary transition-all hover:border-text-muted/50 hover:text-text-primary ${className}`}
+      className={`gap-2 font-display text-xs uppercase tracking-[0.2em] ${className}`}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
     >
       {isFullscreen ? (
@@ -40,6 +41,6 @@ export function FullscreenButton({ targetId, className = '' }: FullscreenButtonP
         <Maximize2 className="size-4" />
       )}
       {isFullscreen ? 'Exit' : 'Fullscreen'}
-    </button>
+    </ShinyButton>
   )
 }
