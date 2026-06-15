@@ -6,6 +6,7 @@ import { getBook, getAllBookSlugs } from '@/lib/books'
 import { LanguageLink } from '@/components/LanguageLink'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { Footer } from '@/components/Footer'
 import { FullscreenButton } from '@/components/FullscreenButton'
 import { TypewriterText } from '@/components/TypewriterText'
 import { buttonVariants } from '@/components/ui/button'
@@ -204,14 +205,7 @@ export default async function BookPage({ params }: BookPageProps) {
         </article>
       )}
 
-      <footer className="px-6 pb-10 sm:px-12">
-        <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between border-t border-border-subtle pt-6 font-display text-[10px] uppercase tracking-[0.24em] text-text-muted">
-          <Link href="/" className="transition-colors hover:text-accent-cream">
-            Back to library
-          </Link>
-          <span>© {new Date().getFullYear()} Kawin</span>
-        </div>
-      </footer>
+      <Footer backLink />
     </main>
   )
 }

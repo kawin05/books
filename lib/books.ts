@@ -63,6 +63,10 @@ export function getAllBookSlugs(): string[] {
     .map((d) => d.name)
 }
 
+function isLanguage(l: unknown): l is 'en' | 'th' {
+  return l === 'en' || l === 'th'
+}
+
 export function getBookSummaries(): BookSummary[] {
   const slugs = getAllBookSlugs()
   const books: BookSummary[] = []
@@ -84,7 +88,7 @@ export function getBookSummaries(): BookSummary[] {
       cover: fm.cover,
       coverImage: fm.coverImage,
       summary: fm.summary,
-      languages: [en ? 'en' : null, th ? 'th' : null].filter(Boolean) as ('en' | 'th')[],
+      languages: ([en && 'en', th && 'th'] as const).filter(isLanguage),
       order: fm.order ?? 999,
     })
   }

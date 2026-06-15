@@ -45,22 +45,23 @@ books/
 ├── components/
 │   ├── BookCard.tsx                          # Library index row — title, year, summary, lang links, hover cover
 │   ├── Cursor.tsx                            # Custom cursor (spring-follow, hidden on touch)
+│   ├── Footer.tsx                            # Shared footer — home variant (copyright + location) or backLink variant
 │   ├── FullscreenButton.tsx                  # Fullscreen toggle for deck iframes
-│   ├── HomeClient.tsx                        # Home page — hero, slideshow, library index
+│   ├── HeroSection.tsx                       # Home page hero — KAWIN BOOKS headline
+│   ├── HomeClient.tsx                        # Home page orchestrator — nav + HeroSection + LibrarySlideshow + library index
 │   ├── LanguageLink.tsx                      # Language switcher link
+│   ├── LibrarySlideshow.tsx                  # Image slideshow with Ken Burns + crossfade + slide dots
 │   ├── ScrollReveal.tsx                      # Viewport-triggered fade-up wrapper
 │   ├── ThemeToggle.tsx                       # Paper/Dark toggle
-│   └── ui/                                   # shadcn components (manual, Tailwind 3)
-│       ├── button.tsx
-│       ├── card.tsx
-│       ├── dialog.tsx
-│       ├── dropdown-menu.tsx
-│       └── separator.tsx
+│   ├── TypewriterText.tsx                    # "Let's read together" / "มาอ่านด้วยกัน"
+│   └── ui/
+│       └── button.tsx                        # shadcn button (manual, Tailwind 3)
 ├── content/books/
 │   ├── deep-work/{index.mdx, index.th.mdx}   # Frontmatter: title, author, year, coverImage, deckUrl, summary
 │   └── ultralearning/{index.mdx, index.th.mdx}
 ├── lib/
 │   ├── books.ts                              # MDX loader, BookFrontmatter/Book/BookSummary types
+│   ├── images.ts                             # Shared library image array (used by slideshow + gallery)
 │   └── utils.ts                              # cn() helper
 ├── public/
 │   ├── Deepwork/deep-work-deck*.html         # Legacy decks (iframe source)
@@ -147,7 +148,7 @@ On mobile: text and dots stack vertically. On desktop: side-by-side.
 7. **`feat/nextjs-mdx` branch is stale** — all work is on `main`.
 8. **No `components.json`** — shadcn was manual. CLI will target Tailwind v4 and break things.
 9. **Book page title uses layout template** — `generateMetadata` returns just `title: frontmatter.title`. Layout adds `" — Kawin's Books"` suffix. Don't double-suffix.
-10. **Gallery images are duplicated** — `HomeClient.tsx` and `app/gallery/page.tsx` each define the same 8-image array. Refactor into a shared `lib/images.ts`.
+10. **Gallery images are shared** — `lib/images.ts` exports `libraryImages`, used by both `HomeClient.tsx` slideshow and `app/gallery/page.tsx`.
 
 ---
 
@@ -155,16 +156,15 @@ On mobile: text and dots stack vertically. On desktop: side-by-side.
 
 The codebase has accumulated changes across multiple sessions and needs cleanup before adding more features:
 
-### Immediate
+### ✅ Done (June 15, 2026)
 
-1. **Duplicate image arrays** — `libraryImages` is defined in both `HomeClient.tsx` and `app/gallery/page.tsx`. Extract to `lib/images.ts`.
-2. **`HomeClient.tsx` is too large** — 247 lines doing hero, slideshow, library index, and footer. Split into:
-   - `components/HeroSection.tsx` — hero text
-   - `components/LibrarySlideshow.tsx` — slideshow section  
-   - `HomeClient.tsx` — orchestrator
-3. **Unused shadcn components** — `card`, `dialog`, `dropdown-menu` are not used anywhere. Either use them or remove.
-4. **`components.json` is missing** — if anyone ever needs shadcn CLI, create one manually for Tailwind 3.
-5. **`app/opengraph-image.tsx` may be stale** — verify it generates images matching current design.
+1. **Duplicate image arrays** — ✅ extracted to `lib/images.ts`
+2. **`HomeClient.tsx` is too large** — ✅ split into `HeroSection.tsx` + `LibrarySlideshow.tsx`; `HomeClient.tsx` now 106 lines
+3. **Unused shadcn components** — ✅ removed `card`, `dialog`, `dropdown-menu`, `separator` + their Radix deps
+4. **Footer duplicated 3×** — ✅ extracted to `components/Footer.tsx`
+5. **TypeScript casts** — ✅ `isLanguage()` type guard replaces `as ('en' | 'th')[]`
+
+### Remaining
 
 ### When adding more books
 
