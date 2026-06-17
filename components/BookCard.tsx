@@ -92,7 +92,7 @@ export function BookCard({ book, index }: BookCardProps) {
           }}
           initial={{ opacity: 0, x: 18, rotate: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-          className="pointer-events-none absolute right-24 top-1/2 z-10 hidden h-56 w-40 -translate-y-1/2 object-cover xl:block"
+          className="pointer-events-none absolute right-24 top-1/2 z-10 hidden h-56 w-40 -translate-y-1/2 object-cover lg:block"
         />
       )}
 
