@@ -45,7 +45,7 @@ export function BookCard({ book, index }: BookCardProps) {
 
       <div className="col-span-10 sm:col-span-5">
         <Link href={`/books/${book.slug}`} className="group/title block">
-          <h3 className="font-display text-[clamp(2.25rem,5vw,5.75rem)] font-light uppercase leading-[0.9] tracking-normal text-text-primary transition-colors group-hover/title:text-accent-cream">
+          <h3 className="font-display text-[clamp(1.75rem,4vw,4.2rem)] font-light uppercase leading-[0.9] tracking-normal text-text-primary transition-colors group-hover/title:text-accent-cream inline-block max-w-[12ch] whitespace-pre-line">
             {book.title}
           </h3>
           {book.author && (
