@@ -326,23 +326,121 @@
     .reveal {
         opacity: 0;
         transform: translateY(34px);
-        animation: reveal .8s var(--ease) forwards;
+        animation: reveal .75s var(--ease) forwards;
     }
-    .reveal:nth-child(2) { animation-delay: .08s; }
-    .reveal:nth-child(3) { animation-delay: .16s; }
-    .reveal:nth-child(4) { animation-delay: .24s; }
-    .reveal:nth-child(5) { animation-delay: .32s; }
+    .reveal:nth-child(1) { animation-delay: .00s; }
+    .reveal:nth-child(2) { animation-delay: .06s; }
+    .reveal:nth-child(3) { animation-delay: .12s; }
+    .reveal:nth-child(4) { animation-delay: .18s; }
+    .reveal:nth-child(5) { animation-delay: .24s; }
+    .reveal:nth-child(6) { animation-delay: .30s; }
+    .reveal:nth-child(7) { animation-delay: .36s; }
+    .reveal:nth-child(8) { animation-delay: .42s; }
     @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+    /* === SCROLL HINT === */
+    .scroll-hint {
+        position: absolute;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        opacity: 0;
+        animation: hintIn .6s var(--ease) 1.2s forwards;
+        transition: opacity .4s var(--ease);
+        z-index: 10;
+    }
+    .scroll-hint.fade { opacity: 0; pointer-events: none; }
+    .scroll-hint span {
+        color: var(--text-dim);
+        font-size: 15px;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+    .scroll-hint .chevron {
+        width: 32px;
+        height: 18px;
+        position: relative;
+        animation: bob 2s ease-in-out infinite;
+    }
+    .scroll-hint .chevron::before,
+    .scroll-hint .chevron::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 18px;
+        height: 2px;
+        background: var(--text-dim);
+        border-radius: 1px;
+    }
+    .scroll-hint .chevron::before { left: 4px; transform: rotate(45deg); }
+    .scroll-hint .chevron::after { right: 4px; transform: rotate(-45deg); }
+    @keyframes hintIn { to { opacity: 1; } }
+    @keyframes bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(8px); }
+    }
+
+    /* === DOMINO GLOW === */
+    .d3 { box-shadow: 0 24px 55px rgba(0,0,0,.34), 0 0 60px rgba(217,119,6,.18); }
+
+    /* === INLINE EDITING === */
+    .edit-hotzone {
+        position: fixed; top: 0; left: 0;
+        width: 80px; height: 80px;
+        z-index: 10000;
+        cursor: pointer;
+    }
+    .edit-toggle {
+        position: fixed;
+        top: 14px; left: 14px;
+        width: 44px; height: 44px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(11,11,10,.85);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        color: var(--text-dim);
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s ease;
+        z-index: 10001;
+    }
+    .edit-toggle.show,
+    .edit-toggle.active { opacity: 1; pointer-events: auto; }
+    body.editing [contenteditable]:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+    body.editing [contenteditable]:hover {
+        outline: 1px dashed rgba(240,179,90,.35);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .2s !important; }
     }
     @media print {
         .slide { height: auto; page-break-after: always; }
         .slide-inner { transform: none !important; position: relative; left: auto; top: auto; }
+        .edit-hotzone, .edit-toggle, .scroll-hint { display: none !important; }
     }
 </style>
 </head>
 <body>
+
+<!-- INLINE EDITING UI -->
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" aria-label="Toggle edit mode" title="Edit mode (E)">✏️</button>
 
 <section class="slide"><div class="slide-inner grain">
     <div class="grid"></div><div class="accent-bar"></div>
@@ -352,6 +450,7 @@
         <p class="subtitle reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
         <p class="small reveal">Gary Keller with Jay Papasan · 2013</p>
     </div>
+    <div class="scroll-hint" id="scrollHint"><span>Scroll</span><div class="chevron"></div></div>
     <div class="page-num">01 / 17</div>
 </div></section>
 
@@ -589,29 +688,29 @@
        PER-SLIDE SCALING FOR 1080×1920 CANVAS
        =========================================== */
     function scaleSlides() {
-        document.querySelectorAll('.slide-inner').forEach((inner) => {
-            const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
-            inner.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        document.querySelectorAll('.slide-inner').forEach(function(inner) {
+            var scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+            inner.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
         });
     }
     scaleSlides();
     window.addEventListener('resize', scaleSlides);
 
     /* ===========================================
-       LIGHTWEIGHT KEYBOARD SCROLL NAVIGATION
+       KEYBOARD SCROLL NAVIGATION
        =========================================== */
-    const slides = Array.from(document.querySelectorAll('.slide'));
+    var slides = Array.from(document.querySelectorAll('.slide'));
     function activeIndex() {
-        const y = window.scrollY;
-        let best = 0;
-        let bestDist = Infinity;
-        slides.forEach((slide, i) => {
-            const dist = Math.abs(slide.offsetTop - y);
+        var y = window.scrollY;
+        var best = 0;
+        var bestDist = Infinity;
+        slides.forEach(function(slide, i) {
+            var dist = Math.abs(slide.offsetTop - y);
             if (dist < bestDist) { best = i; bestDist = dist; }
         });
         return best;
     }
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', function(event) {
         if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
             event.preventDefault();
             slides[Math.min(activeIndex() + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
@@ -623,6 +722,141 @@
         if (event.key === 'Home') slides[0].scrollIntoView({ behavior: 'smooth' });
         if (event.key === 'End') slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
     });
+
+    /* ===========================================
+       SCROLL HINT — FADE AFTER FIRST SCROLL
+       =========================================== */
+    (function() {
+        var hint = document.getElementById('scrollHint');
+        if (!hint) return;
+        var faded = false;
+        function checkFade() {
+            if (!faded && window.scrollY > 60) {
+                hint.classList.add('fade');
+                faded = true;
+            }
+        }
+        window.addEventListener('scroll', checkFade, { passive: true });
+        setTimeout(function() {
+            if (!faded && window.scrollY < 5) hint.classList.add('fade');
+        }, 15000);
+    })();
+
+    /* ===========================================
+       INLINE EDITING
+       =========================================== */
+    var InlineEditor = {
+        isActive: false,
+        originalHTML: '',
+
+        init: function() {
+            this.originalHTML = document.body.innerHTML;
+            var self = this;
+
+            // Toggle button click
+            document.getElementById('editToggle').addEventListener('click', function() {
+                self.toggleEditMode();
+            });
+
+            // Hotzone hover with 400ms delay
+            var hotzone = document.getElementById('editHotzone');
+            var editToggle = document.getElementById('editToggle');
+            var hideTimeout = null;
+
+            hotzone.addEventListener('mouseenter', function() {
+                clearTimeout(hideTimeout);
+                editToggle.classList.add('show');
+            });
+            hotzone.addEventListener('mouseleave', function() {
+                hideTimeout = setTimeout(function() {
+                    if (!self.isActive) editToggle.classList.remove('show');
+                }, 400);
+            });
+            editToggle.addEventListener('mouseenter', function() {
+                clearTimeout(hideTimeout);
+            });
+            editToggle.addEventListener('mouseleave', function() {
+                hideTimeout = setTimeout(function() {
+                    if (!self.isActive) editToggle.classList.remove('show');
+                }, 400);
+            });
+
+            // Hotzone direct click
+            hotzone.addEventListener('click', function() {
+                self.toggleEditMode();
+            });
+
+            // Keyboard shortcut (E)
+            document.addEventListener('keydown', function(e) {
+                if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) {
+                    if (!e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        self.toggleEditMode();
+                    }
+                }
+                // Ctrl+S to save modified HTML
+                if ((e.ctrlKey || e.metaKey) && e.key === 's' && self.isActive) {
+                    e.preventDefault();
+                    self.saveToLocalStorage();
+                }
+            });
+        },
+
+        toggleEditMode: function() {
+            this.isActive = !this.isActive;
+            var editToggle = document.getElementById('editToggle');
+            document.body.classList.toggle('editing', this.isActive);
+            editToggle.classList.toggle('active', this.isActive);
+            editToggle.textContent = this.isActive ? '💾' : '✏️';
+
+            var editable = document.querySelectorAll('[contenteditable]');
+            if (this.isActive) {
+                var textEls = document.querySelectorAll('.slide-inner h1, .slide-inner h2, .slide-inner h3, .slide-inner p, .slide-inner .pill, .slide-inner .eyebrow, .slide-inner .micro, .slide-inner span');
+                textEls.forEach(function(el) {
+                    if (!el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
+                });
+            } else {
+                editable.forEach(function(el) {
+                    el.removeAttribute('contenteditable');
+                    el.blur();
+                });
+            }
+        },
+
+        saveToLocalStorage: function() {
+            var state = {
+                html: document.body.innerHTML,
+                timestamp: new Date().toISOString()
+            };
+            try {
+                localStorage.setItem('the-one-thing-deck-edit', JSON.stringify(state));
+                this.showToast('Saved to browser storage');
+            } catch (e) {
+                this.showToast('Save failed — storage full');
+            }
+        },
+
+        restoreFromStorage: function() {
+            try {
+                var raw = localStorage.getItem('the-one-thing-deck-edit');
+                if (!raw) return;
+                var state = JSON.parse(raw);
+                if (state.html) {
+                    document.body.innerHTML = state.html;
+                    this.showToast('Restored saved edits');
+                }
+            } catch (e) {}
+        },
+
+        showToast: function(msg) {
+            var toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(11,11,10,.9);color:#f4ead2;padding:10px 24px;border-radius:999px;font-size:14px;z-index:20000;border:1px solid rgba(244,234,210,.14);font-family:Lexend,sans-serif;';
+            document.body.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 2200);
+        }
+    };
+    InlineEditor.init();
 </script>
 </body>
 </html>
