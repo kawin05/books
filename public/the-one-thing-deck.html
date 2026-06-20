@@ -4,28 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The ONE Thing — Book Summary</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Lexend:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
     /* ===========================================
-       CSS CUSTOM PROPERTIES — LEAD DOMINO EDITORIAL
+       CSS CUSTOM PROPERTIES — WARM INK EDITORIAL
        Canvas: 1080×1920 (9:16 portrait, vertical scroll)
        =========================================== */
     :root {
-        --bg: #0b0b0a;
-        --bg-2: #12100d;
-        --panel: #17130f;
-        --panel-2: #211a13;
-        --text: #f4ead2;
-        --text-soft: #c8b99d;
-        --text-dim: #7c705e;
-        --line: rgba(244, 234, 210, 0.11);
-        --line-strong: rgba(244, 234, 210, 0.24);
-        --accent: #d97706;
-        --accent-2: #f0b35a;
-        --danger: #ef4444;
-        --font-body: 'Lexend', sans-serif;
-        --font-serif: 'Instrument Serif', serif;
-        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --bg: #f7f3ec;
+        --bg-warm: #efe8de;
+        --bg-card: #ffffff;
+        --text: #2d2117;
+        --text-soft: #6b5e52;
+        --text-dim: #a39688;
+        --accent: #c84b31;
+        --accent-soft: #e07b5a;
+        --accent-gold: #b8860b;
+        --line: rgba(45, 33, 23, 0.09);
+        --line-strong: rgba(45, 33, 23, 0.16);
+        --shadow: 0 2px 16px rgba(45, 33, 23, 0.07);
+        --font: 'Lora', serif;
+        --font-ui: 'Lexend', sans-serif;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,13 +38,14 @@
     html {
         scroll-snap-type: y mandatory;
         scroll-behavior: smooth;
-        background: #000;
+        background: var(--bg);
     }
     body {
         width: 100%;
-        background: #000;
-        font-family: var(--font-body);
+        background: var(--bg);
+        font-family: var(--font);
         color: var(--text);
+        -webkit-font-smoothing: antialiased;
     }
     .slide {
         position: relative;
@@ -58,7 +61,7 @@
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-        background: #000;
+        background: var(--bg);
     }
     .slide-inner {
         position: absolute;
@@ -68,188 +71,179 @@
         height: 1920px;
         transform-origin: center center;
         overflow: hidden;
-        background:
-            radial-gradient(circle at 78% 14%, rgba(217, 119, 6, 0.24), transparent 34%),
-            radial-gradient(circle at 12% 80%, rgba(244, 234, 210, 0.07), transparent 32%),
-            linear-gradient(135deg, var(--bg), var(--bg-2));
+        background: var(--bg);
     }
 
     /* ===========================================
-       BACKGROUND SYSTEM
+       BACKGROUND TEXTURES
        =========================================== */
-    .grain::after {
-        content: '';
+    .page {
         position: absolute;
-        inset: 0;
+        inset: 60px 56px;
+        border: 1px solid var(--line);
         pointer-events: none;
-        opacity: 0.16;
-        mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
     }
-    .grid {
+    .rule-top {
         position: absolute;
-        inset: 0;
-        opacity: 0.42;
-        background-image:
-            linear-gradient(var(--line) 1px, transparent 1px),
-            linear-gradient(90deg, var(--line) 1px, transparent 1px);
-        background-size: 90px 90px;
-        mask-image: linear-gradient(to bottom, black, transparent 78%);
+        top: 112px;
+        left: 80px;
+        right: 80px;
+        height: 2px;
+        background: var(--accent);
+        transform: scaleX(0);
+        animation: ruleIn .9s var(--ease) .5s forwards;
     }
-    .accent-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 7px;
-        height: 100%;
-        background: linear-gradient(to bottom, var(--accent), transparent 72%);
-    }
+    @keyframes ruleIn { to { transform: scaleX(1); } }
+
     .page-num {
         position: absolute;
-        bottom: 54px;
-        right: 70px;
-        font-size: 18px;
-        font-weight: 300;
-        letter-spacing: .14em;
+        bottom: 68px;
+        right: 72px;
+        font-family: var(--font-ui);
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: .18em;
         color: var(--text-dim);
     }
     .eyebrow {
         position: absolute;
-        top: 56px;
-        left: 76px;
-        font-size: 17px;
+        top: 130px;
+        left: 80px;
+        font-family: var(--font-ui);
+        font-size: 13px;
         font-weight: 500;
-        letter-spacing: .18em;
+        letter-spacing: .2em;
         text-transform: uppercase;
-        color: var(--accent-2);
+        color: var(--accent);
     }
 
     /* ===========================================
        TYPOGRAPHY
        =========================================== */
-    h1, h2, h3, p, li, span, div { text-rendering: geometricPrecision; }
-    .serif { font-family: var(--font-serif); }
-    .title {
-        font-size: 108px;
-        line-height: .94;
-        letter-spacing: -.055em;
-        font-weight: 800;
+    .title-block {
+        position: absolute;
+        left: 80px;
+        right: 80px;
+        bottom: 180px;
     }
-    .title .one { color: var(--accent-2); }
-    .subtitle {
-        margin-top: 34px;
-        max-width: 800px;
-        font-family: var(--font-serif);
+    .title-tag {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 32px;
+    }
+    .title-block h1 {
+        font-size: 112px;
+        line-height: .92;
+        letter-spacing: -.04em;
+        font-weight: 700;
+    }
+    .title-block h1 em { color: var(--accent); font-style: italic; }
+    .title-sub {
+        margin-top: 36px;
         font-style: italic;
-        font-size: 50px;
-        line-height: 1.08;
+        font-size: 42px;
+        line-height: 1.12;
         color: var(--text-soft);
+        max-width: 700px;
     }
+    .title-credits {
+        margin-top: 28px;
+        font-family: var(--font-ui);
+        font-size: 15px;
+        color: var(--text-dim);
+        letter-spacing: .06em;
+    }
+
+    /* === CONTENT LAYOUTS === */
+    .content {
+        position: absolute;
+        inset: 168px 80px 120px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 36px;
+        overflow-y: auto;
+        scrollbar-width: none;
+    }
+    .content::-webkit-scrollbar { display: none; }
+    .content.center { justify-content: center; }
+    .content.end { justify-content: flex-end; padding-bottom: 170px; }
+    .content.start { justify-content: flex-start; }
+
     h2 {
-        font-size: 70px;
-        line-height: 1.02;
-        letter-spacing: -.045em;
-        font-weight: 760;
+        font-size: 68px;
+        line-height: 1.04;
+        letter-spacing: -.035em;
+        font-weight: 700;
     }
     h3 {
-        font-size: 36px;
-        line-height: 1.15;
-        letter-spacing: -.02em;
-        font-weight: 650;
+        font-family: var(--font-ui);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 600;
+        letter-spacing: .02em;
+        color: var(--accent);
+        margin-bottom: 8px;
     }
-    p, li {
-        font-size: 29px;
-        line-height: 1.45;
-        font-weight: 300;
+    p {
+        font-size: 32px;
+        line-height: 1.42;
         color: var(--text-soft);
     }
-    strong { color: var(--text); font-weight: 650; }
+    p strong { color: var(--text); font-weight: 700; }
     .quote {
-        font-family: var(--font-serif);
-        font-size: 70px;
-        line-height: 1.08;
         font-style: italic;
+        font-size: 58px;
+        line-height: 1.1;
         color: var(--text);
         letter-spacing: -.02em;
     }
-    .small { font-size: 22px; line-height: 1.42; }
-    .micro {
-        font-size: 16px;
-        letter-spacing: .14em;
-        text-transform: uppercase;
+    .small {
+        font-size: 24px;
+        line-height: 1.4;
         color: var(--text-dim);
     }
 
-    /* ===========================================
-       LAYOUT PRIMITIVES
-       =========================================== */
-    .content {
-        position: absolute;
-        inset: 0;
-        padding: 132px 82px 108px 82px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 42px;
-    }
-    .top-content { justify-content: flex-start; padding-top: 168px; }
-    .bottom-content { justify-content: flex-end; padding-bottom: 170px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-    .stack { display: grid; gap: 24px; }
+    /* === CARDS === */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .stack { display: grid; gap: 14px; }
     .card {
+        background: var(--bg-card);
         border: 1px solid var(--line-strong);
-        background: rgba(23, 19, 15, .72);
-        backdrop-filter: blur(10px);
-        padding: 34px;
+        padding: 32px;
+        box-shadow: var(--shadow);
     }
-    .card.compact { padding: 26px 28px; }
-    .card h3 { margin-bottom: 14px; color: var(--text); }
-    .number {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 58px;
-        height: 58px;
-        border: 1px solid var(--accent);
-        color: var(--accent-2);
-        border-radius: 50%;
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 22px;
+    .card p { font-size: 27px; }
+    .card.callout {
+        border-left: 4px solid var(--accent);
+        background: rgba(200,75,49,.035);
     }
-    .rule { width: 100%; height: 1px; background: var(--line-strong); }
-    .accent { color: var(--accent-2); }
-    .dim { color: var(--text-dim); }
-    .pill {
-        display: inline-flex;
-        width: max-content;
-        align-items: center;
-        gap: 12px;
-        border: 1px solid var(--line-strong);
-        border-radius: 999px;
-        padding: 12px 18px;
-        color: var(--accent-2);
-        font-size: 18px;
-        letter-spacing: .12em;
-        text-transform: uppercase;
+    .card.dark {
+        background: #2d2117;
+        color: #efe8de;
+        border-color: rgba(239,232,222,.12);
     }
+    .card.dark p { color: #c8b99d; }
+    .card.dark h3 { color: var(--accent-soft); }
 
-    /* ===========================================
-       CUSTOM DIAGRAMS
-       =========================================== */
+    /* === DIAGRAMS === */
     .domino-field {
         position: relative;
-        height: 540px;
-        margin-top: 20px;
+        height: 480px;
+        margin: 10px 0;
     }
     .domino {
         position: absolute;
         bottom: 60px;
-        width: 76px;
-        height: 190px;
-        border-radius: 14px;
-        background: var(--text);
-        box-shadow: 0 24px 55px rgba(0,0,0,.34);
+        width: 70px;
+        height: 170px;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #efe8de 0%, #dbd0c0 100%);
+        box-shadow: 0 18px 40px rgba(45, 33, 23, 0.18);
         transform-origin: bottom center;
     }
     .domino::before,
@@ -257,135 +251,87 @@
         content: '';
         position: absolute;
         left: 50%;
-        width: 15px;
-        height: 15px;
+        width: 13px;
+        height: 13px;
         border-radius: 50%;
-        background: #1c1712;
+        background: #2d2117;
         transform: translateX(-50%);
     }
-    .domino::before { top: 48px; }
-    .domino::after { bottom: 48px; }
-    .d1 { left: 26px; transform: rotate(-13deg) scale(.72); }
-    .d2 { left: 152px; transform: rotate(-5deg) scale(.88); }
-    .d3 { left: 298px; transform: rotate(0deg) scale(1.05); }
-    .d4 { left: 470px; transform: rotate(5deg) scale(1.28); }
-    .d5 { left: 680px; transform: rotate(10deg) scale(1.58); }
-    .domino-label {
+    .domino::before { top: 40px; }
+    .domino::after { bottom: 40px; }
+    .d1 { left: 30px; transform: rotate(-12deg) scale(.68); }
+    .d2 { left: 148px; transform: rotate(-4deg) scale(.82); }
+    .d3 { left: 286px; transform: rotate(0deg) scale(1.0); box-shadow: 0 22px 50px rgba(45,33,23,.22), 0 0 50px rgba(200,75,49,.12); }
+    .d4 { left: 456px; transform: rotate(5deg) scale(1.22); }
+    .d5 { left: 668px; transform: rotate(11deg) scale(1.5); }
+    .domino-labels {
         position: absolute;
-        bottom: 0;
-        left: 22px;
-        right: 22px;
+        bottom: 8px;
+        left: 24px;
+        right: 24px;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 20px;
+        gap: 16px;
+        font-family: var(--font-ui);
+        font-size: 14px;
         color: var(--text-dim);
-        font-size: 16px;
         text-align: center;
-        letter-spacing: .08em;
+        letter-spacing: .1em;
         text-transform: uppercase;
     }
-    .focus-box {
-        border: 2px solid var(--accent);
-        background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(244,234,210,.04));
-        padding: 50px;
-    }
-    .vs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-    }
-    .bad { border-color: rgba(239,68,68,.32); }
-    .good { border-color: rgba(240,179,90,.55); }
-    .lie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .lie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .lie-card {
-        min-height: 190px;
-        padding: 26px;
+        padding: 26px 28px;
         border: 1px solid var(--line-strong);
-        background: rgba(255,255,255,.035);
+        background: var(--bg-card);
+        box-shadow: var(--shadow);
     }
-    .lie-card .micro { margin-bottom: 14px; color: var(--accent-2); }
-    .ladder { display: grid; gap: 16px; }
-    .ladder-step {
+    .lie-card .num {
+        font-family: var(--font-ui);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 10px;
+    }
+    .lie-card p { font-size: 27px; }
+
+    .step-row {
         display: grid;
         grid-template-columns: 90px 1fr;
         gap: 24px;
         align-items: center;
+        padding: 20px 0;
         border-top: 1px solid var(--line);
-        padding-top: 18px;
     }
-    .big-num {
-        font-family: var(--font-serif);
-        font-size: 74px;
+    .step-num {
+        font-family: var(--font-ui);
+        font-size: 64px;
+        font-weight: 300;
+        color: var(--accent-soft);
         line-height: 1;
-        color: var(--accent-2);
     }
 
-    /* ===========================================
-       REVEAL ANIMATIONS
-       =========================================== */
+    .vs-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .vs-good { border-left: 4px solid var(--accent); }
+    .vs-bad { border-left: 4px solid #d4a89a; opacity: .78; }
+
+    /* === REVEAL ANIMATIONS === */
     .reveal {
         opacity: 0;
-        transform: translateY(34px);
-        animation: reveal .75s var(--ease) forwards;
+        transform: translateY(28px);
+        animation: revealIn .7s var(--ease) forwards;
     }
     .reveal:nth-child(1) { animation-delay: .00s; }
-    .reveal:nth-child(2) { animation-delay: .06s; }
-    .reveal:nth-child(3) { animation-delay: .12s; }
-    .reveal:nth-child(4) { animation-delay: .18s; }
-    .reveal:nth-child(5) { animation-delay: .24s; }
-    .reveal:nth-child(6) { animation-delay: .30s; }
-    .reveal:nth-child(7) { animation-delay: .36s; }
-    .reveal:nth-child(8) { animation-delay: .42s; }
-    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
-
-    /* === SCROLL HINT === */
-    .scroll-hint {
-        position: absolute;
-        bottom: 90px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        opacity: 0;
-        animation: hintIn .6s var(--ease) 1.2s forwards;
-        transition: opacity .4s var(--ease);
-        z-index: 10;
-    }
-    .scroll-hint.fade { opacity: 0; pointer-events: none; }
-    .scroll-hint span {
-        color: var(--text-dim);
-        font-size: 15px;
-        letter-spacing: .16em;
-        text-transform: uppercase;
-    }
-    .scroll-hint .chevron {
-        width: 32px;
-        height: 18px;
-        position: relative;
-        animation: bob 2s ease-in-out infinite;
-    }
-    .scroll-hint .chevron::before,
-    .scroll-hint .chevron::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        width: 18px;
-        height: 2px;
-        background: var(--text-dim);
-        border-radius: 1px;
-    }
-    .scroll-hint .chevron::before { left: 4px; transform: rotate(45deg); }
-    .scroll-hint .chevron::after { right: 4px; transform: rotate(-45deg); }
-    @keyframes hintIn { to { opacity: 1; } }
-    @keyframes bob {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(8px); }
-    }
-
-    /* === DOMINO GLOW === */
-    .d3 { box-shadow: 0 24px 55px rgba(0,0,0,.34), 0 0 60px rgba(217,119,6,.18); }
+    .reveal:nth-child(2) { animation-delay: .07s; }
+    .reveal:nth-child(3) { animation-delay: .14s; }
+    .reveal:nth-child(4) { animation-delay: .21s; }
+    .reveal:nth-child(5) { animation-delay: .28s; }
+    .reveal:nth-child(6) { animation-delay: .35s; }
+    .reveal:nth-child(7) { animation-delay: .42s; }
+    @keyframes revealIn { to { opacity: 1; transform: translateY(0); } }
 
     /* === INLINE EDITING === */
     .edit-hotzone {
@@ -397,13 +343,13 @@
     .edit-toggle {
         position: fixed;
         top: 14px; left: 14px;
-        width: 44px; height: 44px;
-        border: 1px solid rgba(255,255,255,.12);
-        background: rgba(11,11,10,.85);
+        width: 40px; height: 40px;
+        border: 1px solid rgba(45,33,23,.14);
+        background: rgba(247,243,236,.9);
         backdrop-filter: blur(12px);
-        border-radius: 12px;
+        border-radius: 10px;
         color: var(--text-dim);
-        font-size: 20px;
+        font-size: 18px;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -418,12 +364,12 @@
     body.editing [contenteditable]:focus {
         outline: 2px solid var(--accent);
         outline-offset: 4px;
-        border-radius: 4px;
+        border-radius: 3px;
     }
     body.editing [contenteditable]:hover {
-        outline: 1px dashed rgba(240,179,90,.35);
+        outline: 1px dashed rgba(200,75,49,.3);
         outline-offset: 4px;
-        border-radius: 4px;
+        border-radius: 3px;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -432,130 +378,124 @@
     @media print {
         .slide { height: auto; page-break-after: always; }
         .slide-inner { transform: none !important; position: relative; left: auto; top: auto; }
-        .edit-hotzone, .edit-toggle, .scroll-hint { display: none !important; }
+        .edit-hotzone, .edit-toggle { display: none !important; }
     }
 </style>
 </head>
 <body>
 
-<!-- INLINE EDITING UI -->
 <div class="edit-hotzone" id="editHotzone"></div>
 <button class="edit-toggle" id="editToggle" aria-label="Toggle edit mode" title="Edit mode (E)">✏️</button>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div>
-    <div class="content bottom-content">
-        <div class="pill reveal">Book Study / Productivity</div>
-        <h1 class="title reveal">THE <span class="one">ONE</span><br>THING</h1>
-        <p class="subtitle reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
-        <p class="small reveal">Gary Keller with Jay Papasan · 2013</p>
+<!-- === SLIDE 01: TITLE === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="rule-top"></div>
+    <div class="title-block">
+        <div class="title-tag reveal">Book Study / Productivity</div>
+        <h1 class="reveal">The <em>ONE</em><br>Thing</h1>
+        <p class="title-sub reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
+        <p class="title-credits reveal">Gary Keller with Jay Papasan · 2013</p>
     </div>
-    <div class="scroll-hint" id="scrollHint"><span>Scroll</span><div class="chevron"></div></div>
     <div class="page-num">01 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Core idea</div>
-    <div class="content">
+<!-- === SLIDE 02: CORE IDEA === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Core idea</div>
+    <div class="content center">
         <p class="quote reveal">Extraordinary results are not produced by broad effort.</p>
-        <div class="focus-box reveal">
-            <h2>They come from narrowing.</h2>
-            <p>Ignore everything you <strong>could</strong> do. Find what you <strong>should</strong> do. Then give it disproportionate time.</p>
+        <div class="card callout reveal">
+            <p><strong>They come from narrowing.</strong> Ignore everything you <em>could</em> do. Find the one thing you <em>should</em> do. Give it disproportionate time.</p>
         </div>
         <p class="reveal">The book calls this <strong>Going Small</strong>: choosing the smallest action with the largest future consequence.</p>
     </div>
     <div class="page-num">02 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Going small</div>
-    <div class="content top-content">
+<!-- === SLIDE 03: STRATEGIC CONTRAST === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Going small</div>
+    <div class="content start">
         <h2 class="reveal">The strategic contrast of focus</h2>
-        <div class="vs reveal">
-            <div class="card good">
-                <div class="number">01</div>
-                <h3>Big success</h3>
-                <p>Subtract distractions. Master a vital few things. Align the day around the ultimate objective.</p>
-            </div>
-            <div class="card bad">
-                <div class="number">×</div>
-                <h3>Small life</h3>
-                <p>Overload the calendar. Chase low-value tasks. Create execution gaps and constant friction.</p>
-            </div>
+        <div class="vs-pair reveal">
+            <div class="card vs-good"><h3>Big success</h3><p>Subtract distractions. Master a vital few things. Align the day around the ultimate objective.</p></div>
+            <div class="card vs-bad"><h3>Small life</h3><p>Overload the calendar. Chase low-value tasks. Create execution gaps and constant friction.</p></div>
         </div>
-        <div class="rule reveal"></div>
         <p class="reveal"><strong>Busyness is not leverage.</strong> Focus is leverage.</p>
     </div>
     <div class="page-num">03 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Physics of achievement</div>
-    <div class="content top-content">
+<!-- === SLIDE 04: DOMINO EFFECT === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Physics of achievement</div>
+    <div class="content start">
         <h2 class="reveal">The domino effect</h2>
         <p class="reveal">One domino can topple another 50% larger. That geometric progression turns tiny starts into moonshot outcomes.</p>
         <div class="domino-field reveal">
             <div class="domino d1"></div><div class="domino d2"></div><div class="domino d3"></div><div class="domino d4"></div><div class="domino d5"></div>
-            <div class="domino-label"><span>Lead</span><span>10th</span><span>18th</span><span>31st</span><span>57th</span></div>
+            <div class="domino-labels"><span>Lead</span><span>10th</span><span>18th</span><span>31st</span><span>57th</span></div>
         </div>
         <p class="reveal"><strong>Progress is sequential, not simultaneous.</strong> Do the right thing, then the next right thing.</p>
     </div>
     <div class="page-num">04 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Success leaves clues</div>
-    <div class="content top-content">
-        <h2 class="reveal">World-class outcomes usually have one anchor.</h2>
+<!-- === SLIDE 05: SUCCESS LEAVES CLUES === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Success leaves clues</div>
+    <div class="content center">
+        <h2 class="reveal">World-class outcomes have one anchor.</h2>
         <div class="stack reveal">
-            <div class="ladder-step"><div class="big-num">G</div><p><strong>Google:</strong> Search became the economic engine.</p></div>
-            <div class="ladder-step"><div class="big-num">A</div><p><strong>Apple:</strong> The golden gadget created a halo across the product family.</p></div>
-            <div class="ladder-step"><div class="big-num">D</div><p><strong>Disney:</strong> Animation plus business mastery became an empire.</p></div>
-            <div class="ladder-step"><div class="big-num">S</div><p><strong>Star Wars:</strong> One movie unlocked decades of merchandise value.</p></div>
+            <div class="step-row"><div class="step-num">G</div><p><strong>Google:</strong> Search became the economic engine.</p></div>
+            <div class="step-row"><div class="step-num">A</div><p><strong>Apple:</strong> The golden gadget created a halo across the product family.</p></div>
+            <div class="step-row"><div class="step-num">D</div><p><strong>Disney:</strong> Animation plus business mastery became an empire.</p></div>
+            <div class="step-row"><div class="step-num">S</div><p><strong>Star Wars:</strong> One movie unlocked decades of merchandise value.</p></div>
         </div>
     </div>
     <div class="page-num">05 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Mastery loop</div>
-    <div class="content">
+<!-- === SLIDE 06: VIRTUOUS CYCLE === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Mastery loop</div>
+    <div class="content center">
         <h2 class="reveal">The virtuous cycle</h2>
-        <div class="row reveal">
-            <div class="card"><div class="number">1</div><h3>Passion</h3><p>Interest pulls attention toward one domain.</p></div>
-            <div class="card"><div class="number">2</div><h3>Time</h3><p>Disproportionate time compounds faster than scattered effort.</p></div>
-            <div class="card"><div class="number">3</div><h3>Skill</h3><p>Focused reps create specialized capability.</p></div>
-            <div class="card"><div class="number">4</div><h3>Results</h3><p>Results increase passion, restarting the loop.</p></div>
+        <div class="grid-2 reveal">
+            <div class="card"><h3>1. Passion</h3><p>Interest pulls attention toward one domain.</p></div>
+            <div class="card"><h3>2. Time</h3><p>Disproportionate time compounds faster than scattered effort.</p></div>
+            <div class="card"><h3>3. Skill</h3><p>Focused reps create specialized capability.</p></div>
+            <div class="card"><h3>4. Results</h3><p>Results increase passion, restarting the loop.</p></div>
         </div>
-        <p class="reveal">The enemy is not lack of ambition. It is misallocated attention.</p>
+        <p class="reveal"><em>The enemy is not lack of ambition. It is misallocated attention.</em></p>
     </div>
     <div class="page-num">06 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Part 1</div>
-    <div class="content top-content">
+<!-- === SLIDE 07: SIX LIES OVERVIEW === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Part 1</div>
+    <div class="content start">
         <h2 class="reveal">Six lies derail productive people.</h2>
         <div class="lie-grid reveal">
-            <div class="lie-card"><div class="micro">Lie 01</div><p>Everything matters equally.</p></div>
-            <div class="lie-card"><div class="micro">Lie 02</div><p>Multitasking works.</p></div>
-            <div class="lie-card"><div class="micro">Lie 03</div><p>Success requires a disciplined life.</p></div>
-            <div class="lie-card"><div class="micro">Lie 04</div><p>Willpower is always available.</p></div>
-            <div class="lie-card"><div class="micro">Lie 05</div><p>Balance is the goal.</p></div>
-            <div class="lie-card"><div class="micro">Lie 06</div><p>Big is bad.</p></div>
+            <div class="lie-card"><div class="num">Lie 01</div><p>Everything matters equally.</p></div>
+            <div class="lie-card"><div class="num">Lie 02</div><p>Multitasking works.</p></div>
+            <div class="lie-card"><div class="num">Lie 03</div><p>Success requires a disciplined life.</p></div>
+            <div class="lie-card"><div class="num">Lie 04</div><p>Willpower is always available.</p></div>
+            <div class="lie-card"><div class="num">Lie 05</div><p>Balance is the goal.</p></div>
+            <div class="lie-card"><div class="num">Lie 06</div><p>Big is bad.</p></div>
         </div>
     </div>
     <div class="page-num">07 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 01</div>
-    <div class="content">
-        <h2 class="reveal">Everything does not matter equally.</h2>
-        <div class="card reveal">
-            <p>A to-do list is a survival list. A success list is a force-ranked list of what actually moves the goal.</p>
-        </div>
-        <div class="focus-box reveal">
+<!-- === SLIDE 08: LIE 01 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 01</div>
+    <div class="content center">
+        <h2 class="reveal">Everything does <em>not</em> matter equally.</h2>
+        <div class="card reveal"><p>A to-do list is a survival list. A success list is a force-ranked list of what actually moves the goal.</p></div>
+        <div class="card callout reveal">
             <p class="quote">Whittle the 20% down to the vital few of the vital few.</p>
         </div>
         <p class="reveal">The lead domino is rarely hidden by complexity. It is hidden by equality.</p>
@@ -563,68 +503,71 @@
     <div class="page-num">08 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 02</div>
-    <div class="content top-content">
+<!-- === SLIDE 09: LIE 02 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 02</div>
+    <div class="content start">
         <h2 class="reveal">Multitasking is task switching.</h2>
         <p class="reveal">Every switch carries reorientation cost: slower work, weaker memory, more loose ends.</p>
         <div class="stack reveal">
-            <div class="card compact"><h3>Dopamine loop</h3><p>Switching feels exciting, so distraction starts to feel like progress.</p></div>
-            <div class="card compact"><h3>Cognitive load</h3><p>The brain cannot deeply attend to two demanding things at once.</p></div>
-            <div class="card compact"><h3>Time loss</h3><p>Interruptions can waste a third of the day through recovery time.</p></div>
+            <div class="card"><h3>Dopamine loop</h3><p>Switching feels exciting, so distraction starts to feel like progress.</p></div>
+            <div class="card"><h3>Cognitive load</h3><p>The brain cannot deeply attend to two demanding things at once.</p></div>
+            <div class="card"><h3>Time loss</h3><p>Interruptions can waste a third of the day through recovery time.</p></div>
         </div>
     </div>
     <div class="page-num">09 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 03</div>
-    <div class="content">
+<!-- === SLIDE 10: LIE 03 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 03</div>
+    <div class="content center">
         <h2 class="reveal">You do not need a disciplined life.</h2>
-        <p class="quote reveal">You need selected discipline long enough to build the right habit.</p>
-        <div class="row reveal">
-            <div class="card"><div class="big-num">66</div><h3>Day sweet spot</h3><p>Average time for a behavior to become automatic.</p></div>
-            <div class="card"><div class="big-num">1</div><h3>Habit at a time</h3><p>Concentrate discipline until automation takes over.</p></div>
+        <p class="quote reveal">You need <em>selected discipline</em> long enough to build the right habit.</p>
+        <div class="grid-2 reveal">
+            <div class="card dark"><p style="font-size:72px;font-weight:700;color:#efe8de;line-height:1">66</p><h3 style="color:var(--accent-soft)">Day sweet spot</h3><p>Average time for a behavior to become automatic.</p></div>
+            <div class="card dark"><p style="font-size:72px;font-weight:700;color:#efe8de;line-height:1">1</p><h3 style="color:var(--accent-soft)">Habit at a time</h3><p>Concentrate discipline until automation takes over.</p></div>
         </div>
     </div>
     <div class="page-num">10 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 04</div>
-    <div class="content top-content">
+<!-- === SLIDE 11: LIE 04 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 04</div>
+    <div class="content center">
         <h2 class="reveal">Willpower is not always on call.</h2>
-        <div class="focus-box reveal">
-            <p>Willpower behaves like a fast-twitch muscle. It renews, but it drains quickly.</p>
-        </div>
-        <div class="row reveal">
+        <div class="card callout reveal"><p>Willpower behaves like a fast-twitch muscle. It renews, but it drains quickly.</p></div>
+        <div class="grid-2 reveal">
             <div class="card"><h3>High fuel</h3><p>Better restraint, better judgment, harder choices possible.</p></div>
-            <div class="card"><h3>Low fuel</h3><p>The brain defaults to the easiest answer — often “no,” delay, or avoidance.</p></div>
+            <div class="card"><h3>Low fuel</h3><p>The brain defaults to the easiest answer — often "no," delay, or avoidance.</p></div>
         </div>
-        <p class="reveal">Do your ONE Thing early, before your willpower account is empty.</p>
+        <p class="reveal"><strong>Do your ONE Thing early,</strong> before your willpower account is empty.</p>
     </div>
     <div class="page-num">11 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 05</div>
-    <div class="content">
+<!-- === SLIDE 12: LIE 05 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 05</div>
+    <div class="content center">
         <h2 class="reveal">Balance is the wrong target.</h2>
-        <div class="vs reveal">
-            <div class="card good"><h3>Work: go long</h3><p>Extraordinary results require deliberate imbalance long enough to build mastery.</p></div>
-            <div class="card bad"><h3>Life: go short</h3><p>Health, family, friends, and integrity are glass balls. Do not drop them for long.</p></div>
+        <div class="vs-pair reveal">
+            <div class="card vs-good"><h3>Work: go long</h3><p>Extraordinary results require deliberate imbalance long enough to build mastery.</p></div>
+            <div class="card vs-bad"><h3>Life: go short</h3><p>Health, family, friends, and integrity are <em>glass balls</em>. Do not drop them for long.</p></div>
         </div>
         <p class="quote reveal">Counterbalance. Do not worship balance.</p>
     </div>
     <div class="page-num">12 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 06</div>
-    <div class="content top-content">
+<!-- === SLIDE 13: LIE 06 === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Lie 06</div>
+    <div class="content start">
         <h2 class="reveal">Big is not bad.</h2>
         <p class="reveal">The fear of big creates shrinking thinking. If the mountain scares you, you never build mountain-climbing skills.</p>
-        <div class="focus-box reveal">
+        <div class="card callout reveal">
             <p class="quote">Think big. Then go small.</p>
         </div>
         <div class="card reveal"><p>Big defines the direction. Small defines the next strike.</p></div>
@@ -632,50 +575,54 @@
     <div class="page-num">13 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Part 2</div>
-    <div class="content">
+<!-- === SLIDE 14: THE FOCUSING QUESTION === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Part 2</div>
+    <div class="content center">
         <h2 class="reveal">The Focusing Question</h2>
-        <div class="focus-box reveal">
-            <p class="quote">What’s the ONE Thing I can do such that by doing it everything else will be easier or unnecessary?</p>
+        <div class="card callout reveal">
+            <p class="quote" style="font-size:48px">What's the ONE Thing I can do such that by doing it everything else will be easier or unnecessary?</p>
         </div>
-        <p class="reveal">This is not motivational copy. It is a prioritization machine.</p>
+        <p class="reveal">This is not motivational copy. It is a <strong>prioritization machine.</strong></p>
     </div>
     <div class="page-num">14 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Question anatomy</div>
-    <div class="content top-content">
+<!-- === SLIDE 15: QUESTION ANATOMY === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Question anatomy</div>
+    <div class="content start">
         <h2 class="reveal">Why the question works</h2>
         <div class="stack reveal">
-            <div class="ladder-step"><div class="big-num">1</div><p><strong>“The ONE Thing”</strong> forces you past what is merely doable.</p></div>
-            <div class="ladder-step"><div class="big-num">2</div><p><strong>“Such that by doing it”</strong> links immediate action to a concrete result.</p></div>
-            <div class="ladder-step"><div class="big-num">3</div><p><strong>“Everything else easier or unnecessary”</strong> identifies leverage, not activity.</p></div>
+            <div class="step-row"><div class="step-num">1</div><p><strong>"The ONE Thing"</strong> forces you past what is merely doable.</p></div>
+            <div class="step-row"><div class="step-num">2</div><p><strong>"Such that by doing it"</strong> links immediate action to a concrete result.</p></div>
+            <div class="step-row"><div class="step-num">3</div><p><strong>"Everything else easier or unnecessary"</strong> identifies leverage, not activity.</p></div>
         </div>
     </div>
     <div class="page-num">15 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Map + compass</div>
-    <div class="content">
-        <div class="row reveal">
-            <div class="card"><div class="number">↗</div><h3>Big picture map</h3><p>What is the ultimate objective? This gives purpose and direction.</p></div>
-            <div class="card"><div class="number">•</div><h3>Small focus compass</h3><p>What matters now? This turns purpose into the next lead domino.</p></div>
+<!-- === SLIDE 16: MAP + COMPASS === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Map + compass</div>
+    <div class="content center">
+        <div class="grid-2 reveal">
+            <div class="card"><h3>Big picture map</h3><p>What is the ultimate objective? This gives purpose and direction.</p></div>
+            <div class="card"><h3>Small focus compass</h3><p>What matters now? This turns purpose into the next lead domino.</p></div>
         </div>
-        <div class="focus-box reveal">
+        <div class="card callout reveal">
             <p class="quote">Purpose chooses the game. Priority chooses the move.</p>
         </div>
     </div>
     <div class="page-num">16 / 17</div>
 </div></section>
 
-<section class="slide"><div class="slide-inner grain">
-    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Operating rule</div>
-    <div class="content bottom-content">
+<!-- === SLIDE 17: CLOSING === -->
+<section class="slide"><div class="slide-inner">
+    <div class="page"></div><div class="eyebrow">Operating rule</div>
+    <div class="content end">
         <h2 class="reveal">Your daily lead domino</h2>
-        <div class="focus-box reveal">
+        <div class="card callout reveal">
             <p class="quote">Find it. Protect it. Knock it down before the day gets noisy.</p>
         </div>
         <p class="reveal">The ONE Thing is not about doing less forever. It is about doing the right first thing so the rest compounds.</p>
@@ -684,176 +631,62 @@
 </div></section>
 
 <script>
-    /* ===========================================
-       PER-SLIDE SCALING FOR 1080×1920 CANVAS
-       =========================================== */
     function scaleSlides() {
         document.querySelectorAll('.slide-inner').forEach(function(inner) {
-            var scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
-            inner.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+            var s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+            inner.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
         });
     }
     scaleSlides();
     window.addEventListener('resize', scaleSlides);
 
-    /* ===========================================
-       KEYBOARD SCROLL NAVIGATION
-       =========================================== */
     var slides = Array.from(document.querySelectorAll('.slide'));
     function activeIndex() {
-        var y = window.scrollY;
-        var best = 0;
-        var bestDist = Infinity;
-        slides.forEach(function(slide, i) {
-            var dist = Math.abs(slide.offsetTop - y);
-            if (dist < bestDist) { best = i; bestDist = dist; }
-        });
+        var y = window.scrollY, best = 0, bestDist = Infinity;
+        slides.forEach(function(s, i) { var d = Math.abs(s.offsetTop - y); if (d < bestDist) { best = i; bestDist = d; } });
         return best;
     }
-    document.addEventListener('keydown', function(event) {
-        if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
-            event.preventDefault();
-            slides[Math.min(activeIndex() + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
-        }
-        if (['ArrowUp', 'PageUp'].includes(event.key)) {
-            event.preventDefault();
-            slides[Math.max(activeIndex() - 1, 0)].scrollIntoView({ behavior: 'smooth' });
-        }
-        if (event.key === 'Home') slides[0].scrollIntoView({ behavior: 'smooth' });
-        if (event.key === 'End') slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+    document.addEventListener('keydown', function(e) {
+        if (['ArrowDown','PageDown',' '].includes(e.key)) { e.preventDefault(); slides[Math.min(activeIndex()+1, slides.length-1)].scrollIntoView({behavior:'smooth'}); }
+        if (['ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); slides[Math.max(activeIndex()-1,0)].scrollIntoView({behavior:'smooth'}); }
+        if (e.key === 'Home') slides[0].scrollIntoView({behavior:'smooth'});
+        if (e.key === 'End') slides[slides.length-1].scrollIntoView({behavior:'smooth'});
     });
 
-    /* ===========================================
-       SCROLL HINT — FADE AFTER FIRST SCROLL
-       =========================================== */
-    (function() {
-        var hint = document.getElementById('scrollHint');
-        if (!hint) return;
-        var faded = false;
-        function checkFade() {
-            if (!faded && window.scrollY > 60) {
-                hint.classList.add('fade');
-                faded = true;
-            }
-        }
-        window.addEventListener('scroll', checkFade, { passive: true });
-        setTimeout(function() {
-            if (!faded && window.scrollY < 5) hint.classList.add('fade');
-        }, 15000);
-    })();
-
-    /* ===========================================
-       INLINE EDITING
-       =========================================== */
     var InlineEditor = {
         isActive: false,
-        originalHTML: '',
-
         init: function() {
-            this.originalHTML = document.body.innerHTML;
             var self = this;
-
-            // Toggle button click
-            document.getElementById('editToggle').addEventListener('click', function() {
-                self.toggleEditMode();
-            });
-
-            // Hotzone hover with 400ms delay
-            var hotzone = document.getElementById('editHotzone');
-            var editToggle = document.getElementById('editToggle');
-            var hideTimeout = null;
-
-            hotzone.addEventListener('mouseenter', function() {
-                clearTimeout(hideTimeout);
-                editToggle.classList.add('show');
-            });
-            hotzone.addEventListener('mouseleave', function() {
-                hideTimeout = setTimeout(function() {
-                    if (!self.isActive) editToggle.classList.remove('show');
-                }, 400);
-            });
-            editToggle.addEventListener('mouseenter', function() {
-                clearTimeout(hideTimeout);
-            });
-            editToggle.addEventListener('mouseleave', function() {
-                hideTimeout = setTimeout(function() {
-                    if (!self.isActive) editToggle.classList.remove('show');
-                }, 400);
-            });
-
-            // Hotzone direct click
-            hotzone.addEventListener('click', function() {
-                self.toggleEditMode();
-            });
-
-            // Keyboard shortcut (E)
+            document.getElementById('editToggle').addEventListener('click', function() { self.toggle(); });
+            var hz = document.getElementById('editHotzone'), btn = document.getElementById('editToggle'), t = null;
+            hz.addEventListener('mouseenter', function() { clearTimeout(t); btn.classList.add('show'); });
+            hz.addEventListener('mouseleave', function() { t = setTimeout(function() { if (!self.isActive) btn.classList.remove('show'); }, 400); });
+            btn.addEventListener('mouseenter', function() { clearTimeout(t); });
+            btn.addEventListener('mouseleave', function() { t = setTimeout(function() { if (!self.isActive) btn.classList.remove('show'); }, 400); });
+            hz.addEventListener('click', function() { self.toggle(); });
             document.addEventListener('keydown', function(e) {
-                if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) {
-                    if (!e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                        e.preventDefault();
-                        self.toggleEditMode();
-                    }
-                }
-                // Ctrl+S to save modified HTML
-                if ((e.ctrlKey || e.metaKey) && e.key === 's' && self.isActive) {
-                    e.preventDefault();
-                    self.saveToLocalStorage();
-                }
+                if ((e.key==='e'||e.key==='E') && !e.target.getAttribute('contenteditable') && !e.ctrlKey && !e.metaKey && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA') { e.preventDefault(); self.toggle(); }
+                if ((e.ctrlKey||e.metaKey) && e.key==='s' && self.isActive) { e.preventDefault(); self.save(); }
             });
         },
-
-        toggleEditMode: function() {
+        toggle: function() {
             this.isActive = !this.isActive;
-            var editToggle = document.getElementById('editToggle');
+            var b = document.getElementById('editToggle');
             document.body.classList.toggle('editing', this.isActive);
-            editToggle.classList.toggle('active', this.isActive);
-            editToggle.textContent = this.isActive ? '💾' : '✏️';
-
-            var editable = document.querySelectorAll('[contenteditable]');
-            if (this.isActive) {
-                var textEls = document.querySelectorAll('.slide-inner h1, .slide-inner h2, .slide-inner h3, .slide-inner p, .slide-inner .pill, .slide-inner .eyebrow, .slide-inner .micro, .slide-inner span');
-                textEls.forEach(function(el) {
-                    if (!el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
-                });
-            } else {
-                editable.forEach(function(el) {
-                    el.removeAttribute('contenteditable');
-                    el.blur();
-                });
-            }
+            b.classList.toggle('active', this.isActive);
+            b.textContent = this.isActive ? '💾' : '✏️';
+            var els = document.querySelectorAll('.slide-inner h1, .slide-inner h2, .slide-inner h3, .slide-inner p, .slide-inner .title-tag, .slide-inner .eyebrow, .slide-inner .num, .slide-inner .step-num, .slide-inner span');
+            if (this.isActive) { els.forEach(function(el) { if (!el.hasAttribute('contenteditable')) el.setAttribute('contenteditable','true'); }); }
+            else { document.querySelectorAll('[contenteditable]').forEach(function(el) { el.removeAttribute('contenteditable'); el.blur(); }); }
         },
-
-        saveToLocalStorage: function() {
-            var state = {
-                html: document.body.innerHTML,
-                timestamp: new Date().toISOString()
-            };
-            try {
-                localStorage.setItem('the-one-thing-deck-edit', JSON.stringify(state));
-                this.showToast('Saved to browser storage');
-            } catch (e) {
-                this.showToast('Save failed — storage full');
-            }
+        save: function() {
+            try { localStorage.setItem('the-one-thing-deck-v2', JSON.stringify({html:document.body.innerHTML,ts:new Date().toISOString()})); this.toast('Saved'); }
+            catch(e) { this.toast('Save failed'); }
         },
-
-        restoreFromStorage: function() {
-            try {
-                var raw = localStorage.getItem('the-one-thing-deck-edit');
-                if (!raw) return;
-                var state = JSON.parse(raw);
-                if (state.html) {
-                    document.body.innerHTML = state.html;
-                    this.showToast('Restored saved edits');
-                }
-            } catch (e) {}
-        },
-
-        showToast: function(msg) {
-            var toast = document.createElement('div');
-            toast.textContent = msg;
-            toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(11,11,10,.9);color:#f4ead2;padding:10px 24px;border-radius:999px;font-size:14px;z-index:20000;border:1px solid rgba(244,234,210,.14);font-family:Lexend,sans-serif;';
-            document.body.appendChild(toast);
-            setTimeout(function() { toast.remove(); }, 2200);
+        toast: function(m) {
+            var t = document.createElement('div'); t.textContent = m;
+            t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d2117;color:#efe8de;padding:10px 24px;border-radius:999px;font-size:14px;z-index:20000;font-family:Lexend,sans-serif;';
+            document.body.appendChild(t); setTimeout(function() { t.remove(); }, 2000);
         }
     };
     InlineEditor.init();
