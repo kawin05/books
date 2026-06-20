@@ -6,46 +6,38 @@
 <title>The ONE Thing — Book Summary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     /* ===========================================
-       CSS CUSTOM PROPERTIES — WARM INK EDITORIAL
+       CSS CUSTOM PROPERTIES — BOLD POSTER EDITORIAL
        Canvas: 1080×1920 (9:16 portrait, vertical scroll)
        =========================================== */
     :root {
-        --bg: #f7f3ec;
-        --bg-warm: #efe8de;
-        --bg-card: #ffffff;
-        --text: #2d2117;
-        --text-soft: #6b5e52;
-        --text-dim: #a39688;
-        --accent: #c84b31;
-        --accent-soft: #e07b5a;
-        --accent-gold: #b8860b;
-        --line: rgba(45, 33, 23, 0.09);
-        --line-strong: rgba(45, 33, 23, 0.16);
-        --shadow: 0 2px 16px rgba(45, 33, 23, 0.07);
-        --font: 'Lora', serif;
-        --font-ui: 'Lexend', sans-serif;
+        --bg: #FFFFFF;
+        --dark: #1C1410;
+        --red: #D8000F;
+        --light: #F5F2EF;
+        --font-display: 'Shrikhand', cursive;
+        --font-body: 'Libre Baskerville', serif;
+        --font-ui: 'Space Grotesk', sans-serif;
         --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     /* ===========================================
-       VERTICAL SCROLL FIXED-STAGE BASE
+       VERTICAL SCROLL FIXED-STAGE BASE — 9:16
        =========================================== */
     html {
         scroll-snap-type: y mandatory;
         scroll-behavior: smooth;
-        background: var(--bg);
+        background: var(--dark);
     }
     body {
         width: 100%;
-        background: var(--bg);
-        font-family: var(--font);
-        color: var(--text);
-        -webkit-font-smoothing: antialiased;
+        background: var(--dark);
+        font-family: var(--font-body);
+        color: var(--dark);
     }
     .slide {
         position: relative;
@@ -61,7 +53,7 @@
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-        background: var(--bg);
+        background: var(--dark);
     }
     .slide-inner {
         position: absolute;
@@ -75,175 +67,189 @@
     }
 
     /* ===========================================
-       BACKGROUND TEXTURES
+       SURFACE TREATMENTS
        =========================================== */
-    .page {
-        position: absolute;
-        inset: 60px 56px;
-        border: 1px solid var(--line);
-        pointer-events: none;
-    }
-    .rule-top {
-        position: absolute;
-        top: 112px;
-        left: 80px;
-        right: 80px;
-        height: 2px;
-        background: var(--accent);
-        transform: scaleX(0);
-        animation: ruleIn .9s var(--ease) .5s forwards;
-    }
-    @keyframes ruleIn { to { transform: scaleX(1); } }
+    .slide-inner.light-bg { background: var(--light); }
+    .slide-inner.red-bg { background: var(--red); }
+    .slide-inner.dark-bg { background: var(--dark); }
 
+    /* === PROGRESS BAR (persistent red strip at bottom) === */
+    .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 5px;
+        background: var(--red);
+        transition: width .3s ease;
+        z-index: 20;
+    }
     .page-num {
         position: absolute;
-        bottom: 68px;
-        right: 72px;
+        bottom: 28px;
+        right: 36px;
         font-family: var(--font-ui);
-        font-size: 14px;
-        font-weight: 400;
-        letter-spacing: .18em;
-        color: var(--text-dim);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: var(--dark);
+        opacity: .5;
+        z-index: 10;
     }
+    .red-bg .page-num,
+    .dark-bg .page-num { color: #fff; opacity: .6; }
     .eyebrow {
         position: absolute;
-        top: 130px;
-        left: 80px;
+        top: 72px;
+        left: 72px;
         font-family: var(--font-ui);
-        font-size: 13px;
-        font-weight: 500;
-        letter-spacing: .2em;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .18em;
         text-transform: uppercase;
-        color: var(--accent);
+        color: var(--red);
+        z-index: 10;
     }
+    .red-bg .eyebrow,
+    .dark-bg .eyebrow { color: rgba(255,255,255,.55); }
 
     /* ===========================================
        TYPOGRAPHY
        =========================================== */
-    .title-block {
-        position: absolute;
-        left: 80px;
-        right: 80px;
-        bottom: 180px;
-    }
-    .title-tag {
-        font-family: var(--font-ui);
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: .22em;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 32px;
-    }
-    .title-block h1 {
-        font-size: 112px;
-        line-height: .92;
-        letter-spacing: -.04em;
-        font-weight: 700;
-    }
-    .title-block h1 em { color: var(--accent); font-style: italic; }
-    .title-sub {
-        margin-top: 36px;
-        font-style: italic;
-        font-size: 42px;
-        line-height: 1.12;
-        color: var(--text-soft);
-        max-width: 700px;
-    }
-    .title-credits {
-        margin-top: 28px;
-        font-family: var(--font-ui);
-        font-size: 15px;
-        color: var(--text-dim);
-        letter-spacing: .06em;
+    .shrikhand { font-family: var(--font-display); font-weight: 400; }
+    .tilt-up { transform: rotate(-4deg); display: inline-block; }
+    .tilt-down { transform: rotate(2deg); display: inline-block; }
+    .tilt-big { transform: rotate(-5deg); display: inline-block; }
+    .stacked-shadow {
+        text-shadow: 3px 3px 0 rgba(28,20,16,0.22), 5px 5px 0 rgba(28,20,16,0.16), 7px 7px 0 rgba(28,20,16,0.10);
     }
 
-    /* === CONTENT LAYOUTS === */
+    h2 {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 64px;
+        line-height: .96;
+        letter-spacing: .01em;
+        color: var(--dark);
+    }
+    .dark-bg h2,
+    .red-bg h2 { color: #fff; }
+    h3 {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 34px;
+        line-height: 1.06;
+        color: var(--dark);
+    }
+    .dark-bg h3,
+    .red-bg h3 { color: #fff; }
+    p {
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 1.5;
+        color: var(--dark);
+    }
+    .dark-bg p,
+    .red-bg p { color: rgba(255,255,255,.8); }
+    p strong {
+        font-family: var(--font-ui);
+        font-weight: 600;
+        color: var(--dark);
+    }
+    .dark-bg p strong,
+    .red-bg p strong { color: #fff; }
+    .quote {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 54px;
+        line-height: 1.06;
+        color: var(--dark);
+        letter-spacing: .01em;
+    }
+    .quote-red {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 64px;
+        line-height: 1.04;
+        color: #fff;
+        letter-spacing: .01em;
+    }
+    .small {
+        font-family: var(--font-body);
+        font-size: 20px;
+        line-height: 1.45;
+        color: var(--dark);
+    }
+    .ui {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--red);
+    }
+    .ui-dark {
+        font-family: var(--font-ui);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: var(--dark);
+    }
+
+    /* ===========================================
+       LAYOUT PRIMITIVES
+       =========================================== */
     .content {
         position: absolute;
-        inset: 168px 80px 120px 80px;
+        inset: 130px 64px 80px 64px;
         display: flex;
         flex-direction: column;
-        gap: 36px;
+        gap: 28px;
         overflow-y: auto;
         scrollbar-width: none;
     }
     .content::-webkit-scrollbar { display: none; }
     .content.center { justify-content: center; }
-    .content.end { justify-content: flex-end; padding-bottom: 170px; }
+    .content.end { justify-content: flex-end; padding-bottom: 90px; }
     .content.start { justify-content: flex-start; }
+    .content.pad-top { padding-top: 200px; }
 
-    h2 {
-        font-size: 68px;
-        line-height: 1.04;
-        letter-spacing: -.035em;
-        font-weight: 700;
-    }
-    h3 {
-        font-family: var(--font-ui);
-        font-size: 22px;
-        line-height: 1.2;
-        font-weight: 600;
-        letter-spacing: .02em;
-        color: var(--accent);
-        margin-bottom: 8px;
-    }
-    p {
-        font-size: 32px;
-        line-height: 1.42;
-        color: var(--text-soft);
-    }
-    p strong { color: var(--text); font-weight: 700; }
-    .quote {
-        font-style: italic;
-        font-size: 58px;
-        line-height: 1.1;
-        color: var(--text);
-        letter-spacing: -.02em;
-    }
-    .small {
-        font-size: 24px;
-        line-height: 1.4;
-        color: var(--text-dim);
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .stack { display: grid; gap: 14px; }
 
     /* === CARDS === */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-    .stack { display: grid; gap: 14px; }
     .card {
-        background: var(--bg-card);
-        border: 1px solid var(--line-strong);
-        padding: 32px;
-        box-shadow: var(--shadow);
+        border: 2px solid var(--dark);
+        padding: 30px;
+        background: var(--bg);
     }
-    .card p { font-size: 27px; }
-    .card.callout {
-        border-left: 4px solid var(--accent);
-        background: rgba(200,75,49,.035);
+    .card.red-leftbar {
+        border: none;
+        border-left: 5px solid var(--red);
+        padding: 0 0 0 24px;
     }
-    .card.dark {
-        background: #2d2117;
-        color: #efe8de;
-        border-color: rgba(239,232,222,.12);
-    }
-    .card.dark p { color: #c8b99d; }
-    .card.dark h3 { color: var(--accent-soft); }
+    .card-offwhite { background: var(--light); }
+    .dark-bg .card,
+    .red-bg .card { border-color: rgba(255,255,255,.18); background: transparent; }
+    .card h3 { margin-bottom: 10px; font-size: 30px; }
 
     /* === DIAGRAMS === */
     .domino-field {
         position: relative;
-        height: 480px;
-        margin: 10px 0;
+        height: 420px;
+        margin: 8px 0;
     }
     .domino {
         position: absolute;
         bottom: 60px;
-        width: 70px;
-        height: 170px;
-        border-radius: 10px;
-        background: linear-gradient(180deg, #efe8de 0%, #dbd0c0 100%);
-        box-shadow: 0 18px 40px rgba(45, 33, 23, 0.18);
+        width: 62px;
+        height: 150px;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #F5F2EF 0%, #e8e2d6 100%);
+        border: 2px solid var(--dark);
+        box-shadow: 4px 4px 0 rgba(28,20,16,.12);
         transform-origin: bottom center;
     }
     .domino::before,
@@ -251,30 +257,32 @@
         content: '';
         position: absolute;
         left: 50%;
-        width: 13px;
-        height: 13px;
+        width: 11px;
+        height: 11px;
         border-radius: 50%;
-        background: #2d2117;
+        background: var(--dark);
         transform: translateX(-50%);
     }
-    .domino::before { top: 40px; }
-    .domino::after { bottom: 40px; }
-    .d1 { left: 30px; transform: rotate(-12deg) scale(.68); }
-    .d2 { left: 148px; transform: rotate(-4deg) scale(.82); }
-    .d3 { left: 286px; transform: rotate(0deg) scale(1.0); box-shadow: 0 22px 50px rgba(45,33,23,.22), 0 0 50px rgba(200,75,49,.12); }
-    .d4 { left: 456px; transform: rotate(5deg) scale(1.22); }
-    .d5 { left: 668px; transform: rotate(11deg) scale(1.5); }
+    .domino::before { top: 32px; }
+    .domino::after { bottom: 32px; }
+    .d1 { left: 30px; transform: rotate(-12deg) scale(.64); }
+    .d2 { left: 140px; transform: rotate(-3deg) scale(.78); }
+    .d3 { left: 272px; transform: rotate(0deg) scale(.95); border-color: var(--red); box-shadow: 4px 4px 0 rgba(216,0,15,.2); }
+    .d4 { left: 438px; transform: rotate(5deg) scale(1.16); }
+    .d5 { left: 650px; transform: rotate(12deg) scale(1.42); }
     .domino-labels {
         position: absolute;
-        bottom: 8px;
-        left: 24px;
-        right: 24px;
+        bottom: 6px;
+        left: 20px;
+        right: 20px;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 16px;
+        gap: 12px;
         font-family: var(--font-ui);
-        font-size: 14px;
-        color: var(--text-dim);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--dark);
+        opacity: .5;
         text-align: center;
         letter-spacing: .1em;
         text-transform: uppercase;
@@ -282,58 +290,112 @@
 
     .lie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .lie-card {
-        padding: 26px 28px;
-        border: 1px solid var(--line-strong);
-        background: var(--bg-card);
-        box-shadow: var(--shadow);
+        border: 2px solid var(--dark);
+        padding: 26px;
+        background: var(--bg);
+        min-height: 160px;
     }
-    .lie-card .num {
-        font-family: var(--font-ui);
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: .14em;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 10px;
-    }
-    .lie-card p { font-size: 27px; }
+    .lie-card .ui-dark { margin-bottom: 12px; color: var(--red); }
+    .lie-card p { font-size: 22px; }
 
     .step-row {
         display: grid;
-        grid-template-columns: 90px 1fr;
-        gap: 24px;
+        grid-template-columns: 80px 1fr;
+        gap: 20px;
         align-items: center;
-        padding: 20px 0;
-        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        border-top: 1px solid rgba(28,20,16,.1);
     }
     .step-num {
-        font-family: var(--font-ui);
-        font-size: 64px;
-        font-weight: 300;
-        color: var(--accent-soft);
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 56px;
         line-height: 1;
+        color: var(--red);
     }
 
-    .vs-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .vs-good { border-left: 4px solid var(--accent); }
-    .vs-bad { border-left: 4px solid #d4a89a; opacity: .78; }
+    .red-panel {
+        position: absolute;
+        inset: 0;
+        background: var(--red);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 72px;
+    }
+    .dark-panel {
+        position: absolute;
+        inset: 0;
+        background: var(--dark);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 72px;
+    }
 
-    /* === REVEAL ANIMATIONS === */
+    /* ===========================================
+       TITLE SLIDE
+       =========================================== */
+    .hero-top {
+        position: absolute;
+        top: 110px;
+        left: 72px;
+        right: 72px;
+    }
+    .hero-bottom {
+        position: absolute;
+        bottom: 130px;
+        left: 72px;
+        right: 72px;
+    }
+    .hero-top h1 {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 180px;
+        line-height: .82;
+        letter-spacing: .01em;
+        color: var(--dark);
+    }
+    .hero-top h1 em { color: var(--red); font-style: normal; }
+    .hero-sub {
+        font-family: var(--font-body);
+        font-style: italic;
+        font-size: 34px;
+        line-height: 1.14;
+        color: var(--dark);
+        margin-top: 24px;
+        max-width: 640px;
+    }
+    .hero-credits {
+        font-family: var(--font-ui);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--dark);
+        opacity: .5;
+        letter-spacing: .08em;
+        margin-top: 20px;
+    }
+
+    /* ===========================================
+       REVEAL ANIMATIONS
+       =========================================== */
     .reveal {
         opacity: 0;
-        transform: translateY(28px);
-        animation: revealIn .7s var(--ease) forwards;
+        transform: translateY(26px);
+        animation: revealIn .65s var(--ease) forwards;
     }
     .reveal:nth-child(1) { animation-delay: .00s; }
-    .reveal:nth-child(2) { animation-delay: .07s; }
-    .reveal:nth-child(3) { animation-delay: .14s; }
-    .reveal:nth-child(4) { animation-delay: .21s; }
-    .reveal:nth-child(5) { animation-delay: .28s; }
-    .reveal:nth-child(6) { animation-delay: .35s; }
-    .reveal:nth-child(7) { animation-delay: .42s; }
+    .reveal:nth-child(2) { animation-delay: .06s; }
+    .reveal:nth-child(3) { animation-delay: .12s; }
+    .reveal:nth-child(4) { animation-delay: .18s; }
+    .reveal:nth-child(5) { animation-delay: .24s; }
+    .reveal:nth-child(6) { animation-delay: .30s; }
+    .reveal:nth-child(7) { animation-delay: .36s; }
     @keyframes revealIn { to { opacity: 1; transform: translateY(0); } }
 
-    /* === INLINE EDITING === */
+    /* ===========================================
+       INLINE EDITING
+       =========================================== */
     .edit-hotzone {
         position: fixed; top: 0; left: 0;
         width: 80px; height: 80px;
@@ -344,11 +406,10 @@
         position: fixed;
         top: 14px; left: 14px;
         width: 40px; height: 40px;
-        border: 1px solid rgba(45,33,23,.14);
-        background: rgba(247,243,236,.9);
-        backdrop-filter: blur(12px);
-        border-radius: 10px;
-        color: var(--text-dim);
+        border: 2px solid var(--red);
+        background: var(--bg);
+        border-radius: 6px;
+        color: var(--red);
         font-size: 18px;
         cursor: pointer;
         display: flex;
@@ -362,12 +423,12 @@
     .edit-toggle.show,
     .edit-toggle.active { opacity: 1; pointer-events: auto; }
     body.editing [contenteditable]:focus {
-        outline: 2px solid var(--accent);
+        outline: 2px solid var(--red);
         outline-offset: 4px;
         border-radius: 3px;
     }
     body.editing [contenteditable]:hover {
-        outline: 1px dashed rgba(200,75,49,.3);
+        outline: 1px dashed rgba(216,0,15,.35);
         outline-offset: 4px;
         border-radius: 3px;
     }
@@ -387,49 +448,55 @@
 <div class="edit-hotzone" id="editHotzone"></div>
 <button class="edit-toggle" id="editToggle" aria-label="Toggle edit mode" title="Edit mode (E)">✏️</button>
 
-<!-- === SLIDE 01: TITLE === -->
+<!-- ====== SLIDE 01: TITLE — Hero stacked on white ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="rule-top"></div>
-    <div class="title-block">
-        <div class="title-tag reveal">Book Study / Productivity</div>
-        <h1 class="reveal">The <em>ONE</em><br>Thing</h1>
-        <p class="title-sub reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
-        <p class="title-credits reveal">Gary Keller with Jay Papasan · 2013</p>
+    <div class="hero-top">
+        <div class="ui reveal" style="margin-bottom:18px">Book Study / Productivity</div>
+        <h1 class="reveal tilt-up">THE</h1>
+        <h1 class="reveal"><em>ONE</em></h1>
+        <h1 class="reveal tilt-down">THING</h1>
     </div>
+    <div class="hero-bottom">
+        <p class="hero-sub reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
+        <p class="hero-credits reveal">Gary Keller with Jay Papasan · 2013</p>
+    </div>
+    <div class="progress-bar" style="width:5.9%"></div>
     <div class="page-num">01 / 17</div>
 </div></section>
 
-<!-- === SLIDE 02: CORE IDEA === -->
+<!-- ====== SLIDE 02: CORE IDEA — Red leftbar editorial ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Core idea</div>
+    <div class="eyebrow">Core idea</div>
     <div class="content center">
         <p class="quote reveal">Extraordinary results are not produced by broad effort.</p>
-        <div class="card callout reveal">
+        <div class="card red-leftbar reveal">
             <p><strong>They come from narrowing.</strong> Ignore everything you <em>could</em> do. Find the one thing you <em>should</em> do. Give it disproportionate time.</p>
         </div>
         <p class="reveal">The book calls this <strong>Going Small</strong>: choosing the smallest action with the largest future consequence.</p>
     </div>
+    <div class="progress-bar" style="width:11.8%"></div>
     <div class="page-num">02 / 17</div>
 </div></section>
 
-<!-- === SLIDE 03: STRATEGIC CONTRAST === -->
+<!-- ====== SLIDE 03: STRATEGIC CONTRAST — Alternating panels ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Going small</div>
-    <div class="content start">
-        <h2 class="reveal">The strategic contrast of focus</h2>
-        <div class="vs-pair reveal">
-            <div class="card vs-good"><h3>Big success</h3><p>Subtract distractions. Master a vital few things. Align the day around the ultimate objective.</p></div>
-            <div class="card vs-bad"><h3>Small life</h3><p>Overload the calendar. Chase low-value tasks. Create execution gaps and constant friction.</p></div>
+    <div class="eyebrow">Going small</div>
+    <div class="content start pad-top">
+        <h2 class="reveal">The strategic<br>contrast of focus</h2>
+        <div class="grid-2 reveal">
+            <div class="card"><div class="ui-dark" style="color:var(--red);margin-bottom:10px">01</div><h3>Big success</h3><p>Subtract distractions. Master a vital few things. Align the day.</p></div>
+            <div class="card card-offwhite" style="opacity:.65"><div class="ui-dark" style="margin-bottom:10px">Small life</div><h3>Scatter</h3><p>Overload the calendar. Chase low-value tasks. Create friction.</p></div>
         </div>
         <p class="reveal"><strong>Busyness is not leverage.</strong> Focus is leverage.</p>
     </div>
+    <div class="progress-bar" style="width:17.6%"></div>
     <div class="page-num">03 / 17</div>
 </div></section>
 
-<!-- === SLIDE 04: DOMINO EFFECT === -->
+<!-- ====== SLIDE 04: DOMINO EFFECT ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Physics of achievement</div>
-    <div class="content start">
+    <div class="eyebrow">Physics of achievement</div>
+    <div class="content start pad-top">
         <h2 class="reveal">The domino effect</h2>
         <p class="reveal">One domino can topple another 50% larger. That geometric progression turns tiny starts into moonshot outcomes.</p>
         <div class="domino-field reveal">
@@ -438,12 +505,13 @@
         </div>
         <p class="reveal"><strong>Progress is sequential, not simultaneous.</strong> Do the right thing, then the next right thing.</p>
     </div>
+    <div class="progress-bar" style="width:23.5%"></div>
     <div class="page-num">04 / 17</div>
 </div></section>
 
-<!-- === SLIDE 05: SUCCESS LEAVES CLUES === -->
+<!-- ====== SLIDE 05: SUCCESS LEAVES CLUES — Step rows ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Success leaves clues</div>
+    <div class="eyebrow">Success leaves clues</div>
     <div class="content center">
         <h2 class="reveal">World-class outcomes have one anchor.</h2>
         <div class="stack reveal">
@@ -453,61 +521,65 @@
             <div class="step-row"><div class="step-num">S</div><p><strong>Star Wars:</strong> One movie unlocked decades of merchandise value.</p></div>
         </div>
     </div>
+    <div class="progress-bar" style="width:29.4%"></div>
     <div class="page-num">05 / 17</div>
 </div></section>
 
-<!-- === SLIDE 06: VIRTUOUS CYCLE === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Mastery loop</div>
+<!-- ====== SLIDE 06: VIRTUOUS CYCLE — 2×2 grid ====== -->
+<section class="slide"><div class="slide-inner light-bg">
+    <div class="eyebrow">Mastery loop</div>
     <div class="content center">
         <h2 class="reveal">The virtuous cycle</h2>
         <div class="grid-2 reveal">
-            <div class="card"><h3>1. Passion</h3><p>Interest pulls attention toward one domain.</p></div>
-            <div class="card"><h3>2. Time</h3><p>Disproportionate time compounds faster than scattered effort.</p></div>
-            <div class="card"><h3>3. Skill</h3><p>Focused reps create specialized capability.</p></div>
-            <div class="card"><h3>4. Results</h3><p>Results increase passion, restarting the loop.</p></div>
+            <div class="card red-leftbar"><h3>1. Passion</h3><p>Interest pulls attention toward one domain.</p></div>
+            <div class="card red-leftbar"><h3>2. Time</h3><p>Disproportionate time compounds faster than scattered effort.</p></div>
+            <div class="card red-leftbar"><h3>3. Skill</h3><p>Focused reps create specialized capability.</p></div>
+            <div class="card red-leftbar"><h3>4. Results</h3><p>Results increase passion, restarting the loop.</p></div>
         </div>
-        <p class="reveal"><em>The enemy is not lack of ambition. It is misallocated attention.</em></p>
+        <p class="reveal" style="font-style:italic">The enemy is not lack of ambition. It is misallocated attention.</p>
     </div>
+    <div class="progress-bar" style="width:35.3%"></div>
     <div class="page-num">06 / 17</div>
 </div></section>
 
-<!-- === SLIDE 07: SIX LIES OVERVIEW === -->
+<!-- ====== SLIDE 07: SIX LIES — 3×2 grid ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Part 1</div>
-    <div class="content start">
-        <h2 class="reveal">Six lies derail productive people.</h2>
+    <div class="eyebrow">Part 1</div>
+    <div class="content start pad-top">
+        <h2 class="reveal">Six lies derail<br>productive people.</h2>
         <div class="lie-grid reveal">
-            <div class="lie-card"><div class="num">Lie 01</div><p>Everything matters equally.</p></div>
-            <div class="lie-card"><div class="num">Lie 02</div><p>Multitasking works.</p></div>
-            <div class="lie-card"><div class="num">Lie 03</div><p>Success requires a disciplined life.</p></div>
-            <div class="lie-card"><div class="num">Lie 04</div><p>Willpower is always available.</p></div>
-            <div class="lie-card"><div class="num">Lie 05</div><p>Balance is the goal.</p></div>
-            <div class="lie-card"><div class="num">Lie 06</div><p>Big is bad.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 01</div><p>Everything matters equally.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 02</div><p>Multitasking works.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 03</div><p>Success requires a disciplined life.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 04</div><p>Willpower is always available.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 05</div><p>Balance is the goal.</p></div>
+            <div class="lie-card"><div class="ui-dark" style="color:var(--red)">Lie 06</div><p>Big is bad.</p></div>
         </div>
     </div>
+    <div class="progress-bar" style="width:41.2%"></div>
     <div class="page-num">07 / 17</div>
 </div></section>
 
-<!-- === SLIDE 08: LIE 01 === -->
+<!-- ====== SLIDE 08: LIE 01 — Quote + red leftbar ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 01</div>
+    <div class="eyebrow">Lie 01</div>
     <div class="content center">
-        <h2 class="reveal">Everything does <em>not</em> matter equally.</h2>
+        <h2 class="reveal">Everything does<br><em style="color:var(--red);font-style:normal">not</em> matter equally.</h2>
         <div class="card reveal"><p>A to-do list is a survival list. A success list is a force-ranked list of what actually moves the goal.</p></div>
-        <div class="card callout reveal">
-            <p class="quote">Whittle the 20% down to the vital few of the vital few.</p>
+        <div class="card red-leftbar reveal">
+            <p class="quote" style="font-size:46px">Whittle the 20% down to the vital few of the vital few.</p>
         </div>
         <p class="reveal">The lead domino is rarely hidden by complexity. It is hidden by equality.</p>
     </div>
+    <div class="progress-bar" style="width:47.1%"></div>
     <div class="page-num">08 / 17</div>
 </div></section>
 
-<!-- === SLIDE 09: LIE 02 === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 02</div>
-    <div class="content start">
-        <h2 class="reveal">Multitasking is task switching.</h2>
+<!-- ====== SLIDE 09: LIE 02 — Dark panel ====== -->
+<section class="slide"><div class="slide-inner dark-bg">
+    <div class="eyebrow">Lie 02</div>
+    <div class="content start pad-top">
+        <h2 class="reveal">Multitasking<br>is task switching.</h2>
         <p class="reveal">Every switch carries reorientation cost: slower work, weaker memory, more loose ends.</p>
         <div class="stack reveal">
             <div class="card"><h3>Dopamine loop</h3><p>Switching feels exciting, so distraction starts to feel like progress.</p></div>
@@ -515,118 +587,132 @@
             <div class="card"><h3>Time loss</h3><p>Interruptions can waste a third of the day through recovery time.</p></div>
         </div>
     </div>
+    <div class="progress-bar" style="width:52.9%"></div>
     <div class="page-num">09 / 17</div>
 </div></section>
 
-<!-- === SLIDE 10: LIE 03 === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 03</div>
-    <div class="content center">
-        <h2 class="reveal">You do not need a disciplined life.</h2>
-        <p class="quote reveal">You need <em>selected discipline</em> long enough to build the right habit.</p>
-        <div class="grid-2 reveal">
-            <div class="card dark"><p style="font-size:72px;font-weight:700;color:#efe8de;line-height:1">66</p><h3 style="color:var(--accent-soft)">Day sweet spot</h3><p>Average time for a behavior to become automatic.</p></div>
-            <div class="card dark"><p style="font-size:72px;font-weight:700;color:#efe8de;line-height:1">1</p><h3 style="color:var(--accent-soft)">Habit at a time</h3><p>Concentrate discipline until automation takes over.</p></div>
+<!-- ====== SLIDE 10: LIE 03 — Red panel for stat moment ====== -->
+<section class="slide"><div class="slide-inner red-bg">
+    <div class="content center" style="padding:80px 72px">
+        <h2 class="reveal" style="color:#fff">You do not need a disciplined life.</h2>
+        <p class="quote-red reveal stacked-shadow">You need <em style="font-style:normal;color:#fff">selected discipline</em> long enough to build the right habit.</p>
+        <div class="grid-2 reveal" style="margin-top:20px">
+            <div class="card" style="border-color:rgba(255,255,255,.25)">
+                <div style="font-family:var(--font-display);font-size:80px;line-height:1;color:#fff">66</div>
+                <h3 style="color:#fff;margin-top:8px">Day sweet spot</h3>
+                <p>Average time for a behavior to become automatic.</p>
+            </div>
+            <div class="card" style="border-color:rgba(255,255,255,.25)">
+                <div style="font-family:var(--font-display);font-size:80px;line-height:1;color:#fff">1</div>
+                <h3 style="color:#fff;margin-top:8px">Habit at a time</h3>
+                <p>Concentrate discipline until automation takes over.</p>
+            </div>
         </div>
     </div>
+    <div class="progress-bar" style="width:58.8%"></div>
     <div class="page-num">10 / 17</div>
 </div></section>
 
-<!-- === SLIDE 11: LIE 04 === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 04</div>
+<!-- ====== SLIDE 11: LIE 04 — Dark panel ====== -->
+<section class="slide"><div class="slide-inner dark-bg">
+    <div class="eyebrow">Lie 04</div>
     <div class="content center">
-        <h2 class="reveal">Willpower is not always on call.</h2>
-        <div class="card callout reveal"><p>Willpower behaves like a fast-twitch muscle. It renews, but it drains quickly.</p></div>
+        <h2 class="reveal">Willpower is not<br>always on call.</h2>
+        <div class="card red-leftbar reveal" style="border-left-color:var(--red)"><p>Willpower behaves like a fast-twitch muscle. It renews, but it drains quickly.</p></div>
         <div class="grid-2 reveal">
             <div class="card"><h3>High fuel</h3><p>Better restraint, better judgment, harder choices possible.</p></div>
             <div class="card"><h3>Low fuel</h3><p>The brain defaults to the easiest answer — often "no," delay, or avoidance.</p></div>
         </div>
         <p class="reveal"><strong>Do your ONE Thing early,</strong> before your willpower account is empty.</p>
     </div>
+    <div class="progress-bar" style="width:64.7%"></div>
     <div class="page-num">11 / 17</div>
 </div></section>
 
-<!-- === SLIDE 12: LIE 05 === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 05</div>
+<!-- ====== SLIDE 12: LIE 05 — Alternating ====== -->
+<section class="slide"><div class="slide-inner light-bg">
+    <div class="eyebrow">Lie 05</div>
     <div class="content center">
-        <h2 class="reveal">Balance is the wrong target.</h2>
-        <div class="vs-pair reveal">
-            <div class="card vs-good"><h3>Work: go long</h3><p>Extraordinary results require deliberate imbalance long enough to build mastery.</p></div>
-            <div class="card vs-bad"><h3>Life: go short</h3><p>Health, family, friends, and integrity are <em>glass balls</em>. Do not drop them for long.</p></div>
+        <h2 class="reveal">Balance is the<br>wrong target.</h2>
+        <div class="grid-2 reveal">
+            <div class="card red-leftbar"><h3>Work: go long</h3><p>Extraordinary results require deliberate imbalance long enough to build mastery.</p></div>
+            <div class="card" style="opacity:.65"><h3>Life: go short</h3><p>Health, family, friends, integrity are <em>glass balls</em>. Don't drop them for long.</p></div>
         </div>
-        <p class="quote reveal">Counterbalance. Do not worship balance.</p>
+        <p class="quote reveal" style="font-size:46px">Counterbalance. Do not worship balance.</p>
     </div>
+    <div class="progress-bar" style="width:70.6%"></div>
     <div class="page-num">12 / 17</div>
 </div></section>
 
-<!-- === SLIDE 13: LIE 06 === -->
+<!-- ====== SLIDE 13: LIE 06 ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Lie 06</div>
-    <div class="content start">
+    <div class="eyebrow">Lie 06</div>
+    <div class="content start pad-top">
         <h2 class="reveal">Big is not bad.</h2>
         <p class="reveal">The fear of big creates shrinking thinking. If the mountain scares you, you never build mountain-climbing skills.</p>
-        <div class="card callout reveal">
-            <p class="quote">Think big. Then go small.</p>
+        <div class="card red-leftbar reveal">
+            <p class="quote" style="font-size:46px">Think big. Then go small.</p>
         </div>
         <div class="card reveal"><p>Big defines the direction. Small defines the next strike.</p></div>
     </div>
+    <div class="progress-bar" style="width:76.5%"></div>
     <div class="page-num">13 / 17</div>
 </div></section>
 
-<!-- === SLIDE 14: THE FOCUSING QUESTION === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Part 2</div>
-    <div class="content center">
-        <h2 class="reveal">The Focusing Question</h2>
-        <div class="card callout reveal">
-            <p class="quote" style="font-size:48px">What's the ONE Thing I can do such that by doing it everything else will be easier or unnecessary?</p>
+<!-- ====== SLIDE 14: THE FOCUSING QUESTION — Red panel ====== -->
+<section class="slide"><div class="slide-inner red-bg">
+    <div class="content center" style="padding:80px 72px">
+        <h2 class="reveal" style="color:#fff">The Focusing<br>Question</h2>
+        <div class="reveal" style="margin:28px 0">
+            <p class="quote-red stacked-shadow" style="font-size:48px;line-height:1.08">What's the ONE Thing I can do such that by doing it everything else will be easier or unnecessary?</p>
         </div>
-        <p class="reveal">This is not motivational copy. It is a <strong>prioritization machine.</strong></p>
+        <p class="reveal" style="color:rgba(255,255,255,.7)">This is not motivational copy. It is a <strong>prioritization machine.</strong></p>
     </div>
+    <div class="progress-bar" style="width:82.4%"></div>
     <div class="page-num">14 / 17</div>
 </div></section>
 
-<!-- === SLIDE 15: QUESTION ANATOMY === -->
+<!-- ====== SLIDE 15: QUESTION ANATOMY — Step rows ====== -->
 <section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Question anatomy</div>
-    <div class="content start">
-        <h2 class="reveal">Why the question works</h2>
+    <div class="eyebrow">Question anatomy</div>
+    <div class="content start pad-top">
+        <h2 class="reveal">Why the question<br>works</h2>
         <div class="stack reveal">
             <div class="step-row"><div class="step-num">1</div><p><strong>"The ONE Thing"</strong> forces you past what is merely doable.</p></div>
             <div class="step-row"><div class="step-num">2</div><p><strong>"Such that by doing it"</strong> links immediate action to a concrete result.</p></div>
             <div class="step-row"><div class="step-num">3</div><p><strong>"Everything else easier or unnecessary"</strong> identifies leverage, not activity.</p></div>
         </div>
     </div>
+    <div class="progress-bar" style="width:88.2%"></div>
     <div class="page-num">15 / 17</div>
 </div></section>
 
-<!-- === SLIDE 16: MAP + COMPASS === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Map + compass</div>
+<!-- ====== SLIDE 16: MAP + COMPASS ====== -->
+<section class="slide"><div class="slide-inner light-bg">
+    <div class="eyebrow">Map + compass</div>
     <div class="content center">
         <div class="grid-2 reveal">
-            <div class="card"><h3>Big picture map</h3><p>What is the ultimate objective? This gives purpose and direction.</p></div>
-            <div class="card"><h3>Small focus compass</h3><p>What matters now? This turns purpose into the next lead domino.</p></div>
+            <div class="card red-leftbar"><h3>Big picture map</h3><p>What is the ultimate objective? This gives purpose and direction.</p></div>
+            <div class="card red-leftbar"><h3>Small focus compass</h3><p>What matters now? This turns purpose into the next lead domino.</p></div>
         </div>
-        <div class="card callout reveal">
-            <p class="quote">Purpose chooses the game. Priority chooses the move.</p>
+        <div class="card reveal" style="border-left:5px solid var(--red);padding-left:24px">
+            <p class="quote" style="font-size:44px">Purpose chooses the game. Priority chooses the move.</p>
         </div>
     </div>
+    <div class="progress-bar" style="width:94.1%"></div>
     <div class="page-num">16 / 17</div>
 </div></section>
 
-<!-- === SLIDE 17: CLOSING === -->
-<section class="slide"><div class="slide-inner">
-    <div class="page"></div><div class="eyebrow">Operating rule</div>
-    <div class="content end">
-        <h2 class="reveal">Your daily lead domino</h2>
-        <div class="card callout reveal">
-            <p class="quote">Find it. Protect it. Knock it down before the day gets noisy.</p>
+<!-- ====== SLIDE 17: CLOSING — Red panel ====== -->
+<section class="slide"><div class="slide-inner red-bg">
+    <div class="content end" style="padding:80px 72px 100px 72px">
+        <h2 class="reveal" style="color:#fff">Your daily<br>lead domino</h2>
+        <div class="reveal" style="margin:24px 0">
+            <p class="quote-red stacked-shadow" style="font-size:52px;line-height:1.06">Find it. Protect it. Knock it down before the day gets noisy.</p>
         </div>
-        <p class="reveal">The ONE Thing is not about doing less forever. It is about doing the right first thing so the rest compounds.</p>
+        <p class="reveal" style="color:rgba(255,255,255,.7)">The ONE Thing is not about doing less forever. It is about doing the right first thing so the rest compounds.</p>
     </div>
+    <div class="progress-bar" style="width:100%"></div>
     <div class="page-num">17 / 17</div>
 </div></section>
 
@@ -640,6 +726,7 @@
     scaleSlides();
     window.addEventListener('resize', scaleSlides);
 
+    /* Keyboard navigation */
     var slides = Array.from(document.querySelectorAll('.slide'));
     function activeIndex() {
         var y = window.scrollY, best = 0, bestDist = Infinity;
@@ -653,6 +740,17 @@
         if (e.key === 'End') slides[slides.length-1].scrollIntoView({behavior:'smooth'});
     });
 
+    /* Progress bar update */
+    function updateProgress() {
+        var bar = document.querySelector('.progress-bar');
+        if (!bar) return;
+        var idx = activeIndex();
+        var pct = ((idx + 1) / slides.length * 100).toFixed(1);
+        bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    /* Inline editing */
     var InlineEditor = {
         isActive: false,
         init: function() {
@@ -675,17 +773,17 @@
             document.body.classList.toggle('editing', this.isActive);
             b.classList.toggle('active', this.isActive);
             b.textContent = this.isActive ? '💾' : '✏️';
-            var els = document.querySelectorAll('.slide-inner h1, .slide-inner h2, .slide-inner h3, .slide-inner p, .slide-inner .title-tag, .slide-inner .eyebrow, .slide-inner .num, .slide-inner .step-num, .slide-inner span');
+            var els = document.querySelectorAll('.slide-inner h1, .slide-inner h2, .slide-inner h3, .slide-inner p, .slide-inner .ui, .slide-inner .ui-dark, .slide-inner .eyebrow, .slide-inner .step-num, .slide-inner span');
             if (this.isActive) { els.forEach(function(el) { if (!el.hasAttribute('contenteditable')) el.setAttribute('contenteditable','true'); }); }
             else { document.querySelectorAll('[contenteditable]').forEach(function(el) { el.removeAttribute('contenteditable'); el.blur(); }); }
         },
         save: function() {
-            try { localStorage.setItem('the-one-thing-deck-v2', JSON.stringify({html:document.body.innerHTML,ts:new Date().toISOString()})); this.toast('Saved'); }
+            try { localStorage.setItem('the-one-thing-deck-v3', JSON.stringify({html:document.body.innerHTML,ts:new Date().toISOString()})); this.toast('Saved'); }
             catch(e) { this.toast('Save failed'); }
         },
         toast: function(m) {
             var t = document.createElement('div'); t.textContent = m;
-            t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d2117;color:#efe8de;padding:10px 24px;border-radius:999px;font-size:14px;z-index:20000;font-family:Lexend,sans-serif;';
+            t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 24px;border-radius:4px;font-size:14px;z-index:20000;font-family:var(--font-ui);letter-spacing:.06em;border:1px solid var(--red);';
             document.body.appendChild(t); setTimeout(function() { t.remove(); }, 2000);
         }
     };
