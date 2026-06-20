@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'motion/react'
-import { BookCard, stagger } from '@/components/BookCard'
+import { BookCard } from '@/components/BookCard'
+import { stagger } from '@/lib/motion'
 import { Cursor } from '@/components/Cursor'
 import { Footer } from '@/components/Footer'
 import { HeroSection } from '@/components/HeroSection'

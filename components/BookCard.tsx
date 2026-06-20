@@ -5,25 +5,12 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import type { BookSummary } from '@/lib/books'
 import { LanguageLink } from '@/components/LanguageLink'
+import { fadeUp, stagger } from '@/lib/motion'
 
 interface BookCardProps {
   book: BookSummary
   index: number
 }
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-} as const
-
-const stagger = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.4 } },
-} as const
 
 /**
  * Editorial book card — big year number, project-style layout.
@@ -46,7 +33,7 @@ export function BookCard({ book, index }: BookCardProps) {
       <div className="col-span-10 sm:col-span-5">
         <Link href={`/books/${book.slug}`} className="group/title block">
           <h3 className="font-display text-[clamp(1.75rem,4vw,4.2rem)] font-light uppercase leading-[0.9] tracking-normal text-text-primary transition-colors group-hover/title:text-accent-cream inline-block max-w-[12ch] whitespace-pre-line">
-            {book.title}
+            {book.displayTitle}
           </h3>
           {book.author && (
             <p className="mt-3 font-display text-[10px] uppercase tracking-[0.28em] text-text-muted">
@@ -108,5 +95,3 @@ export function BookCard({ book, index }: BookCardProps) {
     </motion.article>
   )
 }
-
-export { stagger }

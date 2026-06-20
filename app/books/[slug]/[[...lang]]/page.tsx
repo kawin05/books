@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import { getBook, getAllBookSlugs } from '@/lib/books'
+import { getBook, getAllBookSlugs, displayTitle } from '@/lib/books'
 import { LanguageLink } from '@/components/LanguageLink'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -99,7 +99,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
             <ScrollReveal delay={0.15} as="h1">
               <span className="block whitespace-pre-line font-display text-[clamp(3.2rem,8vw,9rem)] font-light uppercase leading-[0.85] tracking-normal text-text-primary lg:max-w-[90%]">
-                {frontmatter.title}
+                {displayTitle(frontmatter)}
               </span>
             </ScrollReveal>
 
