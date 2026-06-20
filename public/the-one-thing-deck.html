@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The ONE Thing — Book Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Lexend:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    /* ===========================================
+       CSS CUSTOM PROPERTIES — LEAD DOMINO EDITORIAL
+       Canvas: 1080×1920 (9:16 portrait, vertical scroll)
+       =========================================== */
+    :root {
+        --bg: #0b0b0a;
+        --bg-2: #12100d;
+        --panel: #17130f;
+        --panel-2: #211a13;
+        --text: #f4ead2;
+        --text-soft: #c8b99d;
+        --text-dim: #7c705e;
+        --line: rgba(244, 234, 210, 0.11);
+        --line-strong: rgba(244, 234, 210, 0.24);
+        --accent: #d97706;
+        --accent-2: #f0b35a;
+        --danger: #ef4444;
+        --font-body: 'Lexend', sans-serif;
+        --font-serif: 'Instrument Serif', serif;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===========================================
+       VERTICAL SCROLL FIXED-STAGE BASE
+       =========================================== */
+    html {
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+        background: #000;
+    }
+    body {
+        width: 100%;
+        background: #000;
+        font-family: var(--font-body);
+        color: var(--text);
+    }
+    .slide {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scroll-snap-align: start;
+        flex-shrink: 0;
+        overflow: visible;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: #000;
+    }
+    .slide-inner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1080px;
+        height: 1920px;
+        transform-origin: center center;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 78% 14%, rgba(217, 119, 6, 0.24), transparent 34%),
+            radial-gradient(circle at 12% 80%, rgba(244, 234, 210, 0.07), transparent 32%),
+            linear-gradient(135deg, var(--bg), var(--bg-2));
+    }
+
+    /* ===========================================
+       BACKGROUND SYSTEM
+       =========================================== */
+    .grain::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.16;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+    }
+    .grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.42;
+        background-image:
+            linear-gradient(var(--line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 90px 90px;
+        mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+    .accent-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 7px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--accent), transparent 72%);
+    }
+    .page-num {
+        position: absolute;
+        bottom: 54px;
+        right: 70px;
+        font-size: 18px;
+        font-weight: 300;
+        letter-spacing: .14em;
+        color: var(--text-dim);
+    }
+    .eyebrow {
+        position: absolute;
+        top: 56px;
+        left: 76px;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: var(--accent-2);
+    }
+
+    /* ===========================================
+       TYPOGRAPHY
+       =========================================== */
+    h1, h2, h3, p, li, span, div { text-rendering: geometricPrecision; }
+    .serif { font-family: var(--font-serif); }
+    .title {
+        font-size: 108px;
+        line-height: .94;
+        letter-spacing: -.055em;
+        font-weight: 800;
+    }
+    .title .one { color: var(--accent-2); }
+    .subtitle {
+        margin-top: 34px;
+        max-width: 800px;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 50px;
+        line-height: 1.08;
+        color: var(--text-soft);
+    }
+    h2 {
+        font-size: 70px;
+        line-height: 1.02;
+        letter-spacing: -.045em;
+        font-weight: 760;
+    }
+    h3 {
+        font-size: 36px;
+        line-height: 1.15;
+        letter-spacing: -.02em;
+        font-weight: 650;
+    }
+    p, li {
+        font-size: 29px;
+        line-height: 1.45;
+        font-weight: 300;
+        color: var(--text-soft);
+    }
+    strong { color: var(--text); font-weight: 650; }
+    .quote {
+        font-family: var(--font-serif);
+        font-size: 70px;
+        line-height: 1.08;
+        font-style: italic;
+        color: var(--text);
+        letter-spacing: -.02em;
+    }
+    .small { font-size: 22px; line-height: 1.42; }
+    .micro {
+        font-size: 16px;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+
+    /* ===========================================
+       LAYOUT PRIMITIVES
+       =========================================== */
+    .content {
+        position: absolute;
+        inset: 0;
+        padding: 132px 82px 108px 82px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 42px;
+    }
+    .top-content { justify-content: flex-start; padding-top: 168px; }
+    .bottom-content { justify-content: flex-end; padding-bottom: 170px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .stack { display: grid; gap: 24px; }
+    .card {
+        border: 1px solid var(--line-strong);
+        background: rgba(23, 19, 15, .72);
+        backdrop-filter: blur(10px);
+        padding: 34px;
+    }
+    .card.compact { padding: 26px 28px; }
+    .card h3 { margin-bottom: 14px; color: var(--text); }
+    .number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        border: 1px solid var(--accent);
+        color: var(--accent-2);
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 22px;
+    }
+    .rule { width: 100%; height: 1px; background: var(--line-strong); }
+    .accent { color: var(--accent-2); }
+    .dim { color: var(--text-dim); }
+    .pill {
+        display: inline-flex;
+        width: max-content;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        padding: 12px 18px;
+        color: var(--accent-2);
+        font-size: 18px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    /* ===========================================
+       CUSTOM DIAGRAMS
+       =========================================== */
+    .domino-field {
+        position: relative;
+        height: 540px;
+        margin-top: 20px;
+    }
+    .domino {
+        position: absolute;
+        bottom: 60px;
+        width: 76px;
+        height: 190px;
+        border-radius: 14px;
+        background: var(--text);
+        box-shadow: 0 24px 55px rgba(0,0,0,.34);
+        transform-origin: bottom center;
+    }
+    .domino::before,
+    .domino::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #1c1712;
+        transform: translateX(-50%);
+    }
+    .domino::before { top: 48px; }
+    .domino::after { bottom: 48px; }
+    .d1 { left: 26px; transform: rotate(-13deg) scale(.72); }
+    .d2 { left: 152px; transform: rotate(-5deg) scale(.88); }
+    .d3 { left: 298px; transform: rotate(0deg) scale(1.05); }
+    .d4 { left: 470px; transform: rotate(5deg) scale(1.28); }
+    .d5 { left: 680px; transform: rotate(10deg) scale(1.58); }
+    .domino-label {
+        position: absolute;
+        bottom: 0;
+        left: 22px;
+        right: 22px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        color: var(--text-dim);
+        font-size: 16px;
+        text-align: center;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .focus-box {
+        border: 2px solid var(--accent);
+        background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(244,234,210,.04));
+        padding: 50px;
+    }
+    .vs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+    .bad { border-color: rgba(239,68,68,.32); }
+    .good { border-color: rgba(240,179,90,.55); }
+    .lie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .lie-card {
+        min-height: 190px;
+        padding: 26px;
+        border: 1px solid var(--line-strong);
+        background: rgba(255,255,255,.035);
+    }
+    .lie-card .micro { margin-bottom: 14px; color: var(--accent-2); }
+    .ladder { display: grid; gap: 16px; }
+    .ladder-step {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 24px;
+        align-items: center;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+    }
+    .big-num {
+        font-family: var(--font-serif);
+        font-size: 74px;
+        line-height: 1;
+        color: var(--accent-2);
+    }
+
+    /* ===========================================
+       REVEAL ANIMATIONS
+       =========================================== */
+    .reveal {
+        opacity: 0;
+        transform: translateY(34px);
+        animation: reveal .8s var(--ease) forwards;
+    }
+    .reveal:nth-child(2) { animation-delay: .08s; }
+    .reveal:nth-child(3) { animation-delay: .16s; }
+    .reveal:nth-child(4) { animation-delay: .24s; }
+    .reveal:nth-child(5) { animation-delay: .32s; }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .2s !important; }
+    }
+    @media print {
+        .slide { height: auto; page-break-after: always; }
+        .slide-inner { transform: none !important; position: relative; left: auto; top: auto; }
+    }
+</style>
+</head>
+<body>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div>
+    <div class="content bottom-content">
+        <div class="pill reveal">Book Study / Productivity</div>
+        <h1 class="title reveal">THE <span class="one">ONE</span><br>THING</h1>
+        <p class="subtitle reveal">A practical blueprint for extraordinary results through ruthless prioritization.</p>
+        <p class="small reveal">Gary Keller with Jay Papasan · 2013</p>
+    </div>
+    <div class="page-num">01 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Core idea</div>
+    <div class="content">
+        <p class="quote reveal">Extraordinary results are not produced by broad effort.</p>
+        <div class="focus-box reveal">
+            <h2>They come from narrowing.</h2>
+            <p>Ignore everything you <strong>could</strong> do. Find what you <strong>should</strong> do. Then give it disproportionate time.</p>
+        </div>
+        <p class="reveal">The book calls this <strong>Going Small</strong>: choosing the smallest action with the largest future consequence.</p>
+    </div>
+    <div class="page-num">02 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Going small</div>
+    <div class="content top-content">
+        <h2 class="reveal">The strategic contrast of focus</h2>
+        <div class="vs reveal">
+            <div class="card good">
+                <div class="number">01</div>
+                <h3>Big success</h3>
+                <p>Subtract distractions. Master a vital few things. Align the day around the ultimate objective.</p>
+            </div>
+            <div class="card bad">
+                <div class="number">×</div>
+                <h3>Small life</h3>
+                <p>Overload the calendar. Chase low-value tasks. Create execution gaps and constant friction.</p>
+            </div>
+        </div>
+        <div class="rule reveal"></div>
+        <p class="reveal"><strong>Busyness is not leverage.</strong> Focus is leverage.</p>
+    </div>
+    <div class="page-num">03 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Physics of achievement</div>
+    <div class="content top-content">
+        <h2 class="reveal">The domino effect</h2>
+        <p class="reveal">One domino can topple another 50% larger. That geometric progression turns tiny starts into moonshot outcomes.</p>
+        <div class="domino-field reveal">
+            <div class="domino d1"></div><div class="domino d2"></div><div class="domino d3"></div><div class="domino d4"></div><div class="domino d5"></div>
+            <div class="domino-label"><span>Lead</span><span>10th</span><span>18th</span><span>31st</span><span>57th</span></div>
+        </div>
+        <p class="reveal"><strong>Progress is sequential, not simultaneous.</strong> Do the right thing, then the next right thing.</p>
+    </div>
+    <div class="page-num">04 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Success leaves clues</div>
+    <div class="content top-content">
+        <h2 class="reveal">World-class outcomes usually have one anchor.</h2>
+        <div class="stack reveal">
+            <div class="ladder-step"><div class="big-num">G</div><p><strong>Google:</strong> Search became the economic engine.</p></div>
+            <div class="ladder-step"><div class="big-num">A</div><p><strong>Apple:</strong> The golden gadget created a halo across the product family.</p></div>
+            <div class="ladder-step"><div class="big-num">D</div><p><strong>Disney:</strong> Animation plus business mastery became an empire.</p></div>
+            <div class="ladder-step"><div class="big-num">S</div><p><strong>Star Wars:</strong> One movie unlocked decades of merchandise value.</p></div>
+        </div>
+    </div>
+    <div class="page-num">05 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Mastery loop</div>
+    <div class="content">
+        <h2 class="reveal">The virtuous cycle</h2>
+        <div class="row reveal">
+            <div class="card"><div class="number">1</div><h3>Passion</h3><p>Interest pulls attention toward one domain.</p></div>
+            <div class="card"><div class="number">2</div><h3>Time</h3><p>Disproportionate time compounds faster than scattered effort.</p></div>
+            <div class="card"><div class="number">3</div><h3>Skill</h3><p>Focused reps create specialized capability.</p></div>
+            <div class="card"><div class="number">4</div><h3>Results</h3><p>Results increase passion, restarting the loop.</p></div>
+        </div>
+        <p class="reveal">The enemy is not lack of ambition. It is misallocated attention.</p>
+    </div>
+    <div class="page-num">06 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Part 1</div>
+    <div class="content top-content">
+        <h2 class="reveal">Six lies derail productive people.</h2>
+        <div class="lie-grid reveal">
+            <div class="lie-card"><div class="micro">Lie 01</div><p>Everything matters equally.</p></div>
+            <div class="lie-card"><div class="micro">Lie 02</div><p>Multitasking works.</p></div>
+            <div class="lie-card"><div class="micro">Lie 03</div><p>Success requires a disciplined life.</p></div>
+            <div class="lie-card"><div class="micro">Lie 04</div><p>Willpower is always available.</p></div>
+            <div class="lie-card"><div class="micro">Lie 05</div><p>Balance is the goal.</p></div>
+            <div class="lie-card"><div class="micro">Lie 06</div><p>Big is bad.</p></div>
+        </div>
+    </div>
+    <div class="page-num">07 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 01</div>
+    <div class="content">
+        <h2 class="reveal">Everything does not matter equally.</h2>
+        <div class="card reveal">
+            <p>A to-do list is a survival list. A success list is a force-ranked list of what actually moves the goal.</p>
+        </div>
+        <div class="focus-box reveal">
+            <p class="quote">Whittle the 20% down to the vital few of the vital few.</p>
+        </div>
+        <p class="reveal">The lead domino is rarely hidden by complexity. It is hidden by equality.</p>
+    </div>
+    <div class="page-num">08 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 02</div>
+    <div class="content top-content">
+        <h2 class="reveal">Multitasking is task switching.</h2>
+        <p class="reveal">Every switch carries reorientation cost: slower work, weaker memory, more loose ends.</p>
+        <div class="stack reveal">
+            <div class="card compact"><h3>Dopamine loop</h3><p>Switching feels exciting, so distraction starts to feel like progress.</p></div>
+            <div class="card compact"><h3>Cognitive load</h3><p>The brain cannot deeply attend to two demanding things at once.</p></div>
+            <div class="card compact"><h3>Time loss</h3><p>Interruptions can waste a third of the day through recovery time.</p></div>
+        </div>
+    </div>
+    <div class="page-num">09 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 03</div>
+    <div class="content">
+        <h2 class="reveal">You do not need a disciplined life.</h2>
+        <p class="quote reveal">You need selected discipline long enough to build the right habit.</p>
+        <div class="row reveal">
+            <div class="card"><div class="big-num">66</div><h3>Day sweet spot</h3><p>Average time for a behavior to become automatic.</p></div>
+            <div class="card"><div class="big-num">1</div><h3>Habit at a time</h3><p>Concentrate discipline until automation takes over.</p></div>
+        </div>
+    </div>
+    <div class="page-num">10 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 04</div>
+    <div class="content top-content">
+        <h2 class="reveal">Willpower is not always on call.</h2>
+        <div class="focus-box reveal">
+            <p>Willpower behaves like a fast-twitch muscle. It renews, but it drains quickly.</p>
+        </div>
+        <div class="row reveal">
+            <div class="card"><h3>High fuel</h3><p>Better restraint, better judgment, harder choices possible.</p></div>
+            <div class="card"><h3>Low fuel</h3><p>The brain defaults to the easiest answer — often “no,” delay, or avoidance.</p></div>
+        </div>
+        <p class="reveal">Do your ONE Thing early, before your willpower account is empty.</p>
+    </div>
+    <div class="page-num">11 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 05</div>
+    <div class="content">
+        <h2 class="reveal">Balance is the wrong target.</h2>
+        <div class="vs reveal">
+            <div class="card good"><h3>Work: go long</h3><p>Extraordinary results require deliberate imbalance long enough to build mastery.</p></div>
+            <div class="card bad"><h3>Life: go short</h3><p>Health, family, friends, and integrity are glass balls. Do not drop them for long.</p></div>
+        </div>
+        <p class="quote reveal">Counterbalance. Do not worship balance.</p>
+    </div>
+    <div class="page-num">12 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Lie 06</div>
+    <div class="content top-content">
+        <h2 class="reveal">Big is not bad.</h2>
+        <p class="reveal">The fear of big creates shrinking thinking. If the mountain scares you, you never build mountain-climbing skills.</p>
+        <div class="focus-box reveal">
+            <p class="quote">Think big. Then go small.</p>
+        </div>
+        <div class="card reveal"><p>Big defines the direction. Small defines the next strike.</p></div>
+    </div>
+    <div class="page-num">13 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Part 2</div>
+    <div class="content">
+        <h2 class="reveal">The Focusing Question</h2>
+        <div class="focus-box reveal">
+            <p class="quote">What’s the ONE Thing I can do such that by doing it everything else will be easier or unnecessary?</p>
+        </div>
+        <p class="reveal">This is not motivational copy. It is a prioritization machine.</p>
+    </div>
+    <div class="page-num">14 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Question anatomy</div>
+    <div class="content top-content">
+        <h2 class="reveal">Why the question works</h2>
+        <div class="stack reveal">
+            <div class="ladder-step"><div class="big-num">1</div><p><strong>“The ONE Thing”</strong> forces you past what is merely doable.</p></div>
+            <div class="ladder-step"><div class="big-num">2</div><p><strong>“Such that by doing it”</strong> links immediate action to a concrete result.</p></div>
+            <div class="ladder-step"><div class="big-num">3</div><p><strong>“Everything else easier or unnecessary”</strong> identifies leverage, not activity.</p></div>
+        </div>
+    </div>
+    <div class="page-num">15 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Map + compass</div>
+    <div class="content">
+        <div class="row reveal">
+            <div class="card"><div class="number">↗</div><h3>Big picture map</h3><p>What is the ultimate objective? This gives purpose and direction.</p></div>
+            <div class="card"><div class="number">•</div><h3>Small focus compass</h3><p>What matters now? This turns purpose into the next lead domino.</p></div>
+        </div>
+        <div class="focus-box reveal">
+            <p class="quote">Purpose chooses the game. Priority chooses the move.</p>
+        </div>
+    </div>
+    <div class="page-num">16 / 17</div>
+</div></section>
+
+<section class="slide"><div class="slide-inner grain">
+    <div class="grid"></div><div class="accent-bar"></div><div class="eyebrow">Operating rule</div>
+    <div class="content bottom-content">
+        <h2 class="reveal">Your daily lead domino</h2>
+        <div class="focus-box reveal">
+            <p class="quote">Find it. Protect it. Knock it down before the day gets noisy.</p>
+        </div>
+        <p class="reveal">The ONE Thing is not about doing less forever. It is about doing the right first thing so the rest compounds.</p>
+    </div>
+    <div class="page-num">17 / 17</div>
+</div></section>
+
+<script>
+    /* ===========================================
+       PER-SLIDE SCALING FOR 1080×1920 CANVAS
+       =========================================== */
+    function scaleSlides() {
+        document.querySelectorAll('.slide-inner').forEach((inner) => {
+            const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+            inner.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        });
+    }
+    scaleSlides();
+    window.addEventListener('resize', scaleSlides);
+
+    /* ===========================================
+       LIGHTWEIGHT KEYBOARD SCROLL NAVIGATION
+       =========================================== */
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    function activeIndex() {
+        const y = window.scrollY;
+        let best = 0;
+        let bestDist = Infinity;
+        slides.forEach((slide, i) => {
+            const dist = Math.abs(slide.offsetTop - y);
+            if (dist < bestDist) { best = i; bestDist = dist; }
+        });
+        return best;
+    }
+    document.addEventListener('keydown', (event) => {
+        if (['ArrowDown', 'PageDown', ' '].includes(event.key)) {
+            event.preventDefault();
+            slides[Math.min(activeIndex() + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+        }
+        if (['ArrowUp', 'PageUp'].includes(event.key)) {
+            event.preventDefault();
+            slides[Math.max(activeIndex() - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+        }
+        if (event.key === 'Home') slides[0].scrollIntoView({ behavior: 'smooth' });
+        if (event.key === 'End') slides[slides.length - 1].scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">The ONE Thing cover</title>
+  <desc id="desc">Minimal dark book cover with one cream domino and amber target line.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b0b0a"/>
+      <stop offset="0.55" stop-color="#15120f"/>
+      <stop offset="1" stop-color="#2a160e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="64%" cy="28%" r="60%">
+      <stop offset="0" stop-color="#d97706" stop-opacity="0.45"/>
+      <stop offset="0.4" stop-color="#d97706" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="18" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <rect width="640" height="800" fill="url(#bg)"/>
+  <rect width="640" height="800" fill="url(#glow)"/>
+  <g opacity="0.22" stroke="#f4ead2" stroke-width="1">
+    <path d="M80 0v800M160 0v800M240 0v800M320 0v800M400 0v800M480 0v800M560 0v800"/>
+    <path d="M0 100h640M0 200h640M0 300h640M0 400h640M0 500h640M0 600h640M0 700h640"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="235" y="125" width="170" height="360" rx="18" fill="#f4ead2" transform="rotate(-8 320 305)"/>
+    <circle cx="304" cy="242" r="15" fill="#231f1a" transform="rotate(-8 320 305)"/>
+    <circle cx="337" cy="369" r="15" fill="#231f1a" transform="rotate(-8 320 305)"/>
+    <path d="M255 309h137" stroke="#231f1a" stroke-width="5" stroke-linecap="round" transform="rotate(-8 320 305)"/>
+  </g>
+  <path d="M96 548h448" stroke="#d97706" stroke-width="5" stroke-linecap="round"/>
+  <text x="80" y="625" fill="#f4ead2" font-family="Kanit, Lexend, Arial, sans-serif" font-size="70" font-weight="300" letter-spacing="-2">THE ONE</text>
+  <text x="80" y="702" fill="#f4ead2" font-family="Kanit, Lexend, Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="-3">THING</text>
+  <text x="82" y="748" fill="#b8a98e" font-family="Lexend, Arial, sans-serif" font-size="21" font-weight="400" letter-spacing="4">GARY KELLER · JAY PAPASAN</text>
+</svg>
