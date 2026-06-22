@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2E4A2A"/>
+      <stop offset="100%" stop-color="#1A1A17"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="800" fill="url(#bg)"/>
+  <circle cx="520" cy="160" r="200" fill="none" stroke="#E89CB1" stroke-width="1" opacity="0.1"/>
+  <circle cx="140" cy="660" r="120" fill="#E89CB1" opacity="0.04"/>
+  <text x="320" y="340" font-family="Georgia, 'Source Serif 4', serif" font-size="52" fill="#EFE7D4" text-anchor="middle" font-weight="500">Designing</text>
+  <text x="320" y="400" font-family="Georgia, 'Source Serif 4', serif" font-size="52" fill="#E89CB1" text-anchor="middle" font-weight="500" font-style="italic">Your Life</text>
+  <text x="320" y="460" font-family="'Courier New', monospace" font-size="14" fill="#EFE7D4" opacity="0.6" text-anchor="middle" letter-spacing="4">BUILD A WELL-LIVED, JOYFUL LIFE</text>
+  <line x1="180" y1="510" x2="460" y2="510" stroke="#E89CB1" stroke-width="1" opacity="0.3"/>
+  <text x="320" y="540" font-family="'Courier New', monospace" font-size="12" fill="#EFE7D4" opacity="0.4" text-anchor="middle" letter-spacing="3">BILL BURNETT &amp; DAVE EVANS</text>
+  <text x="320" y="570" font-family="'Courier New', monospace" font-size="11" fill="#EFE7D4" opacity="0.3" text-anchor="middle" letter-spacing="2">2016</text>
+  <rect x="240" y="650" width="160" height="2" fill="#E89CB1" opacity="0.15"/>
+</svg>

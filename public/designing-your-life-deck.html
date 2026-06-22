@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designing Your Life — Summary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES — Editorial Forest
+           =========================================== */
+        :root {
+            --green: #2E4A2A;
+            --green-deep: #243A21;
+            --green-lite: #3A5A36;
+            --pink: #E89CB1;
+            --pink-deep: #D27E96;
+            --cream: #EFE7D4;
+            --cream-2: #E6DCC4;
+            --ink: #1A1A17;
+
+            --font-serif: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+            --slide-pad: 96px 120px;
+            --slide-pad-wide: 100px 140px;
+            --slide-pad-statement: 130px 160px;
+
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.55s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* === VIEWPORT BASE — MANDATORY === */
+        html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--cream); }
+        .deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--cream); }
+        .deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--cream); }
+        .slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; }
+        .slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+        img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+        @media print {
+            html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+            .deck-viewport { position: static; overflow: visible; background: #fff; }
+            .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+            .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+            .slide:last-child { break-after: auto; page-break-after: auto; }
+            .deck-controls { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+        /* === END VIEWPORT BASE === */
+
+        /* === GLOBAL SLIDE LAYOUT === */
+        .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; }
+
+        /* === CHROME: TOPBAR + FOOTLINE === */
+        .chrome-topbar {
+            position: absolute;
+            top: 0; left: 120px; right: 120px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-top: 36px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .chrome-topbar .topbar-label {
+            font-family: var(--font-mono);
+            font-size: 24px; font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+        .chrome-topbar .topbar-counter {
+            font-family: var(--font-mono);
+            font-size: 20px; font-weight: 500;
+            letter-spacing: 0.1em;
+        }
+        .chrome-topbar--cream .topbar-label { color: var(--green); }
+        .chrome-topbar--cream .topbar-counter { color: var(--green); opacity: 0.5; }
+        .chrome-topbar--green .topbar-label { color: var(--pink); }
+        .chrome-topbar--green .topbar-counter { color: var(--cream); opacity: 0.6; }
+        .chrome-topbar--pink .topbar-label { color: var(--green-deep); }
+        .chrome-topbar--pink .topbar-counter { color: var(--green-deep); opacity: 0.5; }
+
+        .chrome-footline {
+            position: absolute;
+            bottom: 56px; left: 120px; right: 120px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .chrome-footline span {
+            font-family: var(--font-mono);
+            font-size: 20px; font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+        }
+        .chrome-footline--cream span { color: var(--green); opacity: 0.4; }
+        .chrome-footline--green span { color: var(--cream); opacity: 0.4; }
+        .chrome-footline--pink span { color: var(--green-deep); opacity: 0.4; }
+
+        /* Monogram circle */
+        .monogram {
+            width: 80px; height: 80px;
+            border: 2px solid var(--pink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 22px; font-weight: 500;
+            letter-spacing: 0.1em;
+            color: var(--pink);
+            flex-shrink: 0;
+        }
+
+        /* === TITLE SLIDE (Slide 0) — green surface === */
+        .ts-container {
+            position: absolute;
+            inset: 0;
+            background: var(--green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 140px;
+            overflow: hidden;
+        }
+        .ts-bg-circle {
+            position: absolute;
+            width: 600px; height: 600px;
+            border: 2px solid var(--pink);
+            border-radius: 50%;
+            right: -120px; top: -180px;
+            opacity: 0.08;
+        }
+        .ts-bg-circle-2 {
+            position: absolute;
+            width: 320px; height: 320px;
+            background: var(--pink);
+            border-radius: 50%;
+            left: -80px; bottom: -60px;
+            opacity: 0.06;
+        }
+        .ts-content {
+            position: relative; z-index: 2;
+            text-align: center;
+            max-width: 1400px;
+        }
+        .ts-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 22px; font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--pink);
+            margin-bottom: 20px;
+        }
+        .ts-title {
+            font-family: var(--font-serif);
+            font-size: 120px; font-weight: 500;
+            color: var(--cream);
+            line-height: 0.96;
+            letter-spacing: -0.02em;
+        }
+        .ts-title em {
+            font-style: normal;
+            color: var(--pink);
+        }
+        .ts-sub {
+            font-family: var(--font-serif);
+            font-size: 32px; font-weight: 400;
+            color: var(--cream);
+            line-height: 1.4;
+            margin-top: 16px;
+            opacity: 0.7;
+        }
+        .ts-meta {
+            font-family: var(--font-mono);
+            font-size: 18px; font-weight: 400;
+            color: var(--cream);
+            margin-top: 40px;
+            display: flex;
+            gap: 28px;
+            justify-content: center;
+            opacity: 0.5;
+            letter-spacing: 0.08em;
+        }
+        .ts-meta span { display: flex; align-items: center; gap: 8px; }
+        .ts-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--pink); }
+
+        /* === BLANK SLIDE HELPERS === */
+        .slide-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Surface backgrounds */
+        .bg-cream { background: var(--cream); }
+        .bg-green { background: var(--green); }
+        .bg-pink { background: var(--pink); }
+
+        /* === CONTENT SLIDE LAYOUTS === */
+
+        /* Standard content area on cream */
+        .content-cream {
+            padding: var(--slide-pad);
+            padding-top: 96px;
+            padding-bottom: 100px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+        }
+        .content-cream h2 {
+            font-family: var(--font-serif);
+            font-size: 84px;
+            font-weight: 500;
+            color: var(--green);
+            line-height: 0.98;
+            letter-spacing: -0.02em;
+        }
+        .content-cream .body-lg {
+            font-family: var(--font-serif);
+            font-size: 30px;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.38;
+            max-width: 85%;
+        }
+        .content-cream .body-sm {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+        .content-cream .label-mono {
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--green);
+        }
+
+        /* Content on green surface */
+        .content-green {
+            padding: var(--slide-pad);
+            padding-top: 96px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+        }
+        .content-green h2 {
+            font-family: var(--font-serif);
+            font-size: 80px;
+            font-weight: 500;
+            color: var(--cream);
+            line-height: 0.98;
+            letter-spacing: -0.02em;
+        }
+        .content-green .body-lg {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.36;
+            max-width: 80%;
+            opacity: 0.85;
+        }
+        .content-green .label-mono {
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--pink);
+        }
+
+        /* === CARD / TILE COMPONENTS === */
+
+        /* Topic tile — 6px radius */
+        .tile-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 12px;
+        }
+        .tile {
+            border-radius: 6px;
+            padding: 32px 32px 28px;
+            flex: 1;
+            min-width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .tile .tile-ordinal {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .tile .tile-title {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+        .tile .tile-body {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        .tile-green { background: var(--green); }
+        .tile-green .tile-ordinal { color: var(--pink); }
+        .tile-green .tile-title { color: var(--cream); }
+        .tile-green .tile-body { color: var(--cream); opacity: 0.8; }
+
+        .tile-green-lite { background: var(--green-lite); }
+        .tile-green-lite .tile-ordinal { color: var(--pink); }
+        .tile-green-lite .tile-title { color: var(--cream); }
+        .tile-green-lite .tile-body { color: var(--cream); opacity: 0.8; }
+
+        .tile-pink { background: var(--pink); }
+        .tile-pink .tile-ordinal { color: var(--green-deep); }
+        .tile-pink .tile-title { color: var(--green-deep); }
+        .tile-pink .tile-body { color: var(--green-deep); opacity: 0.8; }
+
+        .tile-cream {
+            background: var(--cream-2);
+            border: 2px solid var(--green);
+        }
+        .tile-cream .tile-ordinal { color: var(--green); }
+        .tile-cream .tile-title { color: var(--green); }
+        .tile-cream .tile-body { color: var(--ink); }
+
+        /* Step tile — 8px radius */
+        .step-row {
+            display: flex;
+            gap: 28px;
+            margin-top: 16px;
+        }
+        .step {
+            border-radius: 8px;
+            padding: 36px 28px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 2.5px solid;
+        }
+        .step .step-ordinal {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .step .step-title {
+            font-family: var(--font-serif);
+            font-size: 38px;
+            font-weight: 500;
+            line-height: 1.05;
+            letter-spacing: -0.01em;
+        }
+        .step .step-body {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+        .step .step-marker {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 2px solid;
+        }
+
+        .step-cream {
+            background: var(--cream-2);
+            border-color: var(--green);
+        }
+        .step-cream .step-ordinal { color: var(--green); opacity: 0.6; }
+        .step-cream .step-title { color: var(--green); }
+        .step-cream .step-body { color: var(--ink); }
+        .step-cream .step-marker { color: var(--green); opacity: 0.5; border-top-color: var(--green); }
+
+        .step-green {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        .step-green .step-ordinal { color: var(--pink); }
+        .step-green .step-title { color: var(--cream); }
+        .step-green .step-body { color: var(--cream); opacity: 0.85; }
+        .step-green .step-marker { color: var(--pink); opacity: 0.7; border-top-color: var(--pink); }
+
+        .step-pink {
+            background: var(--pink);
+            border-color: var(--pink-deep);
+        }
+        .step-pink .step-ordinal { color: var(--green-deep); }
+        .step-pink .step-title { color: var(--green-deep); }
+        .step-pink .step-body { color: var(--green-deep); opacity: 0.85; }
+        .step-pink .step-marker { color: var(--green-deep); opacity: 0.6; border-top-color: var(--green-deep); }
+
+        /* Two-column split */
+        .two-col {
+            display: flex;
+            gap: 48px;
+            flex: 1;
+            align-items: center;
+        }
+        .two-col .col-left, .two-col .col-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 2px hairline rule */
+        .hairline {
+            height: 2px;
+            background: var(--green);
+            width: 100%;
+            margin: 8px 0;
+        }
+        .hairline-pink { background: var(--pink); }
+        .hairline-cream { background: var(--cream); }
+
+        /* === NAVIGATION CHROME === */
+        .nav-prev, .nav-next {
+            position: fixed; top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            width: 52px; height: 52px;
+            border: 2px solid var(--green);
+            background: var(--cream);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            color: var(--green);
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s;
+            user-select: none;
+            font-family: var(--font-mono);
+        }
+        .nav-prev { left: 12px; }
+        .nav-next { right: 12px; }
+        .nav-prev:hover, .nav-next:hover {
+            background: var(--green);
+            color: var(--cream);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            font-family: var(--font-mono);
+            font-size: 16px; font-weight: 500;
+            letter-spacing: 0.1em;
+            color: var(--green);
+            background: var(--cream);
+            border: 2px solid var(--green);
+            padding: 6px 18px;
+            opacity: 0.8;
+        }
+
+        /* === INLINE EDITOR === */
+        .edit-hotzone {
+            position: fixed; top: 0; left: 0;
+            width: 80px; height: 80px;
+            z-index: 10000;
+            cursor: pointer;
+        }
+        .edit-toggle {
+            position: fixed; top: 8px; left: 8px;
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            background: var(--green);
+            border: 2px solid var(--green);
+            color: var(--cream);
+            font-family: var(--font-mono);
+            font-size: 14px; font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 6px 14px;
+            cursor: pointer;
+        }
+        .edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+        .edit-mode [contenteditable]:hover {
+            outline: 2px dashed var(--pink);
+            outline-offset: 2px;
+            cursor: text;
+        }
+        .edit-save-note {
+            position: fixed; bottom: 70px; left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--cream);
+            background: var(--green);
+            padding: 4px 14px;
+            border: 2px solid var(--green);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10002;
+            pointer-events: none;
+        }
+        .edit-save-note.show { opacity: 0.8; }
+
+        /* === ANIMATIONS === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .reveal:nth-child(1) { transition-delay: 0.06s; }
+        .reveal:nth-child(2) { transition-delay: 0.12s; }
+        .reveal:nth-child(3) { transition-delay: 0.18s; }
+        .reveal:nth-child(4) { transition-delay: 0.24s; }
+        .reveal:nth-child(5) { transition-delay: 0.30s; }
+        .reveal:nth-child(6) { transition-delay: 0.36s; }
+        .reveal:nth-child(7) { transition-delay: 0.42s; }
+        .reveal:nth-child(8) { transition-delay: 0.48s; }
+        .reveal:nth-child(9) { transition-delay: 0.54s; }
+
+        .ts-reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s var(--ease-out-expo),
+                        transform 0.7s var(--ease-out-expo);
+        }
+        .slide.visible .ts-reveal { opacity: 1; transform: translateY(0); }
+        .ts-reveal:nth-child(1) { transition-delay: 0.1s; }
+        .ts-reveal:nth-child(2) { transition-delay: 0.2s; }
+        .ts-reveal:nth-child(3) { transition-delay: 0.3s; }
+        .ts-reveal:nth-child(4) { transition-delay: 0.4s; }
+        .slide.visible .ts-bg-circle { opacity: 0.08; transition: opacity 0.8s 0.5s var(--ease-out-expo); }
+        .slide.visible .ts-bg-circle-2 { opacity: 0.06; transition: opacity 0.8s 0.7s var(--ease-out-expo); }
+    </style>
+</head>
+<body>
+    <div class="deck-viewport">
+        <main class="deck-stage" id="deckStage">
+
+            <!-- ===========================================
+                 SLIDE 0 — TITLE
+                 =========================================== -->
+            <section class="slide active" id="slide-0">
+                <div class="slide-content">
+                    <div class="ts-container">
+                        <div class="ts-bg-circle"></div>
+                        <div class="ts-bg-circle-2"></div>
+                        <div class="ts-content">
+                            <div class="ts-eyebrow ts-reveal">Stanford Life Design Lab</div>
+                            <h1 class="ts-title ts-reveal">Designing Your <em>Life</em></h1>
+                            <p class="ts-sub ts-reveal">How to Build a Well-Lived, Joyful Life</p>
+                            <div class="ts-meta ts-reveal">
+                                <span><span class="ts-dot"></span> Bill Burnett &amp; Dave Evans</span>
+                                <span><span class="ts-dot"></span> 2016</span>
+                                <span><span class="ts-dot"></span> Design Thinking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 1 — CORE THESIS (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-1">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Core Thesis</span>
+                        <div class="monogram">DL</div>
+                    </div>
+                    <div class="content-cream">
+                        <h2 class="reveal">Life as a<br>Design Problem</h2>
+                        <p class="body-lg reveal" style="max-width:70%">Life is not a puzzle with one right answer — it is a creative process. There is no single perfect version waiting to be found. There are many possible, beautiful lives you could live.</p>
+                        <div class="hairline reveal" style="margin:8px 0;width:60%"></div>
+                        <div class="two-col reveal" style="gap:40px;margin-top:8px">
+                            <div>
+                                <p class="label-mono" style="font-size:18px;margin-bottom:6px">Dysfunctional Belief</p>
+                                <p class="body-sm" style="font-size:22px;opacity:0.7;font-style:italic">"I need a single, perfect plan."</p>
+                            </div>
+                            <div>
+                                <p class="label-mono" style="font-size:18px;margin-bottom:6px">The Reframe</p>
+                                <p class="body-sm" style="font-size:22px;font-style:italic">"I can build my way forward one step at a time."</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>Design Thinking for Life</span>
+                        <span>01 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 2 — 5 CORE MINDSETS (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-2">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Foundation</span>
+                        <div class="monogram">DL</div>
+                    </div>
+                    <div class="content-cream" style="padding-top:80px;gap:16px">
+                        <h2 class="reveal" style="font-size:72px">5 Core Mindsets</h2>
+                        <div class="tile-grid reveal">
+                            <div class="tile tile-green">
+                                <span class="tile-ordinal">01</span>
+                                <span class="tile-title">Curiosity</span>
+                                <span class="tile-body">Approach everything with an open mind. See opportunities everywhere.</span>
+                            </div>
+                            <div class="tile tile-pink">
+                                <span class="tile-ordinal">02</span>
+                                <span class="tile-title">Bias to Action</span>
+                                <span class="tile-body">Build your way forward. Test ideas with low-risk experiments.</span>
+                            </div>
+                            <div class="tile tile-green-lite">
+                                <span class="tile-ordinal">03</span>
+                                <span class="tile-title">Reframing</span>
+                                <span class="tile-body">Examine assumptions and flip them to unlock new pathways.</span>
+                            </div>
+                            <div class="tile tile-cream">
+                                <span class="tile-ordinal">04</span>
+                                <span class="tile-title">Awareness</span>
+                                <span class="tile-body">Embrace the messy, iterative journey. Release perfection.</span>
+                            </div>
+                            <div class="tile tile-green">
+                                <span class="tile-ordinal">05</span>
+                                <span class="tile-title">Radical Collaboration</span>
+                                <span class="tile-body">The best designs emerge from mentors, peers, and community.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>The Five Mindsets</span>
+                        <span>02 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 3 — THE LIFE DASHBOARD (green)
+                 =========================================== -->
+            <section class="slide" id="slide-3">
+                <div class="slide-inner bg-green">
+                    <div class="chrome-topbar chrome-topbar--green">
+                        <span class="topbar-label">Start Where You Are</span>
+                        <span class="topbar-counter">Chapter 1</span>
+                    </div>
+                    <div class="content-green">
+                        <h2 class="reveal">The Life Dashboard</h2>
+                        <p class="body-lg reveal">Rate your current levels of Health, Work, Play, and Love. You can't design a path forward without knowing where you are.</p>
+                        <div class="step-row reveal" style="margin-top:8px">
+                            <div class="step step-cream">
+                                <span class="step-ordinal">01</span>
+                                <span class="step-title">Health</span>
+                                <span class="step-body">Your physical, emotional, and mental well-being.</span>
+                                <span class="step-marker">Rate from 0–Full</span>
+                            </div>
+                            <div class="step step-pink">
+                                <span class="step-ordinal">02</span>
+                                <span class="step-title">Work</span>
+                                <span class="step-body">Productive activities — paid or unpaid.</span>
+                                <span class="step-marker">Rate from 0–Full</span>
+                            </div>
+                            <div class="step step-green">
+                                <span class="step-ordinal">03</span>
+                                <span class="step-title">Play</span>
+                                <span class="step-body">Pure joy activities with no outcome pressure.</span>
+                                <span class="step-marker">Rate from 0–Full</span>
+                            </div>
+                            <div class="step step-cream">
+                                <span class="step-ordinal">04</span>
+                                <span class="step-title">Love</span>
+                                <span class="step-body">Family, friends, partners, and community.</span>
+                                <span class="step-marker">Rate from 0–Full</span>
+                            </div>
+                        </div>
+                        <p class="body-lg reveal" style="font-size:22px;opacity:0.7;max-width:60%;margin-top:4px"><strong style="opacity:1">Gravity Problems:</strong> If you can't change it, accept it and design around it.</p>
+                    </div>
+                    <div class="chrome-footline chrome-footline--green">
+                        <span>Start Where You Are</span>
+                        <span>03 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 4 — YOUR COMPASS (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-4">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Building a Compass</span>
+                        <span class="topbar-counter">Chapter 2</span>
+                    </div>
+                    <div class="content-cream">
+                        <h2 class="reveal" style="font-size:72px">Workview &amp;<br>Lifeview Alignment</h2>
+                        <p class="body-lg reveal" style="max-width:75%">Your internal compass is built by articulating two worldviews and aligning them consciously.</p>
+                        <div class="two-col reveal" style="margin-top:8px;gap:40px;align-items:stretch">
+                            <div style="background:var(--cream-2);border-radius:6px;padding:28px 28px 24px;border:2px solid var(--green);display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:18px;color:var(--green)">Workview</span>
+                                <p class="body-sm" style="font-size:22px">Why do we work? What defines good work? What is the relationship between work and money?</p>
+                                <p class="body-sm" style="font-size:18px;opacity:0.6;margin-top:4px">Write a 250-word manifesto</p>
+                            </div>
+                            <div style="background:var(--green);border-radius:6px;padding:28px 28px 24px;display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:18px;color:var(--pink)">Lifeview</span>
+                                <p class="body-lg" style="font-size:22px;color:var(--cream);opacity:0.9">What is the meaning of life? How do I relate to family, community, and the universe?</p>
+                                <p class="body-lg" style="font-size:18px;color:var(--cream);opacity:0.5;margin-top:4px">Write a 250-word manifesto</p>
+                            </div>
+                        </div>
+                        <div class="reveal" style="margin-top:8px">
+                            <span class="label-mono" style="font-size:17px">The Integration:</span>
+                            <span class="body-sm" style="font-size:22px;margin-left:16px">Find where they complement or conflict. Alignment = structural stability.</span>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>Building a Compass</span>
+                        <span>04 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 5 — WAYFINDING (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-5">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Wayfinding</span>
+                        <span class="topbar-counter">Chapter 3</span>
+                    </div>
+                    <div class="content-cream">
+                        <h2 class="reveal" style="font-size:72px">The Good Time<br>Journal</h2>
+                        <p class="body-lg reveal" style="max-width:70%">Navigate using real-time clues: track your engagement and energy across daily activities for three weeks.</p>
+                        <div class="step-row reveal">
+                            <div class="step step-green">
+                                <span class="step-ordinal">01</span>
+                                <span class="step-title">Engagement</span>
+                                <span class="step-body">Are you bored, focused, distracted, or deeply immersed?</span>
+                                <span class="step-marker">Track Daily</span>
+                            </div>
+                            <div class="step step-cream">
+                                <span class="step-ordinal">02</span>
+                                <span class="step-title">Energy</span>
+                                <span class="step-body">Does this activity deposit or drain your emotional reservoir?</span>
+                                <span class="step-marker">Rate +/−</span>
+                            </div>
+                            <div class="step step-pink">
+                                <span class="step-ordinal">03</span>
+                                <span class="step-title">Flow State</span>
+                                <span class="step-body">Moments where you lose track of time and feel completely immersed.</span>
+                                <span class="step-marker">Flag It</span>
+                            </div>
+                        </div>
+                        <div class="reveal" style="margin-top:8px">
+                            <span class="label-mono" style="font-size:17px">AEIOU Framework:</span>
+                            <span class="body-sm" style="margin-left:16px;font-size:22px"><strong>A</strong>ctivities · <strong>E</strong>nvironment · <strong>I</strong>nteractions · <strong>O</strong>bjects · <strong>U</strong>sers</span>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>Wayfinding</span>
+                        <span>05 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 6 — GETTING UNSTUCK (pink)
+                 =========================================== -->
+            <section class="slide" id="slide-6">
+                <div class="slide-inner bg-pink">
+                    <div class="chrome-topbar chrome-topbar--pink">
+                        <span class="topbar-label">Getting Unstuck</span>
+                        <span class="topbar-counter">Chapter 4</span>
+                    </div>
+                    <div class="content-green" style="gap:20px">
+                        <h2 class="reveal" style="font-size:72px;color:var(--green-deep)">Mind Mapping<br>&amp; The Mashup</h2>
+                        <p class="body-lg reveal" style="max-width:70%;color:var(--green-deep);opacity:0.85">Generate a flood of ideas by building a three-tier associative mind map, then mash distant concepts together.</p>
+                        <div class="step-row reveal">
+                            <div class="step step-cream" style="flex:1.2">
+                                <span class="step-ordinal">01</span>
+                                <span class="step-title" style="font-size:30px">Pick an Anchor</span>
+                                <span class="step-body">Start with a positive activity from your Good Time Journal.</span>
+                            </div>
+                            <div class="step step-cream">
+                                <span class="step-ordinal">02</span>
+                                <span class="step-title" style="font-size:30px">Associate Freely</span>
+                                <span class="step-body">5–6 radiating arms, then secondary and tertiary layers.</span>
+                            </div>
+                            <div class="step step-cream">
+                                <span class="step-ordinal">03</span>
+                                <span class="step-title" style="font-size:30px">The Mashup</span>
+                                <span class="step-body">Pick 3 distant concepts → combine into one actionable idea.</span>
+                            </div>
+                        </div>
+                        <div class="reveal" style="background:var(--cream);border-radius:6px;padding:18px 24px;border:2px solid var(--green);margin-top:4px">
+                            <span class="body-lg" style="font-size:22px;color:var(--green-deep);font-style:italic">"I am never truly stuck. I can always generate fresh options by breaking down my assumptions."</span>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--pink">
+                        <span>Getting Unstuck</span>
+                        <span>06 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 7 — ODYSSEY PLANS (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-7">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Design Your Lives</span>
+                        <span class="topbar-counter">Chapter 5</span>
+                    </div>
+                    <div class="content-cream">
+                        <h2 class="reveal" style="font-size:72px">Three Odyssey<br>Plans</h2>
+                        <p class="body-lg reveal" style="max-width:70%">Map out three completely different 5-year futures — each with a 6-word title, 3 key questions, and a dashboard rating.</p>
+                        <div class="step-row reveal">
+                            <div class="step step-green" style="flex:1">
+                                <span class="step-ordinal">Life 1</span>
+                                <span class="step-title" style="font-size:32px">Optimized Path</span>
+                                <span class="step-body">The direct extension of what you're doing now — your clearest current trajectory.</span>
+                                <span class="step-marker">Resources · Likability</span>
+                            </div>
+                            <div class="step step-pink" style="flex:1">
+                                <span class="step-ordinal">Life 2</span>
+                                <span class="step-title" style="font-size:32px">Alternative Route</span>
+                                <span class="step-body">What you'd do if Life 1's industry or role vanished overnight.</span>
+                                <span class="step-marker">Confidence · Coherence</span>
+                            </div>
+                            <div class="step step-cream" style="flex:1">
+                                <span class="step-ordinal">Life 3</span>
+                                <span class="step-title" style="font-size:32px">Unconstrained Dream</span>
+                                <span class="step-body">What you'd pursue if money and expectations were removed.</span>
+                                <span class="step-marker">Wild Possibility</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>Three 5-Year Timelines</span>
+                        <span>07 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 8 — PROTOTYPING (green)
+                 =========================================== -->
+            <section class="slide" id="slide-8">
+                <div class="slide-inner bg-green">
+                    <div class="chrome-topbar chrome-topbar--green">
+                        <span class="topbar-label">Prototyping</span>
+                        <span class="topbar-counter">Chapter 6</span>
+                    </div>
+                    <div class="content-green">
+                        <h2 class="reveal" style="font-size:72px">Low-Stakes<br>Experiments</h2>
+                        <p class="body-lg reveal" style="max-width:70%">Don't quit your job or go back to school to test a new path. Build small, fast, cheap prototypes instead.</p>
+                        <div class="two-col reveal" style="gap:32px;margin-top:8px;align-items:stretch">
+                            <div style="background:var(--cream-2);border-radius:6px;padding:32px;border:2px solid var(--green);flex:1;display:flex;flex-direction:column;gap:10px">
+                                <span class="label-mono" style="font-size:18px;color:var(--green)">Prototype Conversations</span>
+                                <p class="body-lg" style="font-size:24px;color:var(--ink);line-height:1.4">Find people already living the future you're considering. Ask for their story — never for a job.</p>
+                                <span class="step-marker" style="font-family:var(--font-mono);font-size:15px;color:var(--green);opacity:0.6;letter-spacing:0.1em;text-transform:uppercase">Life Design Interviews</span>
+                            </div>
+                            <div style="background:var(--green-lite);border-radius:6px;padding:32px;flex:1;display:flex;flex-direction:column;gap:10px">
+                                <span class="label-mono" style="font-size:18px;color:var(--pink)">Prototype Experiences</span>
+                                <p class="body-lg" style="font-size:24px;color:var(--cream);line-height:1.4">Physically step into the environment through shadow days, volunteering, or weekend projects.</p>
+                                <span class="step-marker" style="font-family:var(--font-mono);font-size:15px;color:var(--pink);opacity:0.6;letter-spacing:0.1em;text-transform:uppercase">Real-World Exposure</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--green">
+                        <span>Prototyping Your Future</span>
+                        <span>08 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 9 — HIDDEN JOB MARKET (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-9">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Career Landscape</span>
+                        <span class="topbar-counter">Ch. 7–8</span>
+                    </div>
+                    <div class="content-cream">
+                        <h2 class="reveal" style="font-size:72px">The Hidden<br>Job Market</h2>
+                        <p class="body-lg reveal" style="max-width:70%">Online job postings are a tiny fraction of open roles — and they're designed to screen you out. Build human connections instead.</p>
+                        <div class="two-col reveal" style="gap:32px;margin-top:12px;align-items:stretch">
+                            <div style="background:var(--cream-2);border-radius:6px;padding:28px;border:2px solid var(--green);flex:1;display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:17px;color:var(--green)">The Trap</span>
+                                <p class="body-sm" style="font-size:22px">Mass-applying to job boards treats you as a data point. Algorithmic filters screen you out before a human reads your name.</p>
+                            </div>
+                            <div style="background:var(--green);border-radius:6px;padding:28px;flex:1;display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:17px;color:var(--pink)">The Way In</span>
+                                <p class="body-lg" style="font-size:22px;color:var(--cream);opacity:0.9">Network activation → prototype conversations → uncover latent needs → pitch tailored solutions.</p>
+                            </div>
+                        </div>
+                        <div class="reveal" style="margin-top:8px">
+                            <span class="body-sm" style="font-size:22px;font-style:italic">"Your dream job is co-created, not found — built through relationships that uncover unadvertised needs."</span>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>How Not to Get a Job</span>
+                        <span>09 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 10 — CHOOSING & FAILING (pink)
+                 =========================================== -->
+            <section class="slide" id="slide-10">
+                <div class="slide-inner bg-pink">
+                    <div class="chrome-topbar chrome-topbar--pink">
+                        <span class="topbar-label">Resilience</span>
+                        <span class="topbar-counter">Ch. 9–10</span>
+                    </div>
+                    <div class="content-green" style="gap:16px">
+                        <h2 class="reveal" style="font-size:64px;color:var(--green-deep)">Choosing Happiness<br>&amp; Failure Immunity</h2>
+                        <p class="body-lg reveal" style="max-width:75%;color:var(--green-deep);opacity:0.85">Good life design relies on confident decision-making and treating failure as data, not shame.</p>
+                        <div class="two-col reveal" style="gap:28px;margin-top:4px;align-items:stretch">
+                            <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:17px;color:var(--green-deep)">4-Step Decision Process</span>
+                                <div style="background:var(--cream-2);border-radius:6px;padding:20px 24px;border:2px solid var(--green);flex:1">
+                                    <p class="body-sm" style="font-size:20px;line-height:1.6;color:var(--ink)"><strong>1.</strong> Gather &amp; create options<br><strong>2.</strong> Narrow to 3–5 choices<br><strong>3.</strong> Combine rational + somatic signals<br><strong>4.</strong> Let go and move on</p>
+                                </div>
+                            </div>
+                            <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+                                <span class="label-mono" style="font-size:17px;color:var(--green-deep)">Failure Reframe Exercise</span>
+                                <div style="background:var(--cream-2);border-radius:6px;padding:20px 24px;border:2px solid var(--green);flex:1">
+                                    <p class="body-sm" style="font-size:20px;line-height:1.6;color:var(--ink)"><strong>1.</strong> Log the failure<br><strong>2.</strong> Categorize: screwup / weakness / growth opportunity<br><strong>3.</strong> Distill the core insight</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--pink">
+                        <span>Choosing · Failing · Growing</span>
+                        <span>10 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 11 — BUILDING A TEAM (green)
+                 =========================================== -->
+            <section class="slide" id="slide-11">
+                <div class="slide-inner bg-green">
+                    <div class="chrome-topbar chrome-topbar--green">
+                        <span class="topbar-label">Community</span>
+                        <span class="topbar-counter">Chapter 11</span>
+                    </div>
+                    <div class="content-green">
+                        <h2 class="reveal" style="font-size:72px">Building a<br>Life Design Team</h2>
+                        <p class="body-lg reveal" style="max-width:65%">You cannot design a well-lived life alone. The best lives are co-created with an active ecosystem.</p>
+                        <div class="step-row reveal" style="gap:24px">
+                            <div class="step step-cream" style="flex:1">
+                                <span class="step-ordinal">Core Team</span>
+                                <span class="step-title" style="font-size:32px">Trusted Peers</span>
+                                <span class="step-body">Meet regularly to review Odyssey Plans, hold you accountable, and offer honest feedback.</span>
+                                <span class="step-marker">3–5 People</span>
+                            </div>
+                            <div class="step step-pink" style="flex:1">
+                                <span class="step-ordinal">Mentors</span>
+                                <span class="step-title" style="font-size:32px">Wisdom Guides</span>
+                                <span class="step-body">Further along the path. They share stories, spot blind spots — never impose values.</span>
+                                <span class="step-marker">Diverse Perspectives</span>
+                            </div>
+                            <div class="step step-cream" style="flex:1">
+                                <span class="step-ordinal">Community</span>
+                                <span class="step-title" style="font-size:32px">Affinity Groups</span>
+                                <span class="step-body">Broad networks where you share resources, swap ideas, and discover prototype opportunities.</span>
+                                <span class="step-marker">Expand Your Reach</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--green">
+                        <span>Radical Collaboration</span>
+                        <span>11 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 12 — THE 10 TOOLS BLUEPRINT (cream)
+                 =========================================== -->
+            <section class="slide" id="slide-12">
+                <div class="slide-inner bg-cream">
+                    <div class="chrome-topbar chrome-topbar--cream">
+                        <span class="topbar-label">Playbook</span>
+                        <div class="monogram">DL</div>
+                    </div>
+                    <div class="content-cream" style="padding-top:80px;gap:12px">
+                        <h2 class="reveal" style="font-size:64px">10 Tools Blueprint</h2>
+                        <div class="tile-grid reveal" style="gap:12px">
+                            <div class="tile tile-green" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">01</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Life Dashboard</span>
+                            </div>
+                            <div class="tile tile-pink" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">02</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Compass Tuning</span>
+                            </div>
+                            <div class="tile tile-green-lite" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">03</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Good Time Journal</span>
+                            </div>
+                            <div class="tile tile-cream" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">04</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Mind Mapping</span>
+                            </div>
+                            <div class="tile tile-green" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">05</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Odyssey Plans</span>
+                            </div>
+                            <div class="tile tile-pink" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">06</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Prototyping</span>
+                            </div>
+                            <div class="tile tile-cream" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">07</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Hidden Job Market</span>
+                            </div>
+                            <div class="tile tile-green-lite" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">08</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Dream Job Design</span>
+                            </div>
+                            <div class="tile tile-green" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">09</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Failure Log</span>
+                            </div>
+                            <div class="tile tile-pink" style="min-width:150px;padding:18px 20px;gap:4px">
+                                <span class="tile-ordinal" style="font-size:14px">10</span>
+                                <span class="tile-title" style="font-size:22px;line-height:1.2">Team Calibration</span>
+                            </div>
+                        </div>
+                        <div class="reveal" style="margin-top:4px">
+                            <span class="body-sm" style="font-size:20px;opacity:0.6">Use these tools daily, weekly, and quarterly to keep designing your life forward.</span>
+                        </div>
+                    </div>
+                    <div class="chrome-footline chrome-footline--cream">
+                        <span>Actionable Toolset</span>
+                        <span>12 / 14</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===========================================
+                 SLIDE 13 — CLOSING (green)
+                 =========================================== -->
+            <section class="slide" id="slide-13">
+                <div class="slide-inner bg-green">
+                    <div class="ts-container" style="padding:80px 180px">
+                        <div class="ts-bg-circle" style="width:500px;height:500px;right:-100px;top:-120px"></div>
+                        <div class="ts-bg-circle-2" style="width:400px;height:400px;left:-120px;bottom:-100px"></div>
+                        <div class="ts-content">
+                            <div class="ts-eyebrow ts-reveal" style="font-size:20px">Designing Your Life</div>
+                            <h1 class="ts-title ts-reveal" style="font-size:100px;line-height:1.02">A Well-Designed<br><em>Life</em></h1>
+                            <p class="ts-sub ts-reveal" style="max-width:800px;margin:16px auto 0">Maintain your gauges, keep your compass aligned, rely on your team, and treat every transition as a low-stakes prototype. The process is the destination.</p>
+                            <div class="ts-meta ts-reveal" style="opacity:0.4;margin-top:48px">
+                                <span>Curiosity · Action · Reframing · Awareness · Collaboration</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Navigation chrome -->
+    <button class="nav-prev" id="navPrev" aria-label="Previous slide">←</button>
+    <button class="nav-next" id="navNext" aria-label="Next slide">→</button>
+    <div class="slide-counter" id="slideCounter">01 / 14</div>
+
+    <!-- Inline editor -->
+    <div class="edit-hotzone" id="editHotzone"></div>
+    <button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️ Edit</button>
+    <div class="edit-save-note" id="editSaveNote">Ctrl+S to save changes</div>
+
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 0;
+                this.stage = document.getElementById('deckStage');
+                this.counter = document.getElementById('slideCounter');
+                this.navPrev = document.getElementById('navPrev');
+                this.navNext = document.getElementById('navNext');
+
+                this.setupStageScale();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.setupWheelNav();
+                this.setupButtonNav();
+                this.showSlide(0);
+            }
+
+            setupStageScale() {
+                const scale = () => {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    const factor = Math.min(w / 1920, h / 1080);
+                    const x = (w - 1920 * factor) / 2;
+                    const y = (h - 1080 * factor) / 2;
+                    this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+                };
+                scale();
+                window.addEventListener('resize', scale);
+            }
+
+            showSlide(index) {
+                this.currentSlide = Math.max(0, Math.min(index, this.totalSlides - 1));
+                this.slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === this.currentSlide);
+                    slide.classList.toggle('visible', i === this.currentSlide);
+                });
+                this.counter.textContent = String(this.currentSlide + 1).padStart(2, '0') + ' / ' + String(this.totalSlides).padStart(2, '0');
+                this.navPrev.style.display = this.currentSlide === 0 ? 'none' : 'flex';
+                this.navNext.style.display = this.currentSlide === this.totalSlides - 1 ? 'none' : 'flex';
+            }
+
+            nextSlide() { if (this.currentSlide < this.totalSlides - 1) this.showSlide(this.currentSlide + 1); }
+            prevSlide() { if (this.currentSlide > 0) this.showSlide(this.currentSlide - 1); }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.getAttribute('contenteditable')) return;
+                    switch (e.key) {
+                        case 'ArrowRight': case 'ArrowDown': case ' ': e.preventDefault(); this.nextSlide(); break;
+                        case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); this.prevSlide(); break;
+                        case 'PageDown': e.preventDefault(); this.nextSlide(); break;
+                        case 'PageUp': e.preventDefault(); this.prevSlide(); break;
+                        case 'Home': e.preventDefault(); this.showSlide(0); break;
+                        case 'End': e.preventDefault(); this.showSlide(this.totalSlides - 1); break;
+                    }
+                });
+            }
+
+            setupTouchNav() {
+                let sx = 0, sy = 0;
+                document.addEventListener('touchstart', (e) => { sx = e.changedTouches[0].screenX; sy = e.changedTouches[0].screenY; }, { passive: true });
+                document.addEventListener('touchend', (e) => {
+                    const dx = e.changedTouches[0].screenX - sx;
+                    const dy = e.changedTouches[0].screenY - sy;
+                    if (Math.abs(dx) > Math.abs(dy)) { if (dx < -50) this.nextSlide(); if (dx > 50) this.prevSlide(); }
+                    else { if (dy < -50) this.nextSlide(); if (dy > 50) this.prevSlide(); }
+                }, { passive: true });
+            }
+
+            setupWheelNav() {
+                let t = false;
+                document.addEventListener('wheel', (e) => {
+                    if (t) return; t = true; setTimeout(() => { t = false; }, 600);
+                    if (e.deltaY > 0) this.nextSlide(); else if (e.deltaY < 0) this.prevSlide();
+                }, { passive: true });
+            }
+
+            setupButtonNav() {
+                this.navPrev.addEventListener('click', () => this.prevSlide());
+                this.navNext.addEventListener('click', () => this.nextSlide());
+            }
+        }
+
+        /* ===========================================
+           INLINE EDITOR
+           =========================================== */
+        class InlineEditor {
+            constructor() {
+                this.isActive = false;
+                this.toggleBtn = document.getElementById('editToggle');
+                this.hotzone = document.getElementById('editHotzone');
+                this.saveNote = document.getElementById('editSaveNote');
+                this.setupToggle();
+                this.setupKeyboardShortcut();
+                this.setupSaveShortcut();
+            }
+
+            toggleEditMode() {
+                this.isActive = !this.isActive;
+                document.body.classList.toggle('edit-mode', this.isActive);
+                this.toggleBtn.classList.toggle('active', this.isActive);
+                this.toggleBtn.textContent = this.isActive ? '🔒 Done' : '✏️ Edit';
+                this.saveNote.classList.toggle('show', this.isActive);
+                if (this.isActive) this.enableEditing();
+                else this.disableEditing();
+            }
+
+            enableEditing() {
+                document.querySelectorAll('.slide.visible [contenteditable]').forEach(el => el.contentEditable = 'true');
+            }
+
+            disableEditing() {
+                document.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = 'false');
+            }
+
+            setupToggle() {
+                let hideTimeout = null;
+                this.hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); this.toggleBtn.classList.add('show'); });
+                this.hotzone.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) this.toggleBtn.classList.remove('show'); }, 400); });
+                this.toggleBtn.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); });
+                this.toggleBtn.addEventListener('mouseleave', () => { hideTimeout = setTimeout(() => { if (!this.isActive) this.toggleBtn.classList.remove('show'); }, 400); });
+                this.toggleBtn.addEventListener('click', () => this.toggleEditMode());
+                this.hotzone.addEventListener('click', () => this.toggleEditMode());
+
+                const origShow = SlidePresentation.prototype.showSlide;
+                const self = this;
+                SlidePresentation.prototype.showSlide = function(index) {
+                    origShow.call(this, index);
+                    if (self.isActive) requestAnimationFrame(() => {
+                        document.querySelectorAll('.slide.visible [contenteditable]').forEach(el => el.contentEditable = 'true');
+                    });
+                };
+            }
+
+            setupKeyboardShortcut() {
+                document.addEventListener('keydown', (e) => {
+                    if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable') && !e.ctrlKey && !e.metaKey) this.toggleEditMode();
+                });
+            }
+
+            setupSaveShortcut() {
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                        e.preventDefault();
+                        const editData = {};
+                        document.querySelectorAll('[contenteditable]').forEach(el => { if (el.id) editData[el.id] = el.innerHTML; });
+                        localStorage.setItem('dyl-edits', JSON.stringify(editData));
+                        this.saveNote.textContent = '✓ Saved!';
+                        this.saveNote.classList.add('show');
+                        setTimeout(() => { this.saveNote.textContent = 'Ctrl+S to save changes'; if (!this.isActive) this.saveNote.classList.remove('show'); }, 1500);
+                    }
+                });
+            }
+
+            loadSavedEdits() {
+                try { const data = JSON.parse(localStorage.getItem('dyl-edits')); if (data) Object.keys(data).forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = data[id]; }); } catch {}
+            }
+        }
+
+        /* ===========================================
+           INIT
+           =========================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            window.deck = new SlidePresentation();
+            window.editor = new InlineEditor();
+
+            // Make text elements editable
+            document.querySelectorAll('h1, h2, .body-lg, .body-sm, .tile-title, .tile-body, .step-title, .step-body, .ts-title, .ts-sub, .ts-eyebrow').forEach(el => {
+                if (!el.id) el.id = 'edit-' + Math.random().toString(36).slice(2, 7);
+            });
+        });
+    </script>
+</body>
+</html>
